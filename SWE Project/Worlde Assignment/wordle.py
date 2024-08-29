@@ -1,16 +1,13 @@
 import random
 
-# Function to load the words from the file
 def load_words(filename):
     with open(filename, 'r') as file:
         words = file.read().split()
     return words
 
-# Function to get a random word from the list
 def choose_word(words):
     return random.choice(words)
 
-# Function to provide feedback on the guess
 def provide_feedback(secret_word, guess):
     feedback = []
     for i in range(len(secret_word)):
@@ -22,7 +19,6 @@ def provide_feedback(secret_word, guess):
             feedback.append('.')
     return ''.join(feedback)
 
-# Function to filter words based on feedback
 def filter_words(words, guess, feedback):
     filtered_words = []
     for word in words:
@@ -50,7 +46,7 @@ def main():
     
     print("Welcome to Wordle! Try to guess the 5-letter word.")
     
-    possible_words = words[:]  # Keep a list of possible words
+    possible_words = words[:] 
 
     while True:
         guess = input("Enter your guess: ").strip().lower()
@@ -70,7 +66,6 @@ def main():
             print("Congratulations! You've guessed the word!")
             break
         
-        # Filter possible words based on the feedback
         possible_words = filter_words(possible_words, guess, feedback)
         print(f"Possible words: {', '.join(possible_words)}")
 
