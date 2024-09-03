@@ -64,7 +64,7 @@ def filter_words(words, guess, feedback):
 def main():
 
     # get list of all possible guesses
-    words = load_words('words.txt')
+    words = load_words('5_letter_words_list.txt')
     
     # instructions
     print("Please enter what you know about the game. Add a '.' after incorrect letters, a '?' after letters in the wrong place, and a '+' after correct letter.\n",
