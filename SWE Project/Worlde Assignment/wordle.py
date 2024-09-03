@@ -1,13 +1,27 @@
+# game state: Grayed Letters (a.), Letters in Wrong Spot (a?), Correct Letters (a+)
+# Have access to 58,000 english words
+
 import random
 
+# loads list of possible 5-letter words 
 def load_words(filename):
     with open(filename, 'r') as file:
         words = file.read().split()
     return words
 
-def choose_word(words):
-    return random.choice(words)
 
+# sort list of words by priority (better choices are earlier in the list)
+def sort_by_priority(words):
+    return words
+
+
+# return word at beginning of list sorted by priority
+def choose_word(words):
+    sort_by_priority(words)
+    return words[0]
+
+
+# provides feedback symbols for a guess to a given word [Not being used currently]
 def provide_feedback(secret_word, guess):
     feedback = []
     for i in range(len(secret_word)):
@@ -19,55 +33,71 @@ def provide_feedback(secret_word, guess):
             feedback.append('.')
     return ''.join(feedback)
 
+
+# filters words list based on rules given by user
 def filter_words(words, guess, feedback):
-    filtered_words = []
-    for word in words:
+
+    filtered_words = [] # updated list based on filters
+
+    for word in words: # look through all current possible words
+
         match = True
-        for i, char in enumerate(guess):
-            if feedback[i] == '+':
+        for i, char in enumerate(guess): # look through each letter of each word
+            if feedback[i] == '+': # green letters
                 if word[i] != char:
                     match = False
-                    break
-            elif feedback[i] == '?':
+            elif feedback[i] == '?': # yellow letters
                 if char not in word or word[i] == char:
                     match = False
-                    break
-            elif feedback[i] == '.':
-                if char in word:
+            elif feedback[i] == '.': # gray letters
+                if word[i] == char:
                     match = False
-                    break
-        if match:
-            filtered_words.append(word)
+                for j,color in enumerate(feedback): 
+                    if color == '.' or color == '?': # letter can't be in any other gray or yellow spots
+                        if word[j] == char: match = False
+
+        if match: filtered_words.append(word) # add word if it follows rules
+
     return filtered_words
 
+
 def main():
-    words = load_words('SWE Project/Worlde Assignment/5_letter_words_list.txt')
-    secret_word = choose_word(words)
+
+    # get list of all possible guesses
+    words = load_words('words.txt')
     
-    print("Welcome to Wordle! Try to guess the 5-letter word.")
-    
+    # instructions
+    print("Please enter what you know about the game. Add a '.' after incorrect letters, a '?' after letters in the wrong place, and a '+' after correct letter.\n",
+          "Input each piece of info you know seperately and re-run to reset rules.\n", "Example: w.o.r?d+s+")
+
+    # all words are possible at first
     possible_words = words[:] 
 
-    while True:
-        guess = input("Enter your guess: ").strip().lower()
+    userInput = input("Enter what you know (e to exit): ").strip().lower()
+    while (userInput != "e"):
         
-        if len(guess) != 5:
-            print("Guess must be exactly 5 letters long.")
-            continue
-
-        if guess not in words:
-            print("Word not in list. Please try again.")
-            continue
-
-        feedback = provide_feedback(secret_word, guess)
-        print(f"Feedback: {feedback}")
-
-        if guess == secret_word:
-            print("Congratulations! You've guessed the word!")
-            break
+        # make sure user follows correct format
+        if (len(userInput) != 10 and userInput != "e"):
+            print("Make sure you follow the required format.")
         
+        # seperate symbols and letters
+        guess = []
+        feedback = []
+        for i in range(10):
+            if (i % 2 != 0): feedback.append(userInput[i])
+            else: guess.append(userInput[i])
+
+        # update possible words
         possible_words = filter_words(possible_words, guess, feedback)
-        print(f"Possible words: {', '.join(possible_words)}")
+        if (possible_words != []): print("Guess: ", choose_word(possible_words))
+        else: print("No possible guesses in word list!")
+
+        # remove suggested word (only suggest a word once)
+        possible_words = list(filter(lambda x: x != choose_word(possible_words), possible_words))
+
+        # get user info for next suggestion
+        userInput = input("Enter what you know (e to exit): ").strip().lower()
+
 
 if __name__ == "__main__":
     main()
