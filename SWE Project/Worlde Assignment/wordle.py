@@ -10,15 +10,21 @@ def load_words(filename):
     return words
 
 
-# sort list of words by priority (better choices are earlier in the list)
+# sort list of words by priority (words with no repeats go earlier in the list)
 def sort_by_priority(words):
-    return words
+    repeated_letters = []
+    new = []
+    for word in words:
+        if (len(set(word)) != len(word)): repeated_letters.append(word) # check for repeats
+        else: new.append(word)
+    new.extend(repeated_letters) # put repeats at end of list
+    return new
 
 
 # return word at beginning of list sorted by priority
 def choose_word(words):
-    sort_by_priority(words)
-    return words[0]
+    sortedWords = sort_by_priority(words)
+    return sortedWords[0]
 
 
 # provides feedback symbols for a guess to a given word [Not being used currently]
