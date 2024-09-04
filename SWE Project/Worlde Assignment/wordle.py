@@ -43,18 +43,26 @@ def filter_words(words, guess, feedback):
 
         match = True
         for i, char in enumerate(guess): # look through each letter of each word
+
             if feedback[i] == '+': # green letters
                 if word[i] != char:
                     match = False
+
             elif feedback[i] == '?': # yellow letters
                 if char not in word or word[i] == char:
                     match = False
+
             elif feedback[i] == '.': # gray letters
                 if word[i] == char:
                     match = False
+
+                doubleLetter = False # check if letter has a green/yellow counterpart
                 for j,color in enumerate(feedback): 
-                    if color == '.' or color == '?': # letter can't be in any other gray or yellow spots
-                        if word[j] == char: match = False
+                    if (color == '?' or color == '+') and guess[j] == char: 
+                        doubleLetter = True
+
+                if (not doubleLetter): # if not counterpart, letter is not in word at all
+                    if (char in word): match = False
 
         if match: filtered_words.append(word) # add word if it follows rules
 
