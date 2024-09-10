@@ -81,8 +81,8 @@ def main():
     words = load_words('5_letter_words_list.txt')
     
     # instructions
-    print("Please enter what you know about the game. Add a '.' after incorrect letters, a '?' after letters in the wrong place, and a '+' after correct letter.\n",
-          "Input each piece of info you know seperately and re-run to reset rules.\n", "Example: w.o.r?d+s+")
+    print("Please enter what you know about the game. Add a '.' after incorrect letters, a '?' after letters in the wrong place, and a '+' after correct letters.\n",
+          "Input each piece of info you know seperately and enter "f" to reset rules.\n", "Example: w.o.r?d+s+")
 
     # all words are possible at first
     possible_words = words[:] 
@@ -91,23 +91,27 @@ def main():
     while (userInput != "e"):
         
         # make sure user follows correct format
-        if (len(userInput) != 10 and userInput != "e"):
+        if (len(userInput) != 10 and userInput != "e" and userInput != "f"):
             print("Make sure you follow the required format.")
         
-        # seperate symbols and letters
-        guess = []
-        feedback = []
-        for i in range(10):
-            if (i % 2 != 0): feedback.append(userInput[i])
-            else: guess.append(userInput[i])
+        if (userInput != "f"):
+            # seperate symbols and letters
+            guess = []
+            feedback = []
+            for i in range(10):
+                if (i % 2 != 0): feedback.append(userInput[i])
+                else: guess.append(userInput[i])
 
-        # update possible words
-        possible_words = filter_words(possible_words, guess, feedback)
-        if (possible_words != []): print("Guess: ", choose_word(possible_words))
-        else: print("No possible guesses in word list!")
+            # update possible words
+            possible_words = filter_words(possible_words, guess, feedback)
+            if (possible_words != []): print("Guess: ", choose_word(possible_words))
+            else: print("No possible guesses in word list!")
 
-        # remove suggested word (only suggest a word once)
-        possible_words = list(filter(lambda x: x != choose_word(possible_words), possible_words))
+            # remove suggested word (only suggest a word once)
+            possible_words = list(filter(lambda x: x != choose_word(possible_words), possible_words))
+        
+        else:
+            possible_words = words[:] # reset rules
 
         # get user info for next suggestion
         userInput = input("Enter what you know (e to exit): ").strip().lower()
