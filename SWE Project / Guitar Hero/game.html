@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Intro Screen</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: linear-gradient(to bottom, #f5f5dc, #f0e68c); /* Cream gradient */
+            background-image: url('/Users/ethanmorris/Desktop/Structures/AlphaTeam/SWE Project / Guitar Hero/maxresdefault.jpg'), url('https://www.transparenttextures.com/patterns/crumpled-paper-2.png'); /* Background image and texture */
+            background-size: cover, cover; /* Ensures both texture and image cover the full background */
+            background-blend-mode: multiply; /* Blends the background image with the texture */
+            opacity: 1;
+            transition: opacity 1s ease; /* Transition for fade-out effect */
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .box {
+            flex: 1; /* Adjusts the box size */
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 2; /* Image container takes up 2 parts of the available space */
+            position: relative; /* Ensures image is positioned above background */
+        }
+
+        .image-container img {
+            max-width: 100%; /* Adjust image scaling */
+            max-height: 100%; /* Keep image scaling proportional */
+            z-index: 1; /* Ensures the image stays on top of the background */
+        }
+
+        /* Banner at the bottom */
+        .bottom-banner {
+            position: fixed;
+            bottom: 20px; /* 20 pixels above the bottom */
+            left: 10%;
+            width: 80%;
+            background: linear-gradient(to right, #000000, #434343); /* Black gradient */
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.3s ease; /* Smooth transition for background color */
+        }
+        .selection-box button {
+            background: transparent;
+            border: 2px solid black;
+            color: black;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .selection-box {
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px; /* Optional: limits the width of the box */
+            width: 100%;
+        }
+
+        .selection-box h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .bottom-banner:hover {
+            background: linear-gradient(to right, #434343, #000000); /* Reverse black gradient on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="selection-box">
+            <h1>Player Select</h1>
+            <button onclick="window.location.href='player1.html'">Single Player</button>
+            <button onclick="window.location.href='player2.html'">Multiplayer</button>
+        </div>
+    </div>
+
+</body>
+</html>
