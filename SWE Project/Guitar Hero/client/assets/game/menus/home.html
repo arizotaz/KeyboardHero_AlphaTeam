@@ -89,7 +89,10 @@
                 // This code is here for development and will dump the player
                 // straight into the game
                 // Look at /client/assets/game/keyboardhero/main.js for more information
-                MenuManager.GoTo(MENU_GAME)
+                MenuManager.GoTo(MENU_GAME);
+
+                // Needed to show the next menus
+                document.body.style.opacity = '1';
                 
                 //MenuManager.GoTo(MENU_SELECT)
                 

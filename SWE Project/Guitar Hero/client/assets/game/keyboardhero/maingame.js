@@ -79,6 +79,7 @@ function DrawGameBar() {
 
 // Background that will fill the screen
 function DrawGameBG() {
+    background(50);
     fill(255);
     let img = GetTexture("game_background");
     let w = img.width;
