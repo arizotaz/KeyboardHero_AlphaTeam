@@ -14,7 +14,7 @@ const fs = require('fs');
 
 // Web Server Port
 var port = 32787;
-if (fs.existsSync(__dirname + "/port.txt")) port = fs.readFileSync(__dirname + "/port.txt");
+if (fs.existsSync(__dirname + "/port.txt")) port = parseInt(fs.readFileSync(__dirname + "/port.txt"));
 
 
 // Sets the Cors access policy
