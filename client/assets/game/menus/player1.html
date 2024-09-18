@@ -1,163 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="assets/css/styles.css" />
     <title>Single Player - Select Song</title>
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            background: linear-gradient(to bottom, #f5f5dc, #f0e68c); /* Cream gradient */
-            background-image: url('/assets/game/menus/maxresdefault.jpg'), url('https://www.transparenttextures.com/patterns/crumpled-paper-2.png'); /* Background image and texture */
-            background-size: cover, cover; /* Ensures both texture and image cover the full background */
-            background-blend-mode: multiply; /* Blends the background image with the texture */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
+      .selection-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 80%;
+        max-width: 900px;
+        position: relative; /* Allow positioning of elements inside */
+      }
 
-        .selection-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 80%;
-            max-width: 900px;
-            position: relative; /* Allow positioning of elements inside */
-        }
+      .difficulty-box,
+      .song-box {
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        margin: 10px;
+        position: absolute; /* Position the boxes absolutely within the container */
+      }
 
-        .difficulty-box, .song-box {
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            margin: 10px;
-            position: absolute; /* Position the boxes absolutely within the container */
-        }
+      .difficulty-box {
+        width: 200px;
+        background: rgba(
+          255,
+          255,
+          255,
+          0.5
+        ); /* Semi-transparent white background */
+      }
 
-        .difficulty-box {
-            width: 200px;
-            background: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
-        }
+      .song-box {
+        width: 400px;
+        background: rgba(
+          255,
+          255,
+          255,
+          0.8
+        ); /* More opaque background for song box */
+        display: none; /* Hide song box initially */
+        position: absolute; /* Position it absolutely within the container */
+        left: 120px; /* Position to the right of the difficulty box (200px width + 20px margin) */
+        top: -120; /* Align the top edge with the difficulty box */
+      }
 
-        .song-box {
-            width: 400px;
-            background: rgba(255, 255, 255, 0.8); /* More opaque background for song box */
-            display: none; /* Hide song box initially */
-            position: absolute; /* Position it absolutely within the container */
-            left: 120px; /* Position to the right of the difficulty box (200px width + 20px margin) */
-            top: -120; /* Align the top edge with the difficulty box */
-        }
+      .scroll-container {
+        height: 400px; /* Fixed height for the scroll area */
+        overflow-y: auto; /* Enable vertical scroll */
+        padding: 10px;
+      }
 
-        .scroll-container {
-            height: 400px; /* Fixed height for the scroll area */
-            overflow-y: auto; /* Enable vertical scroll */
-            padding: 10px;
-        }
+      .scroll-container ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
 
-        .scroll-container ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+      .scroll-container li {
+        padding: 10px;
+        border: 2px solid black;
+        margin-bottom: 10px;
+        background: white;
+        cursor: pointer;
+        transition: background 0.3s, color 0.3s;
+      }
 
-        .scroll-container li {
-            padding: 10px;
-            border: 2px solid black;
-            margin-bottom: 10px;
-            background: white;
-            cursor: pointer;
-            transition: background 0.3s, color 0.3s;
-        }
+      .scroll-container li:hover {
+        background: black;
+        color: white;
+      }
 
-        .scroll-container li:hover {
-            background: black;
-            color: white;
-        }
+      .difficulty-box select {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid black;
+        border-radius: 5px;
+        background: transparent; /* Make background transparent */
+      }
 
-        .difficulty-box select {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid black;
-            border-radius: 5px;
-            background: transparent; /* Make background transparent */
-        }
-
-        .selection-box h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: black;
-        }
-
-        .bottom-banner {
-            position: fixed;
-            bottom: 20px; /* 20 pixels above the bottom */
-            left: 10%;
-            width: 80%;
-            background: linear-gradient(to right, #000000, #434343); /* Black gradient */
-            color: white;
-            text-align: center;
-            padding: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: background 0.3s ease; /* Smooth transition for background color */
-        }
-
-        .bottom-banner:hover {
-            background: linear-gradient(to right, #434343, #000000); /* Reverse black gradient on hover */
-        }
+      .selection-box h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        color: black;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="selection-container">
-        <!-- Difficulty Selector -->
-        <div class="difficulty-box">
-            <h1>Select Difficulty</h1>
-            <select id="difficulty-select" onchange="showSongBox()">
-                <option value="">Select Difficulty</option>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-            </select>
-        </div>
+      <!-- Difficulty Selector -->
+      <div class="difficulty-box">
+        <h1>Select Difficulty</h1>
+        <select id="difficulty-select" onchange="showSongBox()">
+          <option value="">Select Difficulty</option>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
 
-        <!-- Song Box -->
-        <div class="song-box" id="song-box">
-            <h1>Select Song</h1>
-            <div class="scroll-container">
-                <ul>
-                    <li onclick="playSong('song1')">Song 1</li>
-                    <li onclick="playSong('song2')">Song 2</li>
-                    <li onclick="playSong('song3')">Song 3</li>
-                    <li onclick="playSong('song4')">Song 4</li>
-                    <li onclick="playSong('song5')">Song 5</li>
-                    <!-- Add more songs as needed -->
-                </ul>
-            </div>
+      <!-- Song Box -->
+      <div class="song-box" id="song-box">
+        <h1>Select Song</h1>
+        <div class="scroll-container">
+          <ul>
+            <li onclick="playSong('song1')">Song 1</li>
+            <li onclick="playSong('song2')">Song 2</li>
+            <li onclick="playSong('song3')">Song 3</li>
+            <li onclick="playSong('song4')">Song 4</li>
+            <li onclick="playSong('song5')">Song 5</li>
+            <!-- Add more songs as needed -->
+          </ul>
         </div>
+      </div>
     </div>
 
     <script>
-        function showSongBox() {
-            const difficulty = document.getElementById('difficulty-select').value;
-            const songBox = document.getElementById('song-box');
-            if (difficulty) {
-                songBox.style.display = 'block';
-            } else {
-                songBox.style.display = 'none';
-            }
+      function showSongBox() {
+        const difficulty = document.getElementById("difficulty-select").value;
+        const songBox = document.getElementById("song-box");
+        if (difficulty) {
+          songBox.style.display = "block";
+        } else {
+          songBox.style.display = "none";
         }
+      }
 
-        function playSong(song) {
-            // Logic to play the selected song or redirect to the song's page
-            alert('Playing ' + song);
-        }
+      function playSong(song) {
+        // Logic to play the selected song or redirect to the song's page
+        alert("Playing " + song);
+      }
     </script>
-</body>
+  </body>
 </html>
