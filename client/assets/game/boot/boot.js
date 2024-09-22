@@ -22,6 +22,7 @@ let allowCanvasResize = true;
 let lastCanvasWidth = 0;
 let lastCanvasHeight = 0;
 let running = _afterBoot;
+let merror = null;
 
 // p5js start function, called once at start
 function setup() {
@@ -54,6 +55,7 @@ function draw() {
     if (running) {
         try {
             ApplicationMain();
+            if (merror != null) throw merror;
         } catch (error) {
             fill(0);
             rect(20, 20, 400, 200);
@@ -78,6 +80,11 @@ function draw() {
             }
         }
     }
+}
+
+// Throws and error in the main loop from outside the loop
+function ThrowError (e) {
+    merror = e;
 }
 
 
