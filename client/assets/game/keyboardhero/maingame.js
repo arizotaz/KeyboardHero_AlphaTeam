@@ -175,7 +175,7 @@ function GameExit() {
 
 // The Colors at the bottom of the screen
 function DrawGameBar() {
-    let noteRowSize = gameWidth/numberOfNotes;
+    let noteRowSize = gameWidth / numberOfNotes;
 
     // Colors of buttons
     let colors = [
@@ -185,31 +185,44 @@ function DrawGameBar() {
         color(198,  39, 207), // Purple
         color(224, 146,  36), // Orange
     ];
+
+    // Array of keys to display
+    let keyLabels = ['D', 'F', 'J', 'K', 'L'];
+
     // For each note
     for (let i = 0; i < numberOfNotes; ++i) {
         // Color increase when active
         let incLevel = 40;
         if (colors[i] == null) colors[i] = color(140, 140, 140);
-        tint(color( colors[i].levels[0]+incLevel*input[i],
-                    colors[i].levels[1]+incLevel*input[i],
-                    colors[i].levels[2]+incLevel*input[i]
+        tint(color(colors[i].levels[0] + incLevel * input[i],
+            colors[i].levels[1] + incLevel * input[i],
+            colors[i].levels[2] + incLevel * input[i]
         ));
-        // Lighup part
-        image(GetTexture("button_top"),-gameWidth/2+noteRowSize/2+noteRowSize*i,
-             windowHeight/2-noteRowSize/2,
-              noteRowSize,
-              noteRowSize
+
+        // Lightup part
+        image(GetTexture("button_top"), -gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
+            windowHeight / 2 - noteRowSize / 2,
+            noteRowSize,
+            noteRowSize
         );
         // Button base
         noTint();
         fill(255);
-        image(GetTexture("button_base"),-gameWidth/2+noteRowSize/2+noteRowSize*i,
-        windowHeight/2-noteRowSize/2,
-         noteRowSize,
-         noteRowSize);
+        image(GetTexture("button_base"), -gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
+            windowHeight / 2 - noteRowSize / 2,
+            noteRowSize,
+            noteRowSize
+        );
+
+        // Draw the corresponding key label on each button
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(24);  // You can adjust the size as needed
+        text(keyLabels[i], -gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
+            windowHeight / 2 - noteRowSize / 2
+        );
     }
 }
-
 // Background that will fill the screen
 function DrawGameBG() {
     background(50);
