@@ -43,6 +43,7 @@ app.get('*', function (req, res) {
 
 // start the server
 serv.listen(port);
-console.log("Server started on port: " + port);
+console.log(`Server started on: http://localhost:${port}`);
+
 
 // Below will be the code for multiplayer and score system. 

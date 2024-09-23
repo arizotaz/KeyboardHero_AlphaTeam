@@ -1,0 +1,31 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    background: linear-gradient(to bottom, #f5f5dc, #f0e68c); /* Cream gradient */
+    background-image: url('../game/menus/maxresdefault.jpg'), url('https://www.transparenttextures.com/patterns/crumpled-paper-2.png'); /* Background image and texture */
+    background-size: cover, cover; /* Ensures both texture and image cover the full background */
+    background-blend-mode: multiply; /* Blends the background image with the texture */
+    opacity: 1;
+    transition: opacity 1s ease; /* Transition for fade-out effect */
+}
+
+.bottom-banner {
+    position: fixed;
+    bottom: 20px; /* 20 pixels above the bottom */
+    left: 10%;
+    width: 80%;
+    background: linear-gradient(to right, #000000, #434343); /* Black gradient */
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.3s ease; /* Smooth transition for background color */
+}
+
+.bottom-banner:hover {
+            background: linear-gradient(to right, #434343, #000000); /* Reverse black gradient on hover */
+        }
