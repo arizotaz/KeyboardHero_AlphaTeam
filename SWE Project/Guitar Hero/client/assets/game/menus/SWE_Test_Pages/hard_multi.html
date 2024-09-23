@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Hero Clone</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: linear-gradient(to bottom, #f5f5dc, #f0e68c);
+            background-image: url('/Users/ethanmorris/Desktop/CS Code/Coding Projects:Assignments/SWE_Test_Pages/maxresdefault.jpg'), url('https://www.transparenttextures.com/patterns/crumpled-paper-2.png');
+            background-size: cover, cover;
+            background-blend-mode: multiply;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+ 
+        .game-container {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .column {
+            width: 20%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 2px solid black;
+            position: relative;
+        }
+
+        .key {
+            position: absolute;
+            width: 100%;
+            height: 50px;
+            background-color: red;
+            top: -50px;
+        }
+
+        .key.hit {
+            background-color: green;
+        }
+
+        .bottom-bar {
+            position: absolute;
+            bottom: 70px;
+            width: 100%;
+            height: 10px;
+            background-color: black;
+            z-index: 10;
+        }
+
+        .bottom-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 10%;
+            width: 80%;
+            background: linear-gradient(to right, #000000, #434343);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.3s ease;
+        }
+
+        .bottom-banner:hover {
+            background: linear-gradient(to right, #434343, #000000);
+        }
+
+        .score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .game-over-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 20;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="column" id="column1"></div>
+    <div class="column" id="column2"></div>
+    <div class="column" id="column3"></div>
+    <div class="column" id="column4"></div>
+</div>
+
+<div class="bottom-bar"></div>
+
+<div class="score">Score: 0</div>
+
+<div class="game-over-screen" id="game-over-screen">
+    <div id="game-over-message"></div>
+</div>
+
+<script>
+    let score = 0;
+    let createdTiles = 0;
+    let totalTiles = 0;
+    let tilesHit = 0;
+    const maxTiles = 50;
+    let gameOver = false;
+
+    function createFallingKey(columnId) {
+        if (gameOver) return;
+
+        const column = document.getElementById(columnId);
+        const key = document.createElement('div');
+        key.classList.add('key');
+        column.appendChild(key);
+
+        let position = -50;
+        key.hitStatus = false;
+
+        const interval = setInterval(() => {
+            position += 5;
+            key.style.top = position + 'px';
+
+            if (position >= column.offsetHeight) {
+                clearInterval(interval);
+                key.remove();
+                totalTiles--;
+
+                if (totalTiles <= 0 && createdTiles >= maxTiles && !gameOver) {
+                    gameOver = true;
+                    showGameOverScreen();
+                }
+            }
+        }, 25);
+    }
+
+    function generateKeys() {
+        const columns = ['column1', 'column2', 'column3', 'column4'];
+        const keyInterval = setInterval(() => {
+            if (createdTiles < maxTiles && !gameOver) {
+                const randomColumn = columns[Math.floor(Math.random() * columns.length)];
+                createFallingKey(randomColumn);
+                createdTiles++;
+                totalTiles++;
+            } else {
+                clearInterval(keyInterval);
+            }
+        }, 1000);
+    }
+
+    document.addEventListener('keydown', (event) => {
+        const keyMap = {
+            'a': 'column1',
+            's': 'column2',
+            'd': 'column3',
+            'f': 'column4'
+        };
+
+        if (keyMap[event.key]) {
+            const column = document.getElementById(keyMap[event.key]);
+            const keys = column.getElementsByClassName('key');
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                const keyPosition = parseInt(key.style.top);
+
+                if (keyPosition >= column.offsetHeight - 150 && keyPosition <= column.offsetHeight - 90 && !key.hitStatus) {
+                    key.classList.add('hit');
+                    key.hitStatus = true;
+
+                    score += 10;
+                    tilesHit++;
+                    document.querySelector('.score').innerText = 'Score: ' + score;
+                }
+            }
+        }
+    });
+
+    function showGameOverScreen() {
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const message = `Game Over! You hit ${tilesHit} out of ${maxTiles} tiles.`;
+        document.getElementById('game-over-message').innerText = message;
+        gameOverScreen.style.display = 'block';
+    }
+
+    generateKeys();
+</script>
+
+</body>
+</html>

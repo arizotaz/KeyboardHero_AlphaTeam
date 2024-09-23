@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Hero Clone - Multiplayer</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: linear-gradient(to bottom, #f5f5dc, #f0e68c);
+            background-image: url('/Users/ethanmorris/Desktop/CS Code/Coding Projects:Assignments/SWE_Test_Pages/maxresdefault.jpg'), url('https://www.transparenttextures.com/patterns/crumpled-paper-2.png');
+            background-size: cover, cover;
+            background-blend-mode: multiply;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+ 
+        .game-container {
+            width: 80%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .column {
+            width: 15%; /* Smaller columns */
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 2px solid black;
+            position: relative;
+        }
+
+        .key {
+            position: absolute;
+            width: 100%;
+            height: 50px;
+            background-color: red;
+            top: -50px;
+        }
+
+        .key.hit {
+            background-color: green;
+        }
+
+        .bottom-bar {
+            position: absolute;
+            bottom: 70px;
+            width: 100%;
+            height: 10px;
+            background-color: black;
+            z-index: 10;
+        }
+
+        .score {
+            position: absolute;
+            left: 10px; /* Position on the left */
+            font-size: 18px; /* Shrunk text */
+            font-weight: bold;
+            color: white;
+        }
+
+        #player1-score {
+            top: 30px; /* Player 1 score */
+        }
+
+        #player2-score {
+            top: 20px; /* Player 2 score, below Player 1 */
+        }
+
+        .game-over-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="column" id="column1"></div>
+    <div class="column" id="column2"></div>
+    <div class="column" id="column3"></div>
+    <div class="column" id="column4"></div>
+
+    <div style="width: 150px;"></div> <!-- Gap between players -->
+
+    <div class="column" id="column5"></div>
+    <div class="column" id="column6"></div>
+    <div class="column" id="column7"></div>
+    <div class="column" id="column8"></div>
+</div>
+
+<div class="bottom-bar"></div>
+
+<div class="score" id="player1-score">Player 1 Score: 0</div>
+<div class="score" id="player2-score" style="top: 50px;">Player 2 Score: 0</div>
+
+<div class="game-over-screen" id="game-over-screen">
+    <div id="game-over-message"></div>
+</div>
+
+<script>
+    let score1 = 0;
+    let score2 = 0;
+    let createdTiles = 0;
+    let totalTiles = 0;
+    let tilesHit1 = 0;
+    let tilesHit2 = 0;
+    const maxTiles = 50;
+    let gameOver = false;
+
+    function createFallingKey(columnId) {
+        if (gameOver) return;
+
+        const column = document.getElementById(columnId);
+        const key = document.createElement('div');
+        key.classList.add('key');
+        column.appendChild(key);
+
+        let position = -50;
+        key.hitStatus = false;
+
+        const interval = setInterval(() => {
+            position += 5;
+            key.style.top = position + 'px';
+
+            if (position >= column.offsetHeight) {
+                clearInterval(interval);
+                key.remove();
+                totalTiles--;
+
+                if (totalTiles <= 0 && createdTiles >= maxTiles && !gameOver) {
+                    gameOver = true;
+                    showGameOverScreen();
+                }
+            }
+        }, 25);
+    }
+
+    function generateKeys() {
+        const columns = ['column1', 'column2', 'column3', 'column4', 'column5', 'column6', 'column7', 'column8'];
+        const keyInterval = setInterval(() => {
+            if (createdTiles < maxTiles && !gameOver) {
+                const randomColumn = columns[Math.floor(Math.random() * columns.length)];
+                createFallingKey(randomColumn);
+                createdTiles++;
+                totalTiles++;
+            } else {
+                clearInterval(keyInterval);
+            }
+        }, 1000);
+    }
+
+    document.addEventListener('keydown', (event) => {
+        const keyMap1 = {
+            'a': 'column1',
+            's': 'column2',
+            'd': 'column3',
+            'f': 'column4'
+        };
+        const keyMap2 = {
+            'h': 'column5',
+            'j': 'column6',
+            'k': 'column7',
+            'l': 'column8'
+        };
+
+        if (keyMap1[event.key]) {
+            const column = document.getElementById(keyMap1[event.key]);
+            const keys = column.getElementsByClassName('key');
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                const keyPosition = parseInt(key.style.top);
+
+                if (keyPosition >= column.offsetHeight - 150 && keyPosition <= column.offsetHeight - 90 && !key.hitStatus) {
+                    key.classList.add('hit');
+                    key.hitStatus = true;
+
+                    score1 += 10;
+                    tilesHit1++;
+                    document.getElementById('player1-score').innerText = 'Player 1 Score: ' + score1;
+                }
+            }
+        } else if (keyMap2[event.key]) {
+            const column = document.getElementById(keyMap2[event.key]);
+            const keys = column.getElementsByClassName('key');
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                const keyPosition = parseInt(key.style.top);
+
+                if (keyPosition >= column.offsetHeight - 150 && keyPosition <= column.offsetHeight - 90 && !key.hitStatus) {
+                    key.classList.add('hit');
+                    key.hitStatus = true;
+
+                    score2 += 10;
+                    tilesHit2++;
+                    document.getElementById('player2-score').innerText = 'Player 2 Score: ' + score2;
+                }
+            }
+        }
+    });
+
+    function showGameOverScreen() {
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const winner = score1 > score2 ? 'Player 1' : 'Player 2';
+        const message = `Game Over! ${winner} wins! Player 1 hit ${tilesHit1} tiles, Player 2 hit ${tilesHit2} tiles.`;
+        document.getElementById('game-over-message').innerText = message;
+        gameOverScreen.style.display = 'block';
+    }
+
+    generateKeys();
+</script>
+
+</body>
+</html>
