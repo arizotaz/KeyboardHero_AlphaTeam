@@ -1,36 +1,66 @@
 <html>
-    <head>
-        <title>Keyboard Hero</title>
-        <script src="/assets/jquery/jquery-3.5.0.min.js"></script>
-        <script src="/assets/p5/p5.js"></script>
-        <script src="/assets/game/boot/boot.js"></script>
-        <script src="/assets/game/keyboardhero/uimanager.js"></script>
-        <script src="/assets/game/keyboardhero/textureengine.js"></script>
 
-        <script src="/assets/game/keyboardhero/maingame.js"></script>
+<head>
+    <title>Keyboard Hero</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/assets/jquery/jquery-3.5.0.min.js"></script>
+    <script src="/assets/p5/p5.js"></script>
+    <script src="/assets/game/boot/boot.js"></script>
+    <script src="/assets/game/keyboardhero/uimanager.js"></script>
+    <script src="/assets/game/keyboardhero/textureengine.js"></script>
 
-        <script src="/assets/game/keyboardhero/menus.js"></script>
-        <script src="/assets/game/keyboardhero/main.js"></script>
-        <style>
-            html, body {
-                padding:0px;
-                margin:0px;
-            }
-            .menu {
-                display: none;
-                position: absolute;
-                top:0px;
-                left:0px;
-                width: 100%;
-                height: 100%;
-            }
-        </style>
-    </head>
-    <body>
-        
-        <div class="menu" id="homeMenu">
-            <div id="homeMenuContainer"></div>
-        </div>
+    <script src="/assets/game/keyboardhero/settings.js"></script>
+    <script src="/assets/game/keyboardhero/maingame.js"></script>
 
-    </body>
+    <script src="/assets/game/keyboardhero/menu/home/index.js"></script>
+    <script src="/assets/game/keyboardhero/menu/settings/index.js"></script>
+    <script src="/assets/game/keyboardhero/menu/audio_calibration/index.js"></script>
+    <script src="/assets/game/keyboardhero/menu/game_complete/index.js"></script>
+    <script src="/assets/game/keyboardhero/menu/about/index.js"></script>
+
+
+    <script src="/assets/game/keyboardhero/main.js"></script>
+    <style>
+        html,
+        body {
+            padding: 0px;
+            margin: 0px;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        img {
+            user-drag: none;
+            -webkit-user-drag: none;
+            -moz-user-select: none;
+        }
+
+        div {
+            box-sizing: border-box;
+        }
+
+        .menu {
+            display: none;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+        }
+        canvas {
+            top:0px;
+            bottom: 0px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="menu" id="homeMenu">
+        <div id="homeMenuContainer"></div>
+    </div>
+
+</body>
+
 </html>

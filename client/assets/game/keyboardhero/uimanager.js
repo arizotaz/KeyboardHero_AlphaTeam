@@ -19,6 +19,7 @@ class UIManager {
         this.currentMenu = defaultMenu;
         this.lastMenu = -1;
         this.menus = [];
+        this.history = [];
     }
 
     // Adds the menu to the list, at a specific index
@@ -41,7 +42,18 @@ class UIManager {
 
     // Goes to a menu
     GoTo(index) {
+        this.history.unshift(this.currentMenu);
+        this.GoToNoHistory(index);
+    }
+    // Goes to a menu but does not add it to history
+    GoToNoHistory(index) {
         this.currentMenu = index;
+    }
+    // Goes to the last menu in the history if available
+    GoBack() {
+        if (this.history[0] == null) return;
+        this.currentMenu = this.history[0];
+        this.history.splice(0,1);
     }
 
     // Returns the current menu ID

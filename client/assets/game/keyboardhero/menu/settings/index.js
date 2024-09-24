@@ -14,32 +14,9 @@
 
 
 
-class MainMenu extends Menu {
-    Open() {
-        $.get("/assets/game/menus/home.html", function( data ) {
-            $( "#homeMenuContainer" ).append( data );
-            document.getElementById('homeMenu').style.display = 'block';
-        });
-    }
-    Leave() {
-        $( "#homeMenuContainer" ).remove();
-        $( "#homeMenu" ).append("<div id=\"homeMenuContainer\"></div>");
-        document.getElementById('homeMenu').style.display = 'none';
-    }
-}
-
-class DiffSelectMenu extends Menu {
-    Open() {
-        console.log("DiffSelect Menu Opend");
-    }
-    Leave() {
-        console.log("Left the DiffSelect Menu");
-    }
-}
-
 class SettingsMenu extends Menu {
     Open() {
-        $.get("/assets/game/menus/settings.html", function( data ) {
+        $.get("/assets/game/keyboardhero/menu/settings/index.html", function( data ) {
             $( "#settingsMenuContainer" ).append( data );
             document.getElementById('settingsMenu').style.display = 'block';
         });

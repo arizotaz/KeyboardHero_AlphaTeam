@@ -26,24 +26,41 @@ function ApplicationMain() {
 
 // Menu Manager 
 let MenuManager;
+// Settings File Structure
+let Settings;
+
+// Is Mobile
+let mobile = false;
 
 // Menu ID alieses
-const MENU_MAIN     = 0;
-const MENU_SELECT   = 1;
-const MENU_SETTINGS = 2;
-const MENU_GAME     = 5
+const MENU_MAIN         = 0;
+const MENU_SETTINGS     = 1;
+const MENU_AUDIOCALI    = 2;
+const MENU_ABOUT        = 3;
+const MENU_GAME         = 4;
+const MENU_COMPLETE     = 5;
 
 // Start one-shot.  Called only once at game start
 function ApplicationStart() {
     // Create the MenuManager
     MenuManager = new UIManager();
+    
+    // Create and Load settings structure
+    Settings = new KeyFile();
+    LoadSettings();
+    SetDefaultOptions();
+
     // Setup Menus
     MenuManager.GoTo(MENU_MAIN);//MENU_GAME);
     // Create the menus
-    MenuManager.AddMenu(MENU_MAIN,      new MainMenu        ());
-    MenuManager.AddMenu(MENU_SELECT,    new DiffSelectMenu  ());
-    MenuManager.AddMenu(MENU_SETTINGS,  new SettingsMenu     ());
-    MenuManager.AddMenu(MENU_GAME,      new GameViewMenu    ());
+    MenuManager.AddMenu(MENU_MAIN,      new MainMenu    ());
+    MenuManager.AddMenu(MENU_SETTINGS,  new SettingsMenu());
+    MenuManager.AddMenu(MENU_AUDIOCALI, new AudioCalibrationMenu());
+    MenuManager.AddMenu(MENU_ABOUT,     new AboutMenu   ());
+
+    MenuManager.AddMenu(MENU_GAME,      new GameViewMenu());
+    MenuManager.AddMenu(MENU_COMPLETE,  new GameCompletedMenu());
+
     // Add more menus here
     
 }
@@ -51,4 +68,10 @@ function ApplicationStart() {
 function ApplicationLoop() {
     MenuManager.Update();
     MenuManager.Render();
+}
+
+function touchStarted() { mobile = true; }
+function keyPressed() { mobile = false; }
+function IsMobile() {
+    return mobile;
 }

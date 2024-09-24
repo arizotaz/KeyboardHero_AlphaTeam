@@ -93,7 +93,7 @@ var _time = 0;
 var _fade = 0;
 function preload() {
     if (typeof ApplicationPreload === "function") ApplicationPreload();
-    _sfd = loadImage("/assets/game/logo.png");
+    _sfd = loadImage("/assets/game/team_logo.png");
     _errtex = loadImage("/assets/game/error.png");
     _texLoading = loadImage("/assets/game/loading.png");
 }
