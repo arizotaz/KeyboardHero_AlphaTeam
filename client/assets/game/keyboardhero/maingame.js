@@ -120,16 +120,29 @@ function GameUpdate() {
         // If Mobile Mode
         let noteRowSize = gameWidth / numberOfNotes;
         for (let i = 0; i < numberOfNotes; ++i) {
+            // Input in lane
+            let ld = false;
+
             // Set default value if it does not exits
             if (input[i] == null) input[i] = 0;
 
             // If any touch falls in the lane, set true
             for (let touch of touches) {
                 if (touch.x - windowWidth / 2 < -gameWidth / 2 + noteRowSize / 2 + noteRowSize * i + noteRowSize / 2 && touch.x - windowWidth / 2 > -gameWidth / 2 + noteRowSize / 2 + noteRowSize * i - noteRowSize / 2) {
-                    input[i] = 1;
+                    // Input detected in this lane
+                    ld = true;
+                    
+                    // If one shot is not active
+                    if (!inputOneShots[i]) {
+                        // Activate one shot and set input
+                        input[i] = 1;
+                        inputOneShots[i] = true;
+                    }
                 }
             }
-            
+
+            // If input was not detected in lane, reset oneshot
+            if (!ld) inputOneShots[i] = null;
         }
     }
 
