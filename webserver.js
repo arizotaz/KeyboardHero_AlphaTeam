@@ -32,6 +32,20 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/client/index.html');
 });
 
+app.get('/song/upload', function (req, res) {
+    // Save the file to the server
+
+    // Process audio on file
+
+    // Convert file to base64
+
+    // Create json file
+
+    // Send Files
+    let fileLocation = "";
+    res.sendFile(__dirname + fileLocation);
+});
+
 // Allow a folder to be viewed in the web-server
 // All files in the "/client/assets" folder will be vieable to the client
 app.use('/assets', express.static(__dirname + '/client/assets'));
