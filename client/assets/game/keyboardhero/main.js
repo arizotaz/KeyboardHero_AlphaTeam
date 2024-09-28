@@ -28,6 +28,8 @@ function ApplicationMain() {
 let MenuManager;
 // Settings File Structure
 let Settings;
+// Game Audio Object
+let gameAudio;
 
 // Is Mobile
 let mobile = false;
@@ -37,8 +39,12 @@ const MENU_MAIN         = 0;
 const MENU_SETTINGS     = 1;
 const MENU_AUDIOCALI    = 2;
 const MENU_ABOUT        = 3;
-const MENU_GAME         = 4;
-const MENU_COMPLETE     = 5;
+const MENU_SINGLEPLAYER = 9;
+const MENU_GAME_OLD     = 4;
+const MENU_COMPLETE_SINGLEPLAYER     = 5;
+
+// Array of game boards
+let boards = [];
 
 // Start one-shot.  Called only once at game start
 function ApplicationStart() {
@@ -57,9 +63,8 @@ function ApplicationStart() {
     MenuManager.AddMenu(MENU_SETTINGS,  new SettingsMenu());
     MenuManager.AddMenu(MENU_AUDIOCALI, new AudioCalibrationMenu());
     MenuManager.AddMenu(MENU_ABOUT,     new AboutMenu   ());
-
-    MenuManager.AddMenu(MENU_GAME,      new GameViewMenu());
-    MenuManager.AddMenu(MENU_COMPLETE,  new GameCompletedMenu());
+    MenuManager.AddMenu(MENU_SINGLEPLAYER,new SinglePlayerGame());
+    MenuManager.AddMenu(MENU_COMPLETE_SINGLEPLAYER,  new GameCompletedMenu());
 
     // Add more menus here
     

@@ -480,7 +480,7 @@ function DrawCompleteScreen() {
 
 
 // Game Menu Wrapper
-class GameViewMenu extends Menu {
+class GameViewMenuOld extends Menu {
     Open() { 
         document.getElementsByTagName("canvas")[0].style.position = "fixed";
         GameStart(); }
@@ -489,5 +489,6 @@ class GameViewMenu extends Menu {
     Leave() { 
         document.getElementsByTagName("canvas")[0].style.position = "";
         gameAudio.pause();
+        gameAudio = null;
         GameExit(); }
 }

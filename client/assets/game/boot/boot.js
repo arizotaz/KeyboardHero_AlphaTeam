@@ -7,6 +7,11 @@
 //# error handling, and window-resizing.  We could also
 //# add a boot logo to the game if desired.
 
+// Capture Page Errors
+window.onerror = function(error, url, line) {
+    ThrowError(new Error(error, url, line));
+};
+
 // Disables the right click menu
 document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
@@ -64,8 +69,19 @@ function draw() {
             fill(255);
             textAlign(CENTER, CENTER);
             text(error, 0, 0, 350, 150);
+
+            let elms = document.body.childNodes;
+            for (let i = elms.length-1; i >=0 ; --i) {
+                if (elms[i].tagName != 'MAIN') {
+                    elms[i].remove();
+                }
+            }
+
             console.log(error.stack);
             running = false;
+
+           
+
             //crashLog(error.stack);
         }
     } else {
