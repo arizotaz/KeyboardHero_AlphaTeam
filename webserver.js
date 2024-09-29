@@ -11,6 +11,19 @@ var cors = require('cors');
 const { exec } = require("child_process");
 // File System Library
 const fs = require('fs');
+//database functions
+const { getScores } = require('./client/database.js');
+
+//api to get scores using for testing
+app.get('/scores', async (req, res) => {
+    try {
+        const scores = await getScores(); // Call the async function to get scores
+        res.json(scores); // Send the scores as JSON to the client
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching scores' });
+    }
+});
 
 // Web Server Port
 var port = 32787;
