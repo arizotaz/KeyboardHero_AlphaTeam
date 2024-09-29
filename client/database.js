@@ -23,13 +23,6 @@ async function getScores() {
     }
 }
 
-// Call the `getScores` function and handle the promise correctly
-getScores().then(bestscores => {
-    console.log(bestscores);
-}).catch(err => {
-    console.error("Error fetching scores:", err);
-});
-
 module.exports = {
     getScores,
 };
