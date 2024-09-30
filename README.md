@@ -29,60 +29,7 @@ The default is [http://localhost:32787/](http://localhost:32787/)
 
 
 ## Software Layout
-flowchart TD
-    mysql
-    p5js[p5js] --> BManager(Boot Manager)
-    LocalStorage --> SettingsFile
-    UserInput
-    BManager[Boot Script] --> GameLoop
-    GameLoop[Mainn Game Loop] --> MenuManager
-    GameLoop --> SettingsFile
-    MenuManager --> MainMenu
-    MenuManager --> SettingsMenu
-    MenuManager --> AudioCalibrationMenu
-    MenuManager --> AboutMenu
-    MenuManager --> SinglePlayerGame
-    MenuManager --> GameCompletedMenu
-    SinglePlayerGame --> GameBoard
-    SinglePlayerGame --> SettingsFile
+[![](https://mermaid.ink/img/pako:eNqFkk1PwzAMhv_KlBNIG2Md7KPiMgbiwgRi4raL27htpDSpUmfSNPrfSdZ9dFNhOTT168d2a3vLYs2RhSyWUJYvAlID-Up13Fmgsp2nn16vswChvHWpL5FIqLRs880sF3oOUkQGSOjW-FmkLbUmdlklfkrYoHmDHC_9XpvrvJBIyE8Jdv9QY9ta8eejQHVze7K_Cw6ETeULFUfTVN4R1kekqq-zGvuONMqcsTXV7M__ZFu3rkQcenflEy462aC9-azB8E7kny3BJ-KvIqzLcjQ5CO5WaAetGGXoJsZC98oxAStpxVaqcihY0suNillIxmKXGW3TjIUJyNJZdjeX_QoeEOSCtFnsd9RfB_B15zlGSw1uhizcMtoUHk5FSQ6OtUpE6nVrpJMzoqIM-33vvksFZTa6i3XeLwXPwFC2no76o2A0gWCIo_EQHodDHkeD6SQJHgYJH98PAmBVVf0CKQP--A?type=png)](https://mermaid.live/edit#pako:eNqFkk1PwzAMhv_KlBNIG2Md7KPiMgbiwgRi4raL27htpDSpUmfSNPrfSdZ9dFNhOTT168d2a3vLYs2RhSyWUJYvAlID-Up13Fmgsp2nn16vswChvHWpL5FIqLRs880sF3oOUkQGSOjW-FmkLbUmdlklfkrYoHmDHC_9XpvrvJBIyE8Jdv9QY9ta8eejQHVze7K_Cw6ETeULFUfTVN4R1kekqq-zGvuONMqcsTXV7M__ZFu3rkQcenflEy462aC9-azB8E7kny3BJ-KvIqzLcjQ5CO5WaAetGGXoJsZC98oxAStpxVaqcihY0suNillIxmKXGW3TjIUJyNJZdjeX_QoeEOSCtFnsd9RfB_B15zlGSw1uhizcMtoUHk5FSQ6OtUpE6nVrpJMzoqIM-33vvksFZTa6i3XeLwXPwFC2no76o2A0gWCIo_EQHodDHkeD6SQJHgYJH98PAmBVVf0CKQP--A)
 
 ### Main Game & Board
-classDiagram
-    SinglePlayerGame <|-- Menu
-
-    
-    class Menu{
-      Open()
-      Update()
-      Render()
-      Leave()
-    }
-    class SinglePlayerGame{
-      GameBoard boards[0]
-    }
-    class GameBoard{
-        bool canUpdate = false;
-        bool canRender = true;
-        int[] input = [];
-        int[] inputOneShots = [];
-
-        int gameScore = 0;
-        int gameComboMultiplier = 0;
-
-        JSON gameFileData;
-        int numberOfNotes = 0;
-        int gameTotalTiles = 0;
-        int gameMissedTiles = 0;
-        bool gameComplete = false;
-
-        Start()
-        ProcessInput(array_of_keys)
-        Update(x,y,w,h,gameAudio)
-        Render()
-        Exit()
-
-        LoadFileData(json)
-        Ready()
-        Completed()
-        MarkReady()
-    }
+[![](https://mermaid.ink/img/pako:eNp1k99P2zAQx_8Vy09FCvTXVqBsD9tg0yZK0QJPTYWu8SXxcOzIdhhR1_99dtq0aSl9cHN3n6_vfD4vaawY0jGNBRhzzSHVkEeSuF_IZSrwXkCF-gfkSD79Oz0lE5RlJNfEeq2VtX-5dhAyLVB2ThrrsWBgcWf_RslQ7-xbhJdteNXe9LCEbQJvfFWgGVn41cx68yPyLbXVEccrQWKQ66LIZ5KAMHj1FlhX6QCry3acSzubu7UorQvO5sdDU4lhpqxpkD2IpK6wMFba5-9dvY19U_lCTUpheSF4XURvb49f4fSuBr9zgddg4WAPWeYL1NPkTlk07-R4UBbEg9O_B0y4MciOEXWLNnUWAvfauKNCC9rubpmQe61iNOan708HtIbqSSVPz1iZFrQZltegCv4GWeCzfCkZVy3kcH4IuXnldaad51YBa5rT-WOU3NMDq9ry5his7ZyAft4jVzSgOeocOHPvpR6piNoMc4zo2H0yTMBdWUQj6VEorQorGdOxH6CAalWmGR3XfQpoWR9z894aBBm3Sk82D9L_NeBNHdmqhTsdOnNJbVV4OOXGOjhWMuGp95daOHdmbWHG3a4Pn6XcZuXiLFZ513CWucvJXi5H3dFgdAGDIY7Oh_BxOGTxon95kQw-9BN23usPgK5Wq_-VtEO2?type=png)](https://mermaid.live/edit#pako:eNp1k99P2zAQx_8Vy09FCvTXVqBsD9tg0yZK0QJPTYWu8SXxcOzIdhhR1_99dtq0aSl9cHN3n6_vfD4vaawY0jGNBRhzzSHVkEeSuF_IZSrwXkCF-gfkSD79Oz0lE5RlJNfEeq2VtX-5dhAyLVB2ThrrsWBgcWf_RslQ7-xbhJdteNXe9LCEbQJvfFWgGVn41cx68yPyLbXVEccrQWKQ66LIZ5KAMHj1FlhX6QCry3acSzubu7UorQvO5sdDU4lhpqxpkD2IpK6wMFba5-9dvY19U_lCTUpheSF4XURvb49f4fSuBr9zgddg4WAPWeYL1NPkTlk07-R4UBbEg9O_B0y4MciOEXWLNnUWAvfauKNCC9rubpmQe61iNOan708HtIbqSSVPz1iZFrQZltegCv4GWeCzfCkZVy3kcH4IuXnldaad51YBa5rT-WOU3NMDq9ry5his7ZyAft4jVzSgOeocOHPvpR6piNoMc4zo2H0yTMBdWUQj6VEorQorGdOxH6CAalWmGR3XfQpoWR9z894aBBm3Sk82D9L_NeBNHdmqhTsdOnNJbVV4OOXGOjhWMuGp95daOHdmbWHG3a4Pn6XcZuXiLFZ513CWucvJXi5H3dFgdAGDIY7Oh_BxOGTxon95kQw-9BN23usPgK5Wq_-VtEO2)
