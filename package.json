@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node webserver.js"
+    "dev": "node webserver.js",
+    "test":"python3.12 testing/basic-tests.py"
   },
   "author": "",
   "license": "ISC",
