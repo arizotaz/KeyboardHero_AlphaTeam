@@ -1,0 +1,160 @@
+<style>
+    .menuContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background-image: url('/assets/game/keyboardhero/textures/game_background.png');
+        background-position: center;
+        background-size: cover;
+    }
+
+    .topBar {
+        width: 100%;
+        height: 50px;
+        background-color: rgba(40, 40, 40, 0.7);
+        backdrop-filter: blur(4px);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+        padding: 5px;
+    }
+
+    .mainPageContent {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        background-color: rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+    }
+
+    .settingsShortcut {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+
+    .settingsShortcut img {
+        height: 40px;
+        filter: invert();
+        cursor: pointer;
+    }
+
+    .scores {
+        width: 100%;
+        max-width: 800px;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(20px);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+        padding: 20px;
+        border-radius: 20px;
+        color: #fff;
+    }
+
+    .gameStats {
+        color: #fff;
+        padding: 30px 0px 0px 0px;
+        font-size: 22px;
+    }
+
+    .scorePlacement {
+        font-size: 30px;
+        padding-bottom: 10px;
+    }
+
+    .gamescore {}
+
+    .missednotes {}
+
+    .NeonButtons {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .NeonButtons button {
+        width: 100%;
+        height: 60px;
+        border: 6px solid;
+        border-image-slice: 1;
+        border-image-source: linear-gradient(to left, #5d5f8f, #9c1f8a);
+        background-color: rgba(255, 255, 255, 1);
+        color: #000;
+        font-size: 26px;
+        position: relative;
+        transition: all ease 0.5s;
+        cursor: pointer;
+    }
+
+    .NeonButtons button:hover {
+        transform: scale(1.05);
+    }
+
+    .NeonButtons .shadow {
+        margin: 15px auto;
+        transform-style: preserve-3d;
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: 350px;
+        padding: 5px;
+        background-color: rgba(0, 0, 0, 0);
+        border-radius: 10px;
+    }
+
+    .NeonButtons .shadow::before {
+        content: "";
+        box-sizing: content-box;
+        padding: 10px;
+        position: absolute;
+        inset: -5px;
+        transform: translate3d(10px, 10px, -1px);
+        /* (X, Y, Z) */
+        background: linear-gradient(to left, #5d5f8f, #9c1f8a);
+        filter: blur(20px);
+        border-radius: 10px;
+    }
+
+    @media screen and (max-width: 1100px) {}
+
+    @media screen and (max-width: 800px) {
+        .mainPageContent {
+            flex-direction: column;
+        }
+
+
+    }
+</style>
+<div class="menuContainer">
+    <div class="topBar">
+        <div class="settingsShortcut"><img onclick="MenuManager.GoTo(MENU_SETTINGS);"
+                src="/assets/game/keyboardhero/textures/gear.png" alt=""></div>
+    </div>
+    <div class="mainPageContent">
+        <div class="scores">
+            scores will load here
+        </div>
+        <div class="gameStats">
+            <div class="scorePlacement">You placed <a id="scoreRank">NA</a> in the ranking for this song</div>
+            <div class="gamescore">You got a total of <a id="score"></a> points</div>
+            <div class="missednotes">You missed <a id="missednotes"></a> out of <a id="totalnotes"></a> notes</div>
+            <div class="maxCombo">You achived a max combo of X<a id="maxCombo"></a></div>
+            
+        </div>
+        <div class="NeonButtons">
+            <div class="shadow"><button onclick="MenuManager.GoTo(MENU_MAIN);">Go Home</button></div>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    function GatherDataForGameCompletedMenu() {
+        document.getElementById('score').innerHTML = boards[0].Score();
+        document.getElementById('missednotes').innerHTML = boards[0].MissedNotes();
+        document.getElementById('totalnotes').innerHTML = boards[0].TotalNotes();
+        document.getElementById('maxCombo').innerHTML = boards[0].MaxReachedCombo();
+
+    }
+</script>

@@ -13,6 +13,11 @@
     "cors": "^2.8.5",
     "express": "^4.21.0",
     "fs": "^0.0.1-security",
-    "http": "^0.0.1-security"
+    "http": "^0.0.1-security",
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mysql2": "^3.11.3"
   }
 }

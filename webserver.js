@@ -11,6 +11,19 @@ var cors = require('cors');
 const { exec } = require("child_process");
 // File System Library
 const fs = require('fs');
+//database functions
+const { getScores } = require('./client/database.js');
+
+//api to get scores using for testing
+app.get('/scores', async (req, res) => {
+    try {
+        const scores = await getScores(); // Call the async function to get scores
+        res.json(scores); // Send the scores as JSON to the client
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching scores' });
+    }
+});
 
 // Web Server Port
 var port = 32787;
@@ -30,6 +43,20 @@ app.use(function (req, res, next) {
 // The root index file
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/client/index.html');
+});
+
+app.get('/song/upload', function (req, res) {
+    // Save the file to the server
+
+    // Process audio on file
+
+    // Convert file to base64
+
+    // Create json file
+
+    // Send Files
+    let fileLocation = "";
+    res.sendFile(__dirname + fileLocation);
 });
 
 // Allow a folder to be viewed in the web-server

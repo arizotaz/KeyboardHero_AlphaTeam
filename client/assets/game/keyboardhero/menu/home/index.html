@@ -1,0 +1,158 @@
+<style>
+    .menuContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background-image: url('/assets/game/keyboardhero/textures/game_background.png');
+        background-position: center;
+        background-size: cover;
+    }
+
+    .topBar {
+        width: 100%;
+        height: 50px;
+        background-color: rgba(40, 40, 40, 0.7);
+        backdrop-filter: blur(4px);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+        padding: 5px;
+    }
+
+    .mainPageContent {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        background-color: rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        text-align: center;
+    }
+
+    .HomePageLogo {
+        flex: 1;
+    }
+
+    .HomePageLogo img {
+        width: 100%;
+        max-width: 700px;
+        filter: drop-shadow(0px 0px 15px rgba(255, 255, 255, 1));
+        margin: 0 auto;
+    }
+
+    .HomePageLogo .hori {
+        display: none;
+    }
+
+    .HomeNavigationButtons {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .HomeNavigationButtons button {
+        width: 100%;
+        height: 60px;
+        border: 6px solid;
+        border-image-slice: 1;
+        border-image-source: linear-gradient(to left, #5d5f8f, #9c1f8a);
+        background-color: rgba(255, 255, 255, 1);
+        color: #000;
+        font-size: 26px;
+        position: relative;
+        transition: all ease 0.5s;
+        cursor: pointer;
+    }
+
+    .HomeNavigationButtons button:hover {
+        transform: scale(1.05);
+    }
+
+    .HomeNavigationButtons .shadow {
+        margin: 15px auto;
+        transform-style: preserve-3d;
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: 350px;
+        padding: 5px;
+        background-color: rgba(0, 0, 0, 0);
+        border-radius: 10px;
+    }
+
+    .HomeNavigationButtons .shadow::before {
+        content: "";
+        box-sizing: content-box;
+        padding: 10px;
+        position: absolute;
+        inset: -5px;
+        transform: translate3d(10px, 10px, -1px);
+        /* (X, Y, Z) */
+        background: linear-gradient(to left, #5d5f8f, #9c1f8a);
+        filter: blur(20px);
+        border-radius: 10px;
+    }
+
+    .settingsShortcut {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+
+    .settingsShortcut img {
+        height: 40px;
+        filter: invert();
+        cursor: pointer;
+    }
+
+
+
+    @media screen and (max-width: 1100px) {
+        .HomeNavigationButtons {
+            max-width: 400px;
+        }
+    }
+
+    @media screen and (max-width: 800px) {
+        .mainPageContent {
+            flex-direction: column;
+        }
+
+        .HomePageLogo {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+
+        .HomePageLogo .vert {
+            display: none;
+        }
+
+        .HomePageLogo .hori {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+</style>
+<div class="menuContainer">
+    <div class="topBar">
+        <div class="settingsShortcut"><img onclick="MenuManager.GoTo(MENU_SETTINGS);"
+                src="/assets/game/keyboardhero/textures/gear.png" alt=""></div>
+    </div>
+    <div class="mainPageContent">
+        <div class="HomePageLogo">
+            <img class=vert src="/assets/game/game_logo_vert.png" alt="">
+            <img class=hori src="/assets/game/game_logo.png" alt="">
+
+        </div>
+        <div class="HomeNavigationButtons">
+            <div class="shadow"><button onclick="MenuManager.GoTo(MENU_SINGLEPLAYER);">Level Select</button></div>
+            <div class="shadow"><button onclick="MenuManager.GoTo(MENU_SETTINGS);">Settings</button></div>
+            <div class="shadow"><button onclick="MenuManager.GoTo(MENU_GAME);">Multiplayer</button></div>
+            <div class="shadow"><button onclick="MenuManager.GoTo(MENU_GAME);">About</button></div>
+        </div>
+    </div>
+</div>

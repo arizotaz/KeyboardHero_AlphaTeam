@@ -2,7 +2,7 @@ body, html {
     height: 100%;
     margin: 0;
     background: linear-gradient(to bottom, #f5f5dc, #f0e68c); /* Cream gradient */
-    background-image: url('../game/menus/maxresdefault.jpg'), url('https://www.transparenttextures.com/patterns/crumpled-paper-2.png'); /* Background image and texture */
+    background-image: url('/assets/game/keyboardhero/menu/home/f9c8d8fbdf505820667e82f8f48b6a04.png'), url('/assets/game/keyboardhero/textures/game_background.png'); /* Background image and texture */
     background-size: cover, cover; /* Ensures both texture and image cover the full background */
     background-blend-mode: multiply; /* Blends the background image with the texture */
     opacity: 1;
