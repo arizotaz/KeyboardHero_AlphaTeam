@@ -84,6 +84,7 @@ function IsMobile() {
 
 
 // Exporting the functions for testing
+/*
 module.exports = {
     ApplicationMain,
     ApplicationStart,
@@ -92,3 +93,4 @@ module.exports = {
     touchStarted, // Exporting touchStarted if you plan to test it
     keyPressed
 };
+*/
