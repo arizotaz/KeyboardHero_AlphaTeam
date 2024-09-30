@@ -21,6 +21,7 @@ class GameBoard {
         this.gameTotalTiles = 0;
         this.gameMissedTiles = 0;
         this.gameComplete = false;
+        this.maxReachedCombo = 0;
     }
     // When the board is created, must be manually called
     Start() {
@@ -118,7 +119,10 @@ class GameBoard {
             }
         }
 
-
+        // Get Max Reached Combo
+        if (this.gameComboMultiplier > this.maxReachedCombo) {
+            this.maxReachedCombo = this.gameComboMultiplier;
+        }
 
         // Game is done when audio is completed
         this.gameComplete = GetAudioCompletion(this.gameAudio) >= 1;
@@ -307,6 +311,23 @@ class GameBoard {
     }
 
     Completed() { return this.gameComplete; }
+
+    // Returns Score
+    Score() {
+        return this.gameScore;
+    }
+    // Returns total tiles
+    TotalNotes() {
+        return this.gameTotalTiles;
+    }
+    // Returns missed tiles
+    MissedNotes() {
+        return this.gameMissedTiles;
+    }
+    // Returns max reached combo
+    MaxReachedCombo() {
+        return this.maxReachedCombo;
+    }
 
     // Call when destroyed
     Exit() {
