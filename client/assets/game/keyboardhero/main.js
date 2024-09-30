@@ -80,3 +80,15 @@ function keyPressed() { mobile = false; }
 function IsMobile() {
     return mobile;
 }
+
+
+
+// Exporting the functions for testing
+module.exports = {
+    ApplicationMain,
+    ApplicationStart,
+    ApplicationLoop,
+    IsMobile,
+    touchStarted, // Exporting touchStarted if you plan to test it
+    keyPressed
+};
