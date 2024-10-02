@@ -16,7 +16,7 @@
 
 class UploadSongsMenu extends Menu {
     Open() {
-        $.get("/assets/game/keyboardhero/menu/settings/index.html", function( data ) {
+        $.get("/assets/game/keyboardhero/menu/uploads/index.html", function( data ) {
             $( "#uploadSongsMenuContainer" ).append( data );
             document.getElementById('uploadSongsMenu').style.display = 'block';
         });
