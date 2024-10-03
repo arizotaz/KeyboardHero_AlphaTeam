@@ -27,7 +27,7 @@ Once you know the port, you can access the application with http://localhost:por
 
 The default is [http://localhost:32787/](http://localhost:32787/)
 
-##Database
+## Database
 Download the mysql server, on mac you can install it with homebrew by by typing this command into your terminal:
 ```sh
 brew install mysql
