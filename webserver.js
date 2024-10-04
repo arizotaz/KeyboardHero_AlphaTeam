@@ -62,12 +62,15 @@ const upload = multer({ storage: storage });
 // upload and process files
 app.post('/newSongUpload', upload.single('newSong'), (req, res) => {
 
-    // run python script
+    // run python script (pass file name/location as argument?)
 
     res.json({ 
         message: 'File uploaded successfully!',
         filename: req.file.originalname 
     });
+
+    // delete uploaded mp3
+
 });
 
 // Allow a folder to be viewed in the web-server
