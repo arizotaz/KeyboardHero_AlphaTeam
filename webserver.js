@@ -13,6 +13,8 @@ const { exec } = require("child_process");
 const fs = require('fs');
 //database functions
 const { getScores } = require('./client/database.js');
+// multer for file uploads
+const multer = require('multer');
 
 //api to get scores using for testing
 app.get('/scores', async (req, res) => {
@@ -32,9 +34,8 @@ if (fs.existsSync(__dirname + "/port.txt")) port = parseInt(fs.readFileSync(__di
 
 // Sets the Cors access policy
 app.use(function (req, res, next) {
-
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET');
+    res.setHeader('Access-Control-Allow-Methods', 'GET', 'POST');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
@@ -45,18 +46,28 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/client/index.html');
 });
 
-app.get('/song/upload', function (req, res) {
-    // Save the file to the server
+// storage for uploaded files
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, __dirname + '/tempSongUploads'); // folder to hold mp3s
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname); // ensures use of original file name
+    }
+});
 
-    // Process audio on file
+// create multer object
+const upload = multer({ storage: storage });
 
-    // Convert file to base64
+// upload and process files
+app.post('/newSongUpload', upload.single('newSong'), (req, res) => {
 
-    // Create json file
+    // run python script
 
-    // Send Files
-    let fileLocation = "";
-    res.sendFile(__dirname + fileLocation);
+    res.json({ 
+        message: 'File uploaded successfully!',
+        filename: req.file.originalname 
+    });
 });
 
 // Allow a folder to be viewed in the web-server
