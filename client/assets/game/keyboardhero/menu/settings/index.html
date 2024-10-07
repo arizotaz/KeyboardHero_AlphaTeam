@@ -1,0 +1,221 @@
+<style>
+    .menuContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background-image: url('/assets/game/keyboardhero/textures/game_background.png');
+        background-position: center;
+        background-size: cover;
+    }
+
+    .topBar {
+        width: 100%;
+        height: 50px;
+        background-color: rgba(40, 40, 40, 0.7);
+        backdrop-filter: blur(4px);
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+        padding: 5px;
+    }
+
+    .mainPageContent {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        background-color: rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        text-align: center;
+    }
+
+    .mainSettingsPageContent button {
+        width: 100%;
+        height: 60px;
+        border: 6px solid;
+        border-image-slice: 1;
+        border-image-source: linear-gradient(to left, #5d5f8f, #9c1f8a);
+        background-color: rgba(255, 255, 255, 1);
+        color: #000;
+        font-size: 26px;
+        position: relative;
+        transition: all ease 0.5s;
+        cursor: pointer;
+    }
+
+    .mainSettingsPageContent button:hover {
+        transform: scale(1.05);
+    }
+
+    .mainSettingsPageContent .shadow {
+        margin: 15px auto;
+        transform-style: preserve-3d;
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: 350px;
+        padding: 5px;
+        background-color: rgba(0, 0, 0, 0);
+        border-radius: 10px;
+    }
+
+    .mainSettingsPageContent .shadow::before {
+        content: "";
+        box-sizing: content-box;
+        padding: 10px;
+        position: absolute;
+        inset: -5px;
+        transform: translate3d(10px, 10px, -1px);
+        /* (X, Y, Z) */
+        background: linear-gradient(to left, #5d5f8f, #9c1f8a);
+        filter: blur(20px);
+        border-radius: 10px;
+    }
+
+    .backShortcut {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+    }
+
+    .backShortcut img {
+        height: 40px;
+        filter: invert();
+        cursor: pointer;
+    }
+
+    .slidecontainer {
+        width: 100%;
+    }
+
+    .cool_slider {
+        -webkit-appearance: none;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+
+        width: 100%;
+        height: 20px;
+        border: 6px solid;
+        border-image-slice: 1;
+        border-image-source: linear-gradient(to left, #5d5f8f, #9c1f8a);
+        background-color: rgba(255, 255, 255, 1);
+        color: #000;
+        font-size: 26px;
+        position: relative;
+        transition: all ease 0.5s;
+        cursor: pointer;
+        margin-top: 5px;
+    }
+
+    .cool_slider:hover {
+        opacity: 1;
+    }
+
+    .cool_slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        background: linear-gradient(to left, #7779c1, #da2dc0);
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .cool_slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        background: #04AA6D;
+        cursor: pointer;
+    }
+
+    .mainSettingsPageContent h3 {
+        color: #fff;
+        margin-bottom: 0px;
+        margin-top: 50px;
+    }
+
+    #controlKeys {
+        display: flex;
+        flex-direction: row;
+    }
+
+    @media screen and (max-width: 1100px) {}
+
+    @media screen and (max-width: 800px) {
+        .mainPageContent {
+            flex-direction: column;
+        }
+    }
+</style>
+<div class="menuContainer">
+    <div class="topBar">
+        <div class="backShortcut"><img onclick="MenuManager.GoBack();"
+                src="/assets/game/keyboardhero/textures/button_back.png" alt=""></div>
+    </div>
+    <div class="mainSettingsPageContent">
+
+        <h3>Game Volume</h3>
+        <div class="shadow" style="width:100vw;max-width: 800px;"><input type="range" id="gameVolume"
+                class="cool_slider" min="0" max="100"></div>
+        <h3>Menu Volume</h3>
+        <div class="shadow" style="width:100vw;max-width: 800px;"><input type="range" id="menuVolume"
+                class="cool_slider" min="0" max="100"></div>
+        <div class="controlChanger">
+            <select id="columnWidth" onchange="LoadKeysToControlChanger(this.value)">
+                <option value="1">1 - Lane</option>
+                <option value="2">2 - Lane</option>
+                <option value="4">4 - Lane</option>
+                <option value="5">5 - Lane</option>
+            </select>
+            <div id="controlKeys">
+
+            </div>
+        </div>
+        <div class="shadow"><button onclick="SaveSettingsMenuChanges()">Save</button></div>
+
+    </div>
+</div>
+<script>
+    function LoadKeysToControlChanger(laneWidth) {
+        let keyArray = JSON.parse(Settings.GetKey(Setting_KeyArray))[laneWidth - 1];
+        let controlKeys = document.getElementById("controlKeys");
+        controlKeys.innerHTML = "";
+        for (let i = 0; i < laneWidth; ++i) {
+            let button = document.createElement("button");
+            button.setAttribute("lanewidth", laneWidth);
+            button.setAttribute("keycode", keyArray[i]);
+            button.setAttribute("index", i);
+
+            button.setAttribute("onclick", "PrompKeyCodeOption(this)");
+            button.innerHTML = String.fromCharCode(keyArray[i]);
+            controlKeys.appendChild(button);
+        }
+    }
+    function PrompKeyCodeOption(elm) {
+        elm.classList.add("KEYCODECHANGE");
+        elm.innerHTML = "...";
+    }
+    function SaveSettingsMenuChanges() {
+        Settings.SetKey(Setting_GameVolume, document.getElementById('gameVolume').value / 100);
+        Settings.SetKey(Setting_MenuVolume, document.getElementById('menuVolume').value / 100);
+        SaveSettings();
+    }
+    $(function () {
+        $(document).keyup(function (e) {
+            let elms = document.getElementsByClassName("KEYCODECHANGE");
+            for (let i = 0; i < elms.length; ++i) {
+                elms[i].setAttribute("keycode",e.keyCode);
+                elms[i].innerHTML = String.fromCharCode(e.keyCode);
+
+                let inputList = JSON.parse(Settings.GetKey(Setting_KeyArray));
+                inputList[elms[i].getAttribute("lanewidth")-1][elms[i].getAttribute("index")] = parseInt(elms[i].getAttribute("keycode"));
+                Settings.SetKey(Setting_KeyArray, JSON.stringify(inputList));
+
+                elms[i].classList.remove("KEYCODECHANGE");
+            }
+        });
+    });
+</script>

@@ -180,9 +180,9 @@ class GameBoard {
             fill(255);
             textAlign(CENTER, CENTER);
             textSize(24);  // You can adjust the size as needed
-            /*text(String.fromCharCode(game_input_keys[i]), -gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
-                windowHeight / 2 - noteRowSize / 2
-            );*/
+            text(String.fromCharCode(this.input_keys[i]), this.originX - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
+                this.originY + this.gameHeight / 2 - noteRowSize / 2
+            );
         }
     }
 
@@ -327,6 +327,11 @@ class GameBoard {
     // Returns max reached combo
     MaxReachedCombo() {
         return this.maxReachedCombo;
+    }
+
+    // Width of column
+    ColumnWidth() {
+        return this.numberOfNotes;
     }
 
     // Call when destroyed

@@ -13,6 +13,8 @@ let singlePlayerStarted = false;
 // Game Board render origin
 let spOFFX = 0, spOFFY = 0;
 
+let game_input_keys;
+
 // Single Player Menu Object
 class SinglePlayerGame extends Menu {
     Open() {
@@ -23,6 +25,9 @@ class SinglePlayerGame extends Menu {
         singlePlayerStarted = false;
 
         // Clear the board object and create a new one at index 0
+        
+        gameAudio = null;
+
         boards = [];
         boards[0] = new GameBoard();
 
@@ -41,7 +46,7 @@ class SinglePlayerGame extends Menu {
                     gameAudio = new Audio(gameFileData.data);
 
                     // Get Game Input Keys
-                    let game_input_keys = JSON.parse(Settings.GetKey(Setting_KeyArray));
+                    game_input_keys = JSON.parse(Settings.GetKey(Setting_KeyArray));
 
                     // Load data to board
                     boards[0].LoadFileData(gameFileData,game_input_keys);
@@ -78,7 +83,8 @@ class SinglePlayerGame extends Menu {
         if (gameWidth > 500) gameWidth = 500;
 
         // Process Input and pass keyboard array
-        boards[0].ProcessInput(JSON.parse(Settings.GetKey(Setting_KeyArray)));
+        if (game_input_keys != null && game_input_keys.length > 0)
+        boards[0].ProcessInput(game_input_keys[boards[0].ColumnWidth()-1]);
 
         // Run game update loop
         boards[0].Update(spOFFX, spOFFY, gameWidth, windowHeight,gameAudio);

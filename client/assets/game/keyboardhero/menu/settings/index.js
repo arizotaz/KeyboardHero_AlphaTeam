@@ -19,9 +19,16 @@ class SettingsMenu extends Menu {
         $.get("/assets/game/keyboardhero/menu/settings/index.html", function( data ) {
             $( "#settingsMenuContainer" ).append( data );
             document.getElementById('settingsMenu').style.display = 'block';
+
+            document.getElementById('gameVolume').value = Settings.GetKey(Setting_GameVolume)*100;
+            document.getElementById('menuVolume').value = Settings.GetKey(Setting_MenuVolume)*100;
+            document.getElementById('columnWidth').value = 4;
+            LoadKeysToControlChanger(4);
         });
     }
     Leave() {
+        SaveSettingsMenuChanges();
+
         $( "#settingsMenuContainer" ).remove();
         $( "#settingsMenu" ).append("<div id=\"settingsMenuContainer\"></div>");
         document.getElementById('settingsMenu').style.display = 'none';

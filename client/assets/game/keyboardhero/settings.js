@@ -33,14 +33,14 @@
 //# not exist already
 
 // Default keys
-const Setting_KeyArray      = "input.keys"; // JSON TEXT ARRAY OF KEYCODES
+const Setting_KeyArray      = "input.keys.types"; // JSON TEXT ARRAY OF KEYCODES
 const Setting_GameVolume    = "sound.game"; // Integer [0,1]
 const Setting_MenuVolume    = "sound.menu"; // Integer [0,1]
 
 
 // Sets values to their defaults
 function SetDefaultOptions() {
-    if (!Settings.KeyExists(Setting_KeyArray))  { Settings.SetKey(Setting_KeyArray,JSON.stringify([68,70,74,75,76])) }
+    if (!Settings.KeyExists(Setting_KeyArray))  { Settings.SetKey(Setting_KeyArray,JSON.stringify([[32],[70,74],[70,74],[68,70,74,75],[68,70,74,75,76]])); }
     if (!Settings.KeyExists(Setting_GameVolume)){ Settings.SetKey(Setting_GameVolume,1) }
     if (!Settings.KeyExists(Setting_MenuVolume)){ Settings.SetKey(Setting_MenuVolume,1) }
     SaveSettings();
