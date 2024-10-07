@@ -55,7 +55,6 @@ def test_keyboardinputs(driver, inputs = [68,70,74,75,76]):
             #Print if input was registered by game.
             if returnedKey:
                 print("Key Registered")
-                #Refresh to return to main menu, forcing via GoTo to return to the main menu can cause bugs
                 driver.refresh()
                 return 1
     else:
@@ -79,14 +78,15 @@ def test_settings(driver):
 
     # Change to a set of test values
     print("Setting new ones and saving...")
-    driver.execute_script("Settings.SetKey(Setting_KeyArray,JSON.stringify([49,50,51,52,53]))") #Set
+   # driver.execute_script("Settings.SetKey(Setting_KeyArray,JSON.stringify([49,50,51,52,53]))") #Set, old
+    driver.execute_script("Settings.SetKey(Setting_KeyArray,JSON.stringify([[32],[70,74],[70,74],[49,50,52,53],[49,50,51,52,53]]))") #Set
     driver.execute_script("localStorage.setItem(\"game.settings\", Settings.GetAsText())") #Save
 
 
     print("Inputs are now " + driver.execute_script("return Settings.GetKey(Setting_KeyArray)"))
 
     # Due to how Selenium works, profiles are wiped each time and changing it requires screwing around with paths,
-    # opting to test by refreshing to keep tests functional regardless of system
+    # Opting to test by refreshing to keep tests functional regardless of system
     driver.refresh()
 
     # Test functionality of the settings
@@ -97,7 +97,8 @@ def test_settings(driver):
         sleep(2)
         #Redundant at the moment, for future testing
         print("Resetting back to default values...")
-        driver.execute_script("Settings.SetKey(Setting_KeyArray,JSON.stringify([68,70,74,75,76]))") #Set
+        # driver.execute_script("Settings.SetKey(Setting_KeyArray,JSON.stringify([68,70,74,75,76]))") #Set
+        driver.execute_script("Settings.SetKey(Setting_KeyArray,JSON.stringify([[32],[70,74],[70,74],[68,70,74,75],[68,70,74,75,76]]))") #Set
         driver.execute_script("localStorage.setItem(\"game.settings\", Settings.GetAsText())") #Save
         print("Current inputs are now " + driver.execute_script("return Settings.GetKey(Setting_KeyArray)"))
         return 1
