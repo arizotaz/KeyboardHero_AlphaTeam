@@ -16,14 +16,22 @@
 
 class AboutMenu extends Menu {
     Open() {
-        $.get("/assets/game/keyboardhero/menu/about/index.html", function( data ) {
-            $( "#aboutMenuContainer" ).append( data );
+        $.get("/assets/game/keyboardhero/menu/about/index.html", function(data) {
+            console.log(data); // Log the fetched content
+            $("#aboutMenuContainer").append(data);
             document.getElementById('aboutMenu').style.display = 'block';
+
+            // Bind the click event for the back button after content is loaded
+            document.querySelector('.backShortcut').onclick = function() {
+                // Call a method to go back, or use MenuManager to go back
+                MenuManager.GoBack(); // Assuming MenuManager has a GoBack method
+            };
         });
     }
+    
     Leave() {
-        $( "#aboutMenuContainer" ).remove();
-        $( "#aboutMenu" ).append("<div id=\"aboutMenuContainer\"></div>");
+        $("#aboutMenuContainer").remove();
+        $("#aboutMenu").append("<div id='aboutMenuContainer'></div>");
         document.getElementById('aboutMenu').style.display = 'none';
     }
 }
