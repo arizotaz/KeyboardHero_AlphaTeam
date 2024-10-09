@@ -55,18 +55,22 @@ function MakeAndRunTests() {
                 console.log("📋 Menu Manager reports " + MenuManager.GetMenuID() + ", going back a menu.")
                 if (MenuManager.GetMenuID() != MENU_MAIN) throw new Error('Menu Manager ID did not change');
                 MenuManager.GoBack();
+                await waitDelay(500);
 
                 console.log("📋 Menu Manager reports " + MenuManager.GetMenuID() + ", going back a menu.")
                 if (MenuManager.GetMenuID() != MENU_COMPLETE_SINGLEPLAYER) throw new Error('Menu Manager ID did not change');
                 MenuManager.GoBack();
+                await waitDelay(500);
                 
                 console.log("📋 Menu Manager reports " + MenuManager.GetMenuID() + ", going back a menu.")
                 if (MenuManager.GetMenuID() != MENU_SINGLEPLAYER) throw new Error('Menu Manager ID did not change');
                 MenuManager.GoBack();
+                await waitDelay(500);
                 
                 console.log("📋 Menu Manager reports " + MenuManager.GetMenuID() + ", going back a menu.")
                 if (MenuManager.GetMenuID() != MENU_SETTINGS) throw new Error('Menu Manager ID did not change');
                 MenuManager.GoBack();
+                await waitDelay(500);
                 
                 return 0;
             } catch (e) {

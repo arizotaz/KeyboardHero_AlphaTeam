@@ -38,7 +38,7 @@ class UIManager {
             this.lastMenu = this.currentMenu;
             this.menus[this.currentMenu].Open();
         }
-        
+
         this.menus[this.currentMenu].Update();
     }
     // Calls the render function of the current menu
@@ -56,7 +56,7 @@ class UIManager {
     // Goes to the last menu in the history if available
     GoBack() {
         if (this.history[0] == null) return;
-        this.currentMenu = this.history[0];
+        this.changeToMenu = this.history[0];
         this.history.splice(0,1);
     }
 

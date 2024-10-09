@@ -1,0 +1,99 @@
+.topBar {
+    width: 100%;
+    height: 50px;
+    background-color: rgba(40, 40, 40, 0.7);
+    backdrop-filter: blur(4px);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+    padding: 5px;
+}
+
+.neonButtons button {
+    width: 100%;
+    height: 60px;
+    border: 6px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to left, #5d5f8f, #9c1f8a);
+    background-color: rgba(255, 255, 255, 1);
+    color: #000;
+    font-size: 26px;
+    position: relative;
+    transition: all ease 0.5s;
+    cursor: pointer;
+}
+
+.neonButtons button:hover {
+    transform: scale(1.05);
+}
+
+.neonButtons .shadow {
+    margin: 15px auto;
+    transform-style: preserve-3d;
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 10px;
+}
+
+.neonButtons .shadow::before {
+    content: "";
+    box-sizing: content-box;
+    padding: 10px;
+    position: absolute;
+    inset: -5px;
+    transform: translate3d(10px, 10px, -1px);
+    /* (X, Y, Z) */
+    background: linear-gradient(to left, #5d5f8f, #9c1f8a);
+    filter: blur(20px);
+    border-radius: 10px;
+}
+
+.neonSlider {
+    -webkit-appearance: none;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+
+    width: 100%;
+    height: 20px;
+    border: 6px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to left, #5d5f8f, #9c1f8a);
+    background-color: rgba(255, 255, 255, 1);
+    color: #000;
+    font-size: 26px;
+    position: relative;
+    transition: all ease 0.5s;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.neonSlider:hover {
+    opacity: 1;
+}
+
+.neonSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: linear-gradient(to left, #7779c1, #da2dc0);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.neonSlider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #04AA6D;
+    cursor: pointer;
+}
+
+@-moz-document url-prefix() {
+    .neonButtons button:hover {
+        transform: none;
+    }
+}
