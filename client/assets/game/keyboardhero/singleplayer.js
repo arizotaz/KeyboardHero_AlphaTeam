@@ -114,6 +114,8 @@ class SinglePlayerGame extends Menu {
         document.getElementsByTagName("canvas")[0].style.position = "";
         // Pause audio if it's playing
         gameAudio.pause();
+        // Clear the screen
+        clear();
     }
 }
 

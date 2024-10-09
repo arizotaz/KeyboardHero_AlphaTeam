@@ -20,12 +20,6 @@ class AboutMenu extends Menu {
             console.log(data); // Log the fetched content
             $("#aboutMenuContainer").append(data);
             document.getElementById('aboutMenu').style.display = 'block';
-
-            // Bind the click event for the back button after content is loaded
-            document.querySelector('.backShortcut').onclick = function() {
-                // Call a method to go back, or use MenuManager to go back
-                MenuManager.GoBack(); // Assuming MenuManager has a GoBack method
-            };
         });
     }
     

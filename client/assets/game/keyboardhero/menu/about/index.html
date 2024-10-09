@@ -1,85 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Keyboard Hero</title>
-    <style>
-        body {
-            font-family: 'Courier New', Courier, monospace;
-            background: linear-gradient(to bottom right, #6a1b9a, #d5006d);
-            color: #ffffff;
-            text-align: center;
-            padding: 40px;
-            margin: 0;
-        }
-        h1 {
-            color: #ffea00;
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-        }
-        h2 {
-            color: #ffea00;
-            font-size: 2em;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-        }
-        p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin: 10px 0;
-        }
-        .highlight {
-            color: #ff4081;
-            font-weight: bold;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            position: relative;
-        }
-        ul {
-            text-align: left;
-            margin: 0 auto;
-            display: inline-block;
-        }
-        .backShortcut {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            cursor: pointer;
-        }
-        .backShortcut img {
-            height: 40px;
-            filter: invert();
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="backShortcut" onclick="window.location.href='index.html';">
-            <img src="/assets/game/keyboardhero/textures/button_back.png" alt="Back">
-        </div>
-        <h1>About Keyboard Hero</h1>
-        <p><span class="highlight">Keyboard Hero</span> is an entertaining typing game developed by the <span class="highlight">Alpha Team</span> for our Software Engineering final project. Our goal is to create an engaging platform where players can enjoy a Guitar Hero-style experience using pre-uploaded music or their own tracks.</p>
+<style>
+    #aboutMenuContainer {
+        font-family: 'Courier New', Courier, monospace;
+        background: linear-gradient(to bottom right, #6a1b9a, #d5006d);
+        color: #ffffff;
+        text-align: center;
+        padding: 40px;
+        margin: 0;
+        height: 100%;
+    }
 
-        <h2>Instructions on How to Play</h2>
-        <p>Welcome to <span class="highlight">Keyboard Hero</span>! Follow these simple steps to dive into the action:</p>
-        <ul>
-            <li><strong>Get Started:</strong> Begin by clicking "Level Select" to choose a challenge or upload your own song for a personalized experience. Once you're ready, press "Start" to launch the game!</li>
-            <li><strong>Set Your Keys:</strong> Use the default keys, <span class="highlight">DFJK</span>, to play, or customize your own key setup in the settings menu to suit your style.</li>
-            <li><strong>Score Points:</strong> As the keys cascade down the screen, press the corresponding key in the correct column to earn points. Hit multiple keys in succession to build up your score multiplier!</li>
-            <li><strong>Track Your Progress:</strong> Keep an eye on your score and aim to save it to the scoreboard to showcase your skills to the world!</li>
-        </ul>
+    h1 {
+        color: #ffea00;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
 
-        <h2>Project Overview</h2>
-        <p>In the fast-paced world of digital entertainment, <span class="highlight">Keyboard Hero</span> offers a fun way to enjoy music and gaming simultaneously. Players can experience the thrill of a guitar hero-style game while enjoying their favorite tunes or personal tracks.</p>
+    h2 {
+        color: #ffea00;
+        font-size: 2em;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    p {
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin: 10px 0;
+    }
+
+    .highlight {
+        color: #ff4081;
+        font-weight: bold;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        position: relative;
+    }
+
+    ul {
+        text-align: left;
+        margin: 0 auto;
+        display: inline-block;
+    }
+
+    .backShortcut {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        cursor: pointer;
+    }
+
+    .backShortcut img {
+        height: 40px;
+        filter: invert();
+    }
+</style>
+<div class="container">
+    <div class="backShortcut" onclick="MenuManager.GoBack()">
+        <img src="/assets/game/keyboardhero/textures/button_back.png" alt="Back">
     </div>
-</body>
-</html>
+    <h1>About Keyboard Hero</h1>
+    <p><span class="highlight">Keyboard Hero</span> is an entertaining typing game developed by the <span
+            class="highlight">Alpha Team</span> for our Software Engineering final project. Our goal is to create an
+        engaging platform where players can enjoy a Guitar Hero-style experience using pre-uploaded music or their own
+        tracks.</p>
+
+    <h2>Instructions on How to Play</h2>
+    <p>Welcome to <span class="highlight">Keyboard Hero</span>! Follow these simple steps to dive into the action:</p>
+    <ul>
+        <li><strong>Get Started:</strong> Begin by clicking "Level Select" to choose a challenge or upload your own song
+            for a personalized experience. Once you're ready, press "Start" to launch the game!</li>
+        <li><strong>Set Your Keys:</strong> Use the default keys, <span class="highlight">DFJK</span>, to play, or
+            customize your own key setup in the settings menu to suit your style.</li>
+        <li><strong>Score Points:</strong> As the keys cascade down the screen, press the corresponding key in the
+            correct column to earn points. Hit multiple keys in succession to build up your score multiplier!</li>
+        <li><strong>Track Your Progress:</strong> Keep an eye on your score and aim to save it to the scoreboard to
+            showcase your skills to the world!</li>
+    </ul>
+
+    <h2>Project Overview</h2>
+    <p>In the fast-paced world of digital entertainment, <span class="highlight">Keyboard Hero</span> offers a fun way
+        to enjoy music and gaming simultaneously. Players can experience the thrill of a guitar hero-style game while
+        enjoying their favorite tunes or personal tracks.</p>
+</div>
