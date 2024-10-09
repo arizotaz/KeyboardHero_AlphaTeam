@@ -310,6 +310,12 @@ class GameBoard {
         }
     }
 
+    // Completion
+    CompletionPercentage() {
+        return GetAudioCompletion(this.gameAudio);
+    }
+
+    // Is the game completed
     Completed() { return this.gameComplete; }
 
     // Returns Score

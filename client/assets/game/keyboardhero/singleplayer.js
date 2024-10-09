@@ -18,6 +18,9 @@ let game_input_keys;
 // Single Player Menu Object
 class SinglePlayerGame extends Menu {
     Open() {
+
+        LoadSettings();
+
         // Make canvas static
         document.getElementsByTagName("canvas")[0].style.position = "fixed";
 
@@ -63,7 +66,7 @@ class SinglePlayerGame extends Menu {
 
 
         // Run Start
-        boards[0].Start();
+        //boards[0].Start();
     }
     Update() {
 
@@ -83,8 +86,9 @@ class SinglePlayerGame extends Menu {
         if (gameWidth > 500) gameWidth = 500;
 
         // Process Input and pass keyboard array
-        if (game_input_keys != null && game_input_keys.length > 0)
+        if (boards[0] != null && boards[0].ColumnWidth() != null &&  game_input_keys != null && game_input_keys[boards[0].ColumnWidth()-1] != null)
         boards[0].ProcessInput(game_input_keys[boards[0].ColumnWidth()-1]);
+        
 
         // Run game update loop
         boards[0].Update(spOFFX, spOFFY, gameWidth, windowHeight,gameAudio);

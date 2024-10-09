@@ -16,6 +16,7 @@
 // Manages menus and their change
 class UIManager {
     constructor(defaultMenu) {
+        this.changeToMenu = defaultMenu;
         this.currentMenu = defaultMenu;
         this.lastMenu = -1;
         this.menus = [];
@@ -30,11 +31,14 @@ class UIManager {
     leave that screen and update on every frame of the current menu
     */
     Update() {
+        this.currentMenu = this.changeToMenu;
+
         if (this.currentMenu !== this.lastMenu) {
             if (this.menus[this.lastMenu] != null) {this.menus[this.lastMenu].Leave();}
             this.lastMenu = this.currentMenu;
             this.menus[this.currentMenu].Open();
         }
+        
         this.menus[this.currentMenu].Update();
     }
     // Calls the render function of the current menu
@@ -47,7 +51,7 @@ class UIManager {
     }
     // Goes to a menu but does not add it to history
     GoToNoHistory(index) {
-        this.currentMenu = index;
+        this.changeToMenu = index;
     }
     // Goes to the last menu in the history if available
     GoBack() {
@@ -57,7 +61,7 @@ class UIManager {
     }
 
     // Returns the current menu ID
-    GetMenuID() { return currentMenu; }
+    GetMenuID() { return this.currentMenu; }
 
     // Returns the current menu object
     GetMenu() { return this.menus[this.currentMenu]; }
