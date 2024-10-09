@@ -77,6 +77,7 @@ class SinglePlayerGame extends Menu {
                 if (!boards[i].Ready()) playersReady = false;
             if (playersReady && gameAudio != null) {
                 singlePlayerStarted = true;
+                gameAudio.volume = Settings.GetKey(Setting_GameVolume);
                 gameAudio.play();
             }
         }
