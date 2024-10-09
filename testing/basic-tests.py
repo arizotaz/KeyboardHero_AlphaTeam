@@ -11,7 +11,7 @@ def test_playbutton(driver):
         print("Main menu found!")
         try: 
             #Find buttons to check if page has loaded correctly
-            button = driver.find_element(By.XPATH, "//button[@onclick='MenuManager.GoTo(MENU_GAME);']")
+            button = driver.find_element(By.XPATH, "//button[@onclick='MenuManager.GoTo(MENU_ABOUT);']")
             print("Button Found!") 
             return 1
         except NoSuchElementException: 
