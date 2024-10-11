@@ -3,16 +3,21 @@ import numpy as np
 import random
 import json
 import base64
+import sys
+import os.path
 
 # constants =======================================================================================
 version = "1.0"
-songTitle = "solopiano2.mp3"
 units = 0 # seconds
 
 # get info from audio file ========================================================================
 
+# get song title
+songLocation = sys.argv[1]
+songName = sys.argv[2]
+
 # load in the audio file
-y, sr = librosa.load(songTitle)
+y, sr = librosa.load(songLocation)
 
 # get timestamps (in seconds) of peaks in amplitude 
 onset_times = librosa.onset.onset_detect(y=y, sr=sr, units='time')
@@ -60,7 +65,7 @@ for t in amps:
 # get base64 data  ===============================================================================
 
 # read in binary file
-binaryFile = open(songTitle, "rb")
+binaryFile = open(songLocation, "rb")
 binaryData = binaryFile.read()
 binaryFile.close()
 
@@ -72,7 +77,7 @@ b64_data = base64.b64encode(binaryData)
 
 dictionary = {
     "version": version,
-    "song_title": songTitle,
+    "song_title": songName,
     "units": units,
     "beatmap_arrays": [
         {
@@ -97,7 +102,8 @@ dictionary = {
  
 # serialize 
 jsonFile = json.dumps(dictionary, indent=4)
- 
+
 # write to json file
-with open((songTitle.replace(".mp3","")+".json").strip(), "w") as outfile:
+fileName = (songLocation.replace(".mp3","")+".json").strip()
+with open(fileName, "w") as outfile:
     outfile.write(jsonFile)
