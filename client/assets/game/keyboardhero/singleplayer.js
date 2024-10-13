@@ -6,7 +6,7 @@ let collectMSThresh = 120; // MS Threshold to collect a note
 
 // The URL to get the song data, this will be assigned else where later
 let gameFileURI = "assets/game/keyboardhero/levels/solopiano2.json";
-
+let gamePASSData = "";
 // Has the game started
 let singlePlayerStarted = false;
 
@@ -14,6 +14,30 @@ let singlePlayerStarted = false;
 let spOFFX = 0, spOFFY = 0;
 
 let game_input_keys;
+
+
+function LoadSinglePlayerData(data) {
+    try {
+        // Parse the data
+        let gameFileData = JSON.parse(data);
+
+        // Create audio object from base64
+        gameAudio = new Audio(gameFileData.data);
+
+        // Get Game Input Keys
+        game_input_keys = JSON.parse(Settings.GetKey(Setting_KeyArray));
+
+        // Load data to board
+        boards[0].LoadFileData(gameFileData,game_input_keys);
+
+        // Run Finish Loop
+        FinishGFLOnTexDone(boards[0]);
+    } catch (e) {
+        // Deal with this later, but for now
+        // halt the game on error
+        ThrowError(e);
+    }
+}
 
 // Single Player Menu Object
 class SinglePlayerGame extends Menu {
@@ -36,33 +60,21 @@ class SinglePlayerGame extends Menu {
 
 
         // Download from gameFileURI
-        $.ajax({
-            url: gameFileURI,
-            type: "GET",
-            dataType: "text",
-            success: function (data) {
-                try {
-                    // Parse the data
-                    let gameFileData = JSON.parse(data);
 
-                    // Create audio object from base64
-                    gameAudio = new Audio(gameFileData.data);
-
-                    // Get Game Input Keys
-                    game_input_keys = JSON.parse(Settings.GetKey(Setting_KeyArray));
-
-                    // Load data to board
-                    boards[0].LoadFileData(gameFileData,game_input_keys);
-
-                    // Run Finish Loop
-                    FinishGFLOnTexDone(boards[0]);
-                } catch (e) {
-                    // Deal with this later, but for now
-                    // halt the game on error
-                    ThrowError(e);
+        if (gamePASSData == "") {
+            $.ajax({
+                url: gameFileURI,
+                type: "GET",
+                dataType: "text",
+                success: function (data) {
+                    LoadSinglePlayerData(data);
                 }
-            }
-        });
+            });
+        } else {
+            LoadSinglePlayerData(gamePASSData);
+            gamePASSData = "";
+        }
+        
 
 
         // Run Start

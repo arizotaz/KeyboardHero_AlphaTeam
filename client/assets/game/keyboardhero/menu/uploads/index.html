@@ -167,11 +167,46 @@
             <img class=hori src="/assets/game/game_logo.png" alt="">
         </div>
         <div class="HomeNavigationButtons">
-            <form action="/newSongUpload" method="POST" enctype="multipart/form-data">
-                <input type="file" name="newSong" required>
+            <div method="POST" enctype="multipart/form-data">
+                <input id="mp3FileUpload" type="file" name="file" required>
                 <br>
-                <button type="submit">Upload</button>
-            </form> 
+                <button onclick="UploadNewSong()" type="submit">Upload</button>
+            </div> 
         </div>
     </div>
 </div>
+<script>
+    function UploadNewSong() {
+        var fd = new FormData();
+        
+        fd.append('name', document.getElementById('mp3FileUpload').files[0].name);
+        fd.append('file', document.getElementById('mp3FileUpload').files[0]);
+
+
+        $.ajax({
+            type: "POST",
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = (evt.loaded / evt.total) * 100;
+                        //document.getElementById("updateProgress").style.width = percentComplete + "%";
+                    }
+                }, false);
+                return xhr;
+            },
+            url: "/newSongUpload",
+            data: fd,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(text) {
+                gamePASSData = text;
+                MenuManager.GoTo(MENU_SINGLEPLAYER);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error Sending Request");
+            }
+        });
+    }
+</script>
