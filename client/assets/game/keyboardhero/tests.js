@@ -78,6 +78,71 @@ function MakeAndRunTests() {
             }
         }
     );
+
+
+    // Test Menu ID's
+    CreateTest("MENU_MAIN ID",
+        "A test to ensure the MENU_MAIN is the main menu",
+        async function () {
+            try {
+                MenuManager.GoTo(MENU_MAIN);
+                console.log("📋 Changed Menu to " + MENU_MAIN)
+                await waitDelay(1000);
+                console.log("📋 Menu Manager reports " + MenuManager.GetMenuID());
+
+                let inn = document.body.innerHTML;
+                let condition = inn.includes(">Level Select<") && inn.includes(">Settings<") && inn.includes("<img class=\"hori\" src=\"/assets/game/game_logo.png\" alt=\"\">");
+                if (!condition) throw new Error('Menu Manager did not load MENU_MAIN');
+
+                return 0;
+            } catch (e) {
+                return e;
+            }
+        }
+    );
+
+    CreateTest("MENU_SETTINGS ID",
+        "A test to ensure the MENU_MAIN is the main menu",
+        async function () {
+            try {
+                MenuManager.GoTo(MENU_SETTINGS);
+                console.log("📋 Changed Menu to " + MENU_SETTINGS)
+                await waitDelay(1000);
+                console.log("📋 Menu Manager reports " + MenuManager.GetMenuID());
+
+                let inn = document.body.innerHTML;
+                let condition = inn.includes("<input type=\"range\" id=\"gameVolume\"");
+                if (!condition) throw new Error('Menu Manager did not load MENU_SETTINGS');
+
+                return 0;
+            } catch (e) {
+                return e;
+            }
+        }
+    );
+
+    CreateTest("MENU_ABOUT ID",
+        "A test to ensure the MENU_ABOUT is the main menu",
+        async function () {
+            try {
+                MenuManager.GoTo(MENU_ABOUT);
+                console.log("📋 Changed Menu to " + MENU_ABOUT)
+                await waitDelay(1000);
+                console.log("📋 Menu Manager reports " + MenuManager.GetMenuID());
+
+                let inn = document.body.innerHTML;
+                let condition = inn.includes("About Keyboard Hero");
+                if (!condition) throw new Error('Menu Manager did not load MENU_ABOUT');
+
+                return 0;
+            } catch (e) {
+                return e;
+            }
+        }
+    );
+
+
+
     // Test the ability to play the game twice without reloading
     CreateTest("Multiple Game",
         "Tests the ability to play the game twice in a session",
@@ -89,12 +154,6 @@ function MakeAndRunTests() {
                 MenuManager.GoTo(MENU_SINGLEPLAYER);
                 console.log("📋 Changed Menu to " + MENU_SINGLEPLAYER)
                 await waitDelay(2000);
-                console.log("📋 Waiting for game to complete")
-                await async function() {
-                    while(!boards[0].Completed()) {
-                        await waitDelay(500);
-                    }
-                }
                 MenuManager.GoTo(MENU_MAIN);
                 console.log("📋 Changed Menu to " + MENU_MAIN)
                 await waitDelay(500);
@@ -189,8 +248,6 @@ function MakeAndRunTests() {
             }
         }
     );
-
-
 
     RunTestTasks();
 }

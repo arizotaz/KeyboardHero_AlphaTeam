@@ -13,8 +13,11 @@ let test_tasks = [];
 // Wait Function
 const waitDelay = ms => new Promise(res => setTimeout(res, ms));
 
+
+
 // Run All tasks in list
 async function RunTestTasks() {
+    let failedTasks = 0;
     for (let i = 0; i < test_tasks.length; ++i) {
         let task = test_tasks[i];
         let taskNameHandle = "🛠️ Running " + task.GetName();
@@ -26,11 +29,17 @@ async function RunTestTasks() {
         if (success != 0) {
             console.log("❌ " + task.GetName() + " finished with errors");
             console.log(success);
+            failedTasks++;
         } else {
             console.log("✅ " + task.GetName() + " finished successfully");
         }
     }
     EngineBanner("");
+    let msg = (test_tasks.length-failedTasks) + "/" + test_tasks.length + " Completed Successfully";
+    if (failedTasks > 0) { msg = "❌ " + msg; } else { msg = "✅ " + msg; }
+    console.log(msg);
+    EngineBanner(msg);
+    setTimeout(function() {EngineBanner("");},3000);
 }
 
 // Add a task to the list

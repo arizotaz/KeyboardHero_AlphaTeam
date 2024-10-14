@@ -17,7 +17,6 @@
 class AboutMenu extends Menu {
     Open() {
         $.get("/assets/game/keyboardhero/menu/about/index.html", function(data) {
-            console.log(data); // Log the fetched content
             $("#aboutMenuContainer").append(data);
             document.getElementById('aboutMenu').style.display = 'block';
         });
