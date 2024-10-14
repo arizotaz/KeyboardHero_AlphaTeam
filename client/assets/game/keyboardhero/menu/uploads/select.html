@@ -1,38 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Upload & Demo Songs</title>
-    <link rel="stylesheet" href="select.css">
-</head>
-<body>
-    <div class="container">
-        <button class="back-button">Back</button>
-        
-        <button class="settings-button">Settings</button>
-
-        <div class="upload-section">
-            <h2>Upload Files</h2>
-            <input type="file" id="file-upload" multiple>
-        </div>
-
-        <div class="carousel-container">
-            <h2>Demo Songs</h2>
-            <div class="carousel">
-                <div class="carousel-item">Song 1</div>
-                <div class="carousel-item">Song 2</div>
-                <div class="carousel-item">Song 3</div>
-            </div>
-            <button class="next">&#9654;</button> <!-- Right Arrow -->
-            <button class="prev">&#9664;</button> <!-- Left Arrow -->
-        </div>
-    </div>
-
-    <script src="select.js"></script>
-</body>
-</html>
-
 
 <style>
     * {
@@ -172,6 +138,40 @@
         }
     }
 </style>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Upload & Demo Songs</title>
+    <link rel="stylesheet" href="select.css">
+</head>
+<body>
+    <div class="container">
+        <button class="back-button">Back</button>
+        
+        <button class="settings-button">Settings</button>
+
+        <div class="upload-section">
+            <h2>Upload Files</h2>
+            <input type="file" id="file-upload" multiple>
+        </div>
+
+        <div class="carousel-container">
+            <h2>Demo Songs</h2>
+            <div class="carousel">
+                <div class="carousel-item">Song 1</div>
+                <div class="carousel-item">Song 2</div>
+                <div class="carousel-item">Song 3</div>
+            </div>
+            <button class="next">&#9654;</button> <!-- Right Arrow -->
+            <button class="prev">&#9664;</button> <!-- Left Arrow -->
+        </div>
+    </div>
+
+    <script src="select.js"></script>
+</body>
+</html>
 
 <script>
     let currentIndex = 0;
