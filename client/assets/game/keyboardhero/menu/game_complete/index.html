@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/assets/css/header.css">
+<link rel="stylesheet" href="/assets/css/ui_elements.css">
 <style>
     .menuContainer {
         display: flex;
@@ -69,52 +71,9 @@
 
     .missednotes {}
 
-    .NeonButtons {
+    .neonButtons {
         width: 100%;
         max-width: 600px;
-    }
-
-    .NeonButtons button {
-        width: 100%;
-        height: 60px;
-        border: 6px solid;
-        border-image-slice: 1;
-        border-image-source: linear-gradient(to left, #5d5f8f, #9c1f8a);
-        background-color: rgba(255, 255, 255, 1);
-        color: #000;
-        font-size: 26px;
-        position: relative;
-        transition: all ease 0.5s;
-        cursor: pointer;
-    }
-
-    .NeonButtons button:hover {
-        transform: scale(1.05);
-    }
-
-    .NeonButtons .shadow {
-        margin: 15px auto;
-        transform-style: preserve-3d;
-        display: block;
-        position: relative;
-        width: 100%;
-        max-width: 350px;
-        padding: 5px;
-        background-color: rgba(0, 0, 0, 0);
-        border-radius: 10px;
-    }
-
-    .NeonButtons .shadow::before {
-        content: "";
-        box-sizing: content-box;
-        padding: 10px;
-        position: absolute;
-        inset: -5px;
-        transform: translate3d(10px, 10px, -1px);
-        /* (X, Y, Z) */
-        background: linear-gradient(to left, #5d5f8f, #9c1f8a);
-        filter: blur(20px);
-        border-radius: 10px;
     }
 
     @media screen and (max-width: 1100px) {}
@@ -143,7 +102,7 @@
             <div class="maxCombo">You achieved a max combo of X<a id="maxCombo"></a></div>
             
         </div>
-        <div class="NeonButtons">
+        <div class="neonButtons">
             <div class="shadow"><button onclick="MenuManager.GoTo(MENU_MAIN);">Go Home</button></div>
         </div>
     </div>

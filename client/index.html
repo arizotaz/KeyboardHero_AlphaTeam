@@ -6,6 +6,10 @@
     <script src="/assets/jquery/jquery-3.5.0.min.js"></script>
     <script src="/assets/p5/p5.js"></script>
     <script src="/assets/game/boot/boot.js"></script>
+
+    <script src="/assets/game/keyboardhero/test_worker.js"></script>
+    <script src="/assets/game/keyboardhero/tests.js"></script>
+
     <script src="/assets/game/keyboardhero/uimanager.js"></script>
     <script src="/assets/game/keyboardhero/textureengine.js"></script>
     <script src="/assets/game/keyboardhero/gameboard.js"></script>
@@ -64,6 +68,21 @@
             top: 0px;
             bottom: 0px;
         }
+
+        #EngineBanner {
+            position: fixed;
+            color: #fff;
+            background-color: rgba(255, 0, 0, 1);
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 1);
+            top: 0px;
+            left: 0px;
+            width: 100vw;
+            text-align: center;
+            font-size: 20px;
+            margin: auto;
+            padding: 10px 0px;
+            z-index: 10000;
+        }
     </style>
 </head>
 
@@ -84,7 +103,7 @@
     <div class="menu" id="settingsMenu">
         <div id="settingsMenuContainer"></div>
     </div>
-    <div class="menu" id="uploadSongsMenu"></div>
+    <div class="menu" id="uploadSongsMenu">
         <div id="uploadSongsMenuContainer"></div>
     </div>
 

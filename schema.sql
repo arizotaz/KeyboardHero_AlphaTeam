@@ -23,9 +23,10 @@ DROP TABLE IF EXISTS `scores`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `scores` (
-  `song` varchar(255) NOT NULL,
-  `score` int NOT NULL,
-  PRIMARY KEY (`song`)
+  user_id char(3) NOT NULL,
+  song_id LONGTEXT NOT NULL,
+  score int NOT NULL,
+  PRIMARY KEY (user_id, song_id(255), score)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -35,7 +36,7 @@ CREATE TABLE `scores` (
 
 LOCK TABLES `scores` WRITE;
 /*!40000 ALTER TABLE `scores` DISABLE KEYS */;
-INSERT INTO `scores` VALUES ('cool song',100);
+INSERT INTO `scores` VALUES ('lol', 'coolsong',100);
 /*!40000 ALTER TABLE `scores` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

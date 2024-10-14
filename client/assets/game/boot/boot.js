@@ -29,6 +29,20 @@ let lastCanvasHeight = 0;
 let running = _afterBoot;
 let merror = null;
 
+// Shows the banner at the top of the screen
+function EngineBanner(b) { 
+    let engineBanner = document.getElementById("EngineBanner");
+    if (b == null || b == "") if (engineBanner != null) { engineBanner.remove(); return; }
+
+    if (engineBanner == null && b != null && b != "") {
+        engineBanner = document.createElement("div");
+        engineBanner.id = "EngineBanner";
+        document.body.append(engineBanner)
+    }
+    engineBanner.innerHTML = b;
+
+}
+
 // p5js start function, called once at start
 function setup() {
     // Create the canvas

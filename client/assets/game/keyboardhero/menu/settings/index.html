@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/assets/css/header.css">
+<link rel="stylesheet" href="/assets/css/ui_elements.css">
 <style>
     .menuContainer {
         display: flex;
@@ -8,15 +10,6 @@
         background-image: url('/assets/game/keyboardhero/textures/game_background.png');
         background-position: center;
         background-size: cover;
-    }
-
-    .topBar {
-        width: 100%;
-        height: 50px;
-        background-color: rgba(40, 40, 40, 0.7);
-        backdrop-filter: blur(4px);
-        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-        padding: 5px;
     }
 
     .mainPageContent {
@@ -30,47 +23,8 @@
         text-align: center;
     }
 
-    .mainSettingsPageContent button {
+    .slidecontainer {
         width: 100%;
-        height: 60px;
-        border: 6px solid;
-        border-image-slice: 1;
-        border-image-source: linear-gradient(to left, #5d5f8f, #9c1f8a);
-        background-color: rgba(255, 255, 255, 1);
-        color: #000;
-        font-size: 26px;
-        position: relative;
-        transition: all ease 0.5s;
-        cursor: pointer;
-    }
-
-    .mainSettingsPageContent button:hover {
-        transform: scale(1.05);
-    }
-
-    .mainSettingsPageContent .shadow {
-        margin: 15px auto;
-        transform-style: preserve-3d;
-        display: block;
-        position: relative;
-        width: 100%;
-        max-width: 350px;
-        padding: 5px;
-        background-color: rgba(0, 0, 0, 0);
-        border-radius: 10px;
-    }
-
-    .mainSettingsPageContent .shadow::before {
-        content: "";
-        box-sizing: content-box;
-        padding: 10px;
-        position: absolute;
-        inset: -5px;
-        transform: translate3d(10px, 10px, -1px);
-        /* (X, Y, Z) */
-        background: linear-gradient(to left, #5d5f8f, #9c1f8a);
-        filter: blur(20px);
-        border-radius: 10px;
     }
 
     .backShortcut {
@@ -82,52 +36,6 @@
     .backShortcut img {
         height: 40px;
         filter: invert();
-        cursor: pointer;
-    }
-
-    .slidecontainer {
-        width: 100%;
-    }
-
-    .cool_slider {
-        -webkit-appearance: none;
-        outline: none;
-        opacity: 0.7;
-        -webkit-transition: .2s;
-        transition: opacity .2s;
-
-        width: 100%;
-        height: 20px;
-        border: 6px solid;
-        border-image-slice: 1;
-        border-image-source: linear-gradient(to left, #5d5f8f, #9c1f8a);
-        background-color: rgba(255, 255, 255, 1);
-        color: #000;
-        font-size: 26px;
-        position: relative;
-        transition: all ease 0.5s;
-        cursor: pointer;
-        margin-top: 5px;
-    }
-
-    .cool_slider:hover {
-        opacity: 1;
-    }
-
-    .cool_slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 25px;
-        height: 25px;
-        background: linear-gradient(to left, #7779c1, #da2dc0);
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .cool_slider::-moz-range-thumb {
-        width: 25px;
-        height: 25px;
-        background: #04AA6D;
         cursor: pointer;
     }
 
@@ -155,14 +63,14 @@
         <div class="backShortcut"><img onclick="MenuManager.GoBack();"
                 src="/assets/game/keyboardhero/textures/button_back.png" alt=""></div>
     </div>
-    <div class="mainSettingsPageContent">
+    <div class="mainSettingsPageContent neonButtons">
 
         <h3>Game Volume</h3>
         <div class="shadow" style="width:100vw;max-width: 800px;"><input type="range" id="gameVolume"
-                class="cool_slider" min="0" max="100"></div>
+                class="neonSlider" min="0" max="100"></div>
         <h3>Menu Volume</h3>
         <div class="shadow" style="width:100vw;max-width: 800px;"><input type="range" id="menuVolume"
-                class="cool_slider" min="0" max="100"></div>
+                class="neonSlider" min="0" max="100"></div>
         <div class="controlChanger">
             <select id="columnWidth" onchange="LoadKeysToControlChanger(this.value)">
                 <option value="1">1 - Lane</option>
@@ -207,11 +115,11 @@
         $(document).keyup(function (e) {
             let elms = document.getElementsByClassName("KEYCODECHANGE");
             for (let i = 0; i < elms.length; ++i) {
-                elms[i].setAttribute("keycode",e.keyCode);
+                elms[i].setAttribute("keycode", e.keyCode);
                 elms[i].innerHTML = String.fromCharCode(e.keyCode);
 
                 let inputList = JSON.parse(Settings.GetKey(Setting_KeyArray));
-                inputList[elms[i].getAttribute("lanewidth")-1][elms[i].getAttribute("index")] = parseInt(elms[i].getAttribute("keycode"));
+                inputList[elms[i].getAttribute("lanewidth") - 1][elms[i].getAttribute("index")] = parseInt(elms[i].getAttribute("keycode"));
                 Settings.SetKey(Setting_KeyArray, JSON.stringify(inputList));
 
                 elms[i].classList.remove("KEYCODECHANGE");

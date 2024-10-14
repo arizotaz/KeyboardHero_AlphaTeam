@@ -45,6 +45,9 @@ You may need to download the dotenv dependency if node doesn’t do it automatic
 Npm i dotenv
 ```
 
+## Testing
+For now, a great deal of the tests can be done with the MakeAndRunTests() function.  To run the tests, open the url of the game, press F12 on the keyboard and enter the console. Type ``` MakeAndRunTests() ``` and enter and the automated tests will be run.
+
 ## Software Layout
 [![](https://mermaid.ink/img/pako:eNqFkk1PwzAMhv_KlBNIG2Md7KPiMgbiwgRi4raL27htpDSpUmfSNPrfSdZ9dFNhOTT168d2a3vLYs2RhSyWUJYvAlID-Up13Fmgsp2nn16vswChvHWpL5FIqLRs880sF3oOUkQGSOjW-FmkLbUmdlklfkrYoHmDHC_9XpvrvJBIyE8Jdv9QY9ta8eejQHVze7K_Cw6ETeULFUfTVN4R1kekqq-zGvuONMqcsTXV7M__ZFu3rkQcenflEy462aC9-azB8E7kny3BJ-KvIqzLcjQ5CO5WaAetGGXoJsZC98oxAStpxVaqcihY0suNillIxmKXGW3TjIUJyNJZdjeX_QoeEOSCtFnsd9RfB_B15zlGSw1uhizcMtoUHk5FSQ6OtUpE6nVrpJMzoqIM-33vvksFZTa6i3XeLwXPwFC2no76o2A0gWCIo_EQHodDHkeD6SQJHgYJH98PAmBVVf0CKQP--A?type=png)](https://mermaid.live/edit#pako:eNqFkk1PwzAMhv_KlBNIG2Md7KPiMgbiwgRi4raL27htpDSpUmfSNPrfSdZ9dFNhOTT168d2a3vLYs2RhSyWUJYvAlID-Up13Fmgsp2nn16vswChvHWpL5FIqLRs880sF3oOUkQGSOjW-FmkLbUmdlklfkrYoHmDHC_9XpvrvJBIyE8Jdv9QY9ta8eejQHVze7K_Cw6ETeULFUfTVN4R1kekqq-zGvuONMqcsTXV7M__ZFu3rkQcenflEy462aC9-azB8E7kny3BJ-KvIqzLcjQ5CO5WaAetGGXoJsZC98oxAStpxVaqcihY0suNillIxmKXGW3TjIUJyNJZdjeX_QoeEOSCtFnsd9RfB_B15zlGSw1uhizcMtoUHk5FSQ6OtUpE6nVrpJMzoqIM-33vvksFZTa6i3XeLwXPwFC2no76o2A0gWCIo_EQHodDHkeD6SQJHgYJH98PAmBVVf0CKQP--A)
 

@@ -11,25 +11,47 @@ var cors = require('cors');
 const { exec } = require("child_process");
 // File System Library
 const fs = require('fs');
-//database functions
+// database functions
 const { getScores } = require('./client/database.js');
+
+// The cmd to start python
+// change file python.conf
+let pythonBinary = "python";
+
+
+
+// Storage & Upload
+const tempFileUploads = __dirname + '/tempSongUploads/'
+
+if (!fs.existsSync(tempFileUploads)) fs.mkdirSync(tempFileUploads);
 // multer for file uploads
 const multer = require('multer');
+// require for running python processing script
+const { spawn } = require("child_process");
 
-//api to get scores using for testing
-app.get('/scores', async (req, res) => {
-    try {
-        const scores = await getScores(); // Call the async function to get scores
-        res.json(scores); // Send the scores as JSON to the client
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error fetching scores' });
+//storage for uploaded files
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, tempFileUploads); // folder to hold mp3s
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname); // ensures use of original file name
     }
 });
+
+// create multer object
+const upload = multer({ storage: storage });
+
+
 
 // Web Server Port
 var port = 32787;
 if (fs.existsSync(__dirname + "/port.txt")) port = parseInt(fs.readFileSync(__dirname + "/port.txt"));
+
+
+// Python CMD
+if (!fs.existsSync(__dirname + "/python.conf")) fs.writeFileSync(__dirname + "/python.conf", "python")
+if (fs.existsSync(__dirname + "/python.conf")) pythonBinary = (fs.readFileSync(__dirname + "/python.conf", "utf8")).replaceAll("\n","");
 
 
 // Sets the Cors access policy
@@ -46,36 +68,59 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/client/index.html');
 });
 
-// storage for uploaded files
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, __dirname + '/tempSongUploads'); // folder to hold mp3s
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname); // ensures use of original file name
-    }
-});
-
-// create multer object
-const upload = multer({ storage: storage });
-
-// upload and process files
-app.post('/newSongUpload', upload.single('newSong'), (req, res) => {
-
-    // run python script (pass file name/location as argument?)
-
-    res.json({ 
-        message: 'File uploaded successfully!',
-        filename: req.file.originalname 
-    });
-
-    // delete uploaded mp3
-
-});
-
 // Allow a folder to be viewed in the web-server
 // All files in the "/client/assets" folder will be vieable to the client
 app.use('/assets', express.static(__dirname + '/client/assets'));
+
+
+//api to get scores using for testing
+app.get('/scores', async (req, res) => {
+    try {
+        const scores = await getScores(); // Call the async function to get scores
+        res.json(scores); // Send the scores as JSON to the client
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching scores' });
+    }
+});
+
+
+// upload and process files
+app.post('/newSongUpload', upload.single('file'), (req, res) => {
+
+    // location of where levels are stored
+    const levelLocation = tempFileUploads;
+
+    const songFilePath = levelLocation + req.file.originalname; // final mp3 file path
+    const songName = req.file.originalname.replaceAll(".mp3",""); // original mp3 name
+
+    // launch python process with song file path and original mp3 name
+    const pythonProcess = spawn(pythonBinary, [__dirname + "/beatmapGenerator.py", songFilePath, songName]);
+
+    // delete original mp3 when python process closes
+    pythonProcess.on('close', (code) => {
+        res.send(fs.readFileSync(levelLocation+songName+".json","utf8"));
+        fs.unlink(songFilePath, (err) => {
+            if (err) {
+                console.error('ORIGINAL MP3 DELETION ERROR:', err);
+            } else {
+                console.log('MP3 DELETED SUCCESSFULLY.');
+            }
+        });
+        fs.unlink(levelLocation+songName+".json", (err) => {
+            if (err) {
+                console.error('COVERTED MP3 DELETION ERROR:', err);
+            } else {
+                console.log('MP3 COVERT SUCCESSFULLY.');
+            }
+        });
+    })
+
+    // send info back to webpage
+    
+});
+
+
 
 // 404 Status page
 app.get('*', function (req, res) {
@@ -85,6 +130,8 @@ app.get('*', function (req, res) {
 // start the server
 serv.listen(port);
 console.log(`Server started on: http://localhost:${port}`);
+
+
 
 
 // Below will be the code for multiplayer and score system. 

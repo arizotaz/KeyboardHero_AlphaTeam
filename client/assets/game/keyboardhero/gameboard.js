@@ -231,6 +231,7 @@ class GameBoard {
             let y = lhy - location + gc * laneHeight;
             let w = noteRowSize / 2;
             let h = noteRowSize * .9;
+            h = ((collectMSThresh/1000)/this.gameAudio.duration) * laneHeight;
 
             // If the note is visible on the screen, render, otherwise dont
             if (y > -this.gameHeight / 2 - h / 2 && y < this.gameHeight / 2 + h / 2) {
@@ -310,6 +311,12 @@ class GameBoard {
         }
     }
 
+    // Completion
+    CompletionPercentage() {
+        return GetAudioCompletion(this.gameAudio);
+    }
+
+    // Is the game completed
     Completed() { return this.gameComplete; }
 
     // Returns Score

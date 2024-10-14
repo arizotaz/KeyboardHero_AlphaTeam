@@ -2,11 +2,11 @@
 const pointsPerNote = 1; // points given when a note is collected, multiplied by combo
 const maxComboAdd = 3; // max amount to increases the combo
 const gameSpeedMultiplier = 4;  // Speed and spacing of tiles
-let collectMSThresh = 120; // MS Threshold to collect a note
+let collectMSThresh = 200; // MS Threshold to collect a note
 
 // The URL to get the song data, this will be assigned else where later
 let gameFileURI = "assets/game/keyboardhero/levels/solopiano2.json";
-
+let gamePASSData = "";
 // Has the game started
 let singlePlayerStarted = false;
 
@@ -15,9 +15,36 @@ let spOFFX = 0, spOFFY = 0;
 
 let game_input_keys;
 
+
+function LoadSinglePlayerData(data) {
+    try {
+        // Parse the data
+        let gameFileData = JSON.parse(data);
+
+        // Create audio object from base64
+        gameAudio = new Audio(gameFileData.data);
+
+        // Get Game Input Keys
+        game_input_keys = JSON.parse(Settings.GetKey(Setting_KeyArray));
+
+        // Load data to board
+        boards[0].LoadFileData(gameFileData,game_input_keys);
+
+        // Run Finish Loop
+        FinishGFLOnTexDone(boards[0]);
+    } catch (e) {
+        // Deal with this later, but for now
+        // halt the game on error
+        ThrowError(e);
+    }
+}
+
 // Single Player Menu Object
 class SinglePlayerGame extends Menu {
     Open() {
+
+        LoadSettings();
+
         // Make canvas static
         document.getElementsByTagName("canvas")[0].style.position = "fixed";
 
@@ -33,37 +60,25 @@ class SinglePlayerGame extends Menu {
 
 
         // Download from gameFileURI
-        $.ajax({
-            url: gameFileURI,
-            type: "GET",
-            dataType: "text",
-            success: function (data) {
-                try {
-                    // Parse the data
-                    let gameFileData = JSON.parse(data);
 
-                    // Create audio object from base64
-                    gameAudio = new Audio(gameFileData.data);
-
-                    // Get Game Input Keys
-                    game_input_keys = JSON.parse(Settings.GetKey(Setting_KeyArray));
-
-                    // Load data to board
-                    boards[0].LoadFileData(gameFileData,game_input_keys);
-
-                    // Run Finish Loop
-                    FinishGFLOnTexDone(boards[0]);
-                } catch (e) {
-                    // Deal with this later, but for now
-                    // halt the game on error
-                    ThrowError(e);
+        if (gamePASSData == "") {
+            $.ajax({
+                url: gameFileURI,
+                type: "GET",
+                dataType: "text",
+                success: function (data) {
+                    LoadSinglePlayerData(data);
                 }
-            }
-        });
+            });
+        } else {
+            LoadSinglePlayerData(gamePASSData);
+            gamePASSData = "";
+        }
+        
 
 
         // Run Start
-        boards[0].Start();
+        //boards[0].Start();
     }
     Update() {
 
@@ -74,6 +89,7 @@ class SinglePlayerGame extends Menu {
                 if (!boards[i].Ready()) playersReady = false;
             if (playersReady && gameAudio != null) {
                 singlePlayerStarted = true;
+                gameAudio.volume = Settings.GetKey(Setting_GameVolume);
                 gameAudio.play();
             }
         }
@@ -83,8 +99,9 @@ class SinglePlayerGame extends Menu {
         if (gameWidth > 500) gameWidth = 500;
 
         // Process Input and pass keyboard array
-        if (game_input_keys != null && game_input_keys.length > 0)
+        if (boards[0] != null && boards[0].ColumnWidth() != null &&  game_input_keys != null && game_input_keys[boards[0].ColumnWidth()-1] != null)
         boards[0].ProcessInput(game_input_keys[boards[0].ColumnWidth()-1]);
+        
 
         // Run game update loop
         boards[0].Update(spOFFX, spOFFY, gameWidth, windowHeight,gameAudio);
@@ -110,6 +127,8 @@ class SinglePlayerGame extends Menu {
         document.getElementsByTagName("canvas")[0].style.position = "";
         // Pause audio if it's playing
         gameAudio.pause();
+        // Clear the screen
+        clear();
     }
 }
 
