@@ -51,7 +51,7 @@ if (fs.existsSync(__dirname + "/port.txt")) port = parseInt(fs.readFileSync(__di
 
 // Python CMD
 if (!fs.existsSync(__dirname + "/python.conf")) fs.writeFileSync(__dirname + "/python.conf", "python")
-if (fs.existsSync(__dirname + "/python.conf")) pythonBinary = (fs.readFileSync(__dirname + "/python.conf", "utf8"));
+if (fs.existsSync(__dirname + "/python.conf")) pythonBinary = (fs.readFileSync(__dirname + "/python.conf", "utf8")).replaceAll("\n","");
 
 
 // Sets the Cors access policy
