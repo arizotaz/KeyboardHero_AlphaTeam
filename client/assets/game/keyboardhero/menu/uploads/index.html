@@ -204,7 +204,7 @@
             contentType: false,
             processData: false,
             success: function (text) {
-                if (text.startsWith("{}")) {
+                if (text.startsWith("{")) {
                     gamePASSData = text;
                     MenuManager.GoTo(MENU_SINGLEPLAYER);
                 } else {
