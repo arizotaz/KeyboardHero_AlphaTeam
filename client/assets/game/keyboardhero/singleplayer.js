@@ -1,8 +1,8 @@
 // Settings for the game
 const pointsPerNote = 1; // points given when a note is collected, multiplied by combo
 const maxComboAdd = 3; // max amount to increases the combo
-const gameSpeedMultiplier = 4;  // Speed and spacing of tiles
-let collectMSThresh = 120; // MS Threshold to collect a note
+const gameSpeedMultiplier = 8;  // Speed and spacing of tiles
+let collectMSThresh = 200; // MS Threshold to collect a note
 
 // The URL to get the song data, this will be assigned else where later
 let gameFileURI = "assets/game/keyboardhero/levels/solopiano2.json";
