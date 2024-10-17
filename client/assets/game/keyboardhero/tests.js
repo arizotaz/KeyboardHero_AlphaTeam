@@ -1,6 +1,7 @@
 
 /*Setup and run tests*/
 function MakeAndRunTests() {
+    
     // Test MenuManager
     CreateTest("Test Scene Manager (To Game)",
         "Tests the menu manager's ability to change screens",
@@ -18,6 +19,7 @@ function MakeAndRunTests() {
             }
         }
     );
+    
     // Test MenuManager again
     CreateTest("Test Scene Manager (To Settings)",
         "Tests the menu manager's ability to change screens",
@@ -34,6 +36,7 @@ function MakeAndRunTests() {
             }
         }
     );
+    
     // Test MenuManager Back operation
     CreateTest("Menu Manager Back Function",
         "Tests the menu manager's to read history and go back",
@@ -78,7 +81,6 @@ function MakeAndRunTests() {
             }
         }
     );
-
 
     // Test Menu ID's
     CreateTest("MENU_MAIN ID",
@@ -140,8 +142,6 @@ function MakeAndRunTests() {
             }
         }
     );
-
-
 
     // Test the ability to play the game twice without reloading
     CreateTest("Multiple Game",
@@ -249,5 +249,41 @@ function MakeAndRunTests() {
         }
     );
 
+    // Test Input
+    CreateTest("Test Input",
+        "The the ability of the game to register keyboard inputs",
+        async function () {
+            try {
+                MenuManager.GoTo(MENU_SINGLEPLAYER);
+                console.log("📋 Changed Menu to " + MENU_SINGLEPLAYER)
+                await waitDelay(250);   
+                    
+                for (let i = 0; i < boards[0].input_keys.length; ++i) {
+                    // End if the game completes to avoid a softlock
+                    while (boards[0].gameScore == 0 && !boards[0].gameComplete){
+                        // Wait 10 miliseconds between attempted input to avoid crashing the browser
+                        await waitDelay(10); 
+                        boards[0].input[i] = 1;
+                        // Force an update otherwise input isn't registered
+                        boards[0].Update(boards[0].originX, boards[0].originY, boards[0].gameWidth, boards[0].gameHeight, boards[0].gameAudio);
+                    }
+                    // If the game completes it's assumed the tests failed
+                    if (!boards[0].gameComplete){
+                        console.log("✅ Lane " + (i+1) + " registered")
+                        boards[0].gameScore = 0;
+                    }else{
+                        MenuManager.GoTo(MENU_MAIN);
+                        return;
+                    }
+                }
+                MenuManager.GoTo(MENU_MAIN);
+                return 0;               
+            } catch (e) {
+                return e;
+            }
+        }
+    );
+
     RunTestTasks();
 }
+   
