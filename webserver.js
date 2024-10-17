@@ -22,7 +22,7 @@ let pythonBinary = "python";
 
 // Storage & Upload
 const tempFileUploads = __dirname + '/tempSongUploads/'
-
+if (fs.existsSync(tempFileUploads)) fs.rmSync(tempFileUploads, { recursive: true, force: true });
 if (!fs.existsSync(tempFileUploads)) fs.mkdirSync(tempFileUploads);
 // multer for file uploads
 const multer = require('multer');
@@ -51,7 +51,7 @@ if (fs.existsSync(__dirname + "/port.txt")) port = parseInt(fs.readFileSync(__di
 
 // Python CMD
 if (!fs.existsSync(__dirname + "/python.conf")) fs.writeFileSync(__dirname + "/python.conf", "python")
-if (fs.existsSync(__dirname + "/python.conf")) pythonBinary = (fs.readFileSync(__dirname + "/python.conf", "utf8")).replaceAll("\n","");
+if (fs.existsSync(__dirname + "/python.conf")) pythonBinary = (fs.readFileSync(__dirname + "/python.conf", "utf8")).replaceAll("\n", "");
 
 
 // Sets the Cors access policy
@@ -92,22 +92,24 @@ app.post('/newSongUpload', upload.single('file'), (req, res) => {
     const levelLocation = tempFileUploads;
 
     const songFilePath = levelLocation + req.file.originalname; // final mp3 file path
-    const songName = req.file.originalname.replaceAll(".mp3",""); // original mp3 name
+    const songName = req.file.originalname.replaceAll(".mp3", ""); // original mp3 name
+
+    const JSONFilePath = levelLocation + songName + ".json";
 
     // launch python process with song file path and original mp3 name
     const pythonProcess = spawn(pythonBinary, [__dirname + "/beatmapGenerator.py", songFilePath, songName]);
 
     // delete original mp3 when python process closes
     pythonProcess.on('close', (code) => {
-        res.send(fs.readFileSync(levelLocation+songName+".json","utf8"));
-        fs.unlink(songFilePath, (err) => {
+        if (fs.existsSync(JSONFilePath)) res.send(fs.readFileSync(JSONFilePath, "utf8")); else res.send("File did not convert propperly");
+        if (fs.existsSync(songFilePath)) fs.unlink(songFilePath, (err) => {
             if (err) {
                 console.error('ORIGINAL MP3 DELETION ERROR:', err);
             } else {
                 console.log('MP3 DELETED SUCCESSFULLY.');
             }
         });
-        fs.unlink(levelLocation+songName+".json", (err) => {
+        if (fs.existsSync(JSONFilePath)) fs.unlink(JSONFilePath, (err) => {
             if (err) {
                 console.error('COVERTED MP3 DELETION ERROR:', err);
             } else {
@@ -115,9 +117,8 @@ app.post('/newSongUpload', upload.single('file'), (req, res) => {
             }
         });
     })
-
     // send info back to webpage
-    
+
 });
 
 

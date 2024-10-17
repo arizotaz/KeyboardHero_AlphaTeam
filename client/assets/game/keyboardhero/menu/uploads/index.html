@@ -208,7 +208,7 @@
                     gamePASSData = text;
                     MenuManager.GoTo(MENU_SINGLEPLAYER);
                 } else {
-                    alert("Something went wrong")
+                    alert(text.replace(/<\/[^>]+(>|$)/g, ""));
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
