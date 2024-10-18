@@ -284,6 +284,47 @@ function MakeAndRunTests() {
         }
     );
 
+    // Test Combo
+    CreateTest("Test Combo",
+        "The the ability of the game's combo system",
+        async function () {
+            try {
+                // Ensure a restart
+                await waitDelay(500); 
+                MenuManager.GoTo(MENU_MAIN);
+                // Start game
+                MenuManager.GoTo(MENU_SINGLEPLAYER);
+                console.log("📋 Changed Menu to " + MENU_SINGLEPLAYER)
+                await waitDelay(250);   
+                // Set debug flag
+                boards[0].debugCombo = 1; 
+                    // End if the game completes
+                    while (!boards[0].gameComplete){
+                        for (let i = 0; i < boards[0].input_keys.length; ++i) {
+                            boards[0].input[i] = 1;
+                            // Force an update otherwise input isn't registered
+                            boards[0].Update(boards[0].originX, boards[0].originY, boards[0].gameWidth, boards[0].gameHeight, boards[0].gameAudio);
+                            // Wait 5 miliseconds between attempted input to avoid crashing the browser 
+                            await waitDelay(5); 
+                        }
+                    }
+                // Reset debug flag
+                boards[0].debugCombo = 0;
+
+                if (boards[0].gameComboMultiplier > 100){
+                    MenuManager.GoTo(MENU_MAIN);  
+                    return 0; 
+                }else{
+                    MenuManager.GoTo(MENU_MAIN);  
+                    return;
+                }
+                            
+            } catch (e) {
+                    return e;
+            }
+        }
+    );
+
     RunTestTasks();
 }
    
