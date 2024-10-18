@@ -19,17 +19,18 @@ songName = sys.argv[2]
 # load in the audio file
 y, sr = librosa.load(songLocation)
 
-# get peak strengths throughout whole mp3
-onset_strengths = librosa.onset.onset_strength(y=y,sr=sr)
-# get timestamps of peaks
-onset_times = librosa.onset.onset_detect(y=y,sr=sr,onset_envelope=onset_strengths,delta=0.03,backtrack=True)
-# get strength of peaks at peak times
-timeStrengths = onset_strengths[onset_times]
+# get onset/peak strengths throughout whole mp3
+onsetStrengths = librosa.onset.onset_strength(y=y,sr=sr)
+# get timestamps of beats
+tempo, beats = librosa.beat.beat_track(y=y, sr=sr,onset_envelope=onsetStrengths,tightness=50)
+# get onset strength of gathered beats
+beatStrengths = onsetStrengths[beats]
 
-onset_times = librosa.frames_to_time(onset_times, sr=sr) # convert to timestamps
+beats = librosa.frames_to_time(beats, sr=sr) # convert frames to seconds
 timestamps = []
-for i, (onset_times,timeStrengths) in enumerate(zip(onset_times,timeStrengths)):
-    timestamps.append([onset_times.item(),timeStrengths.item(),1])
+for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)):
+    # beat timestamp, beat strength, and marker indicating if its included in the beatmap
+    timestamps.append([beats.item(),beatStrengths.item(),1])
 
 # get range of strengths
 min = 100
@@ -41,14 +42,14 @@ for t in timestamps:
         max = t[1]
 strengthRange = max - min
 
+n = 1 # index of next beat
+c = 0 # index of current beat
 bufferTime = 0.25 # minimum time (seconds) between notes
-n = 1
-c = 0
 while (n < len(timestamps)):
     if (timestamps[n][0] - timestamps[c][0] < bufferTime):
-        timestamps[n][2] = 0
+        timestamps[n][2] = 0 # get rid of beat at index n
     else:
-        c = n
+        c = n # update index of current beat
     n = n + 1
 
 # assign timestamps to lanes ======================================================================
