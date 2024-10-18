@@ -269,7 +269,7 @@ function MakeAndRunTests() {
                     }
                     // If the game completes it's assumed the tests failed
                     if (!boards[0].gameComplete){
-                        console.log("✅ Lane " + (i+1) + " registered")
+                        console.log("📋 Lane " + (i+1) + " registered")
                         boards[0].gameScore = 0;
                     }else{
                         MenuManager.GoTo(MENU_MAIN);
@@ -315,13 +315,13 @@ function MakeAndRunTests() {
                 }
 
                 if (!boards[0].gameComplete){
-                    console.log("✅ Combo reached threshold.")
+                    console.log("📋 Combo reached threshold.")
                     // Reset debug flag
                     boards[0].debugCombo = 0;
                     // Break combo
                     await waitDelay(1000);
                     if (boards[0].gameComboMultiplier == 0){
-                        console.log("✅ Combo broke properly, test passed.")
+                        console.log("📋 Combo broke properly, test passed.")
                         MenuManager.GoTo(MENU_MAIN);  
                         return 0; 
                     }else {
