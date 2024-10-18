@@ -297,28 +297,44 @@ function MakeAndRunTests() {
                 console.log("📋 Changed Menu to " + MENU_SINGLEPLAYER)
                 await waitDelay(250);   
                 // Set debug flag
-                boards[0].debugCombo = 1; 
-                    // End if the game completes
-                    while (!boards[0].gameComplete){
-                        for (let i = 0; i < boards[0].input_keys.length; ++i) {
-                            boards[0].input[i] = 1;
-                            // Force an update otherwise input isn't registered
-                            boards[0].Update(boards[0].originX, boards[0].originY, boards[0].gameWidth, boards[0].gameHeight, boards[0].gameAudio);
-                            // Wait 5 miliseconds between attempted input to avoid crashing the browser 
-                            await waitDelay(5); 
-                        }
-                    }
-                // Reset debug flag
-                boards[0].debugCombo = 0;
+                boards[0].debugCombo = 1;
 
-                if (boards[0].gameComboMultiplier > 100){
-                    MenuManager.GoTo(MENU_MAIN);  
-                    return 0; 
+                // End if the game completes as a fall back, otherwise till 50 (assumes the sample song is being played)
+                while (boards[0].gameComboMultiplier < 50 && !boards[0].gameComplete){
+                    /*
+                    // Optional for any sized boards, since it sounds like we're sticking to 4 though will remain unused
+                    for (let i = 0; i < boards[0].input_keys.length; ++i) {
+                        boards[0].input[i] = 1;
+                    }
+                    */
+                    boards[0].input = [1, 1, 1, 1];
+                    // Force an update otherwise input isn't registered
+                    boards[0].Update(boards[0].originX, boards[0].originY, boards[0].gameWidth, boards[0].gameHeight, boards[0].gameAudio);
+                    // Wait 5 miliseconds between attempted input to avoid crashing the browser 
+                    await waitDelay(5); 
+                }
+
+                if (!boards[0].gameComplete){
+                    console.log("✅ Combo reached threshold.")
+                    // Reset debug flag
+                    boards[0].debugCombo = 0;
+                    // Break combo
+                    await waitDelay(1000);
+                    if (boards[0].gameComboMultiplier == 0){
+                        console.log("✅ Combo broke properly, test passed.")
+                        MenuManager.GoTo(MENU_MAIN);  
+                        return 0; 
+                    }else {
+                        console.log("❌ Combo did't reset properly.")
+                        MenuManager.GoTo(MENU_MAIN);  
+                        return;
+                    }
                 }else{
+                    // If the game completes before this point it's assumed something went wrong
+                    console.log("❌ Song completed. Combo didn't reach target in time.")
                     MenuManager.GoTo(MENU_MAIN);  
                     return;
-                }
-                            
+                }                       
             } catch (e) {
                     return e;
             }
