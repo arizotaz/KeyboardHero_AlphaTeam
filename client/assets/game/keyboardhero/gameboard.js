@@ -22,6 +22,9 @@ class GameBoard {
         this.gameMissedTiles = 0;
         this.gameComplete = false;
         this.maxReachedCombo = 0;
+
+        // Flag to disable combo resets to test combo
+        this.debugCombo = 0;
     }
     // When the board is created, must be manually called
     Start() {
@@ -90,7 +93,10 @@ class GameBoard {
 
             // if lane is down but did not gain a note
             if (ld && !gainedNote) {
-                this.gameComboMultiplier = 0;
+                // if debug flag is on then don't reset combo on miss
+                if (!this.debugCombo){
+                    this.gameComboMultiplier = 0;
+                }
             }
         }
 
@@ -111,10 +117,13 @@ class GameBoard {
 
                 // If note was passed
                 if (pressedTimeStamp > thresLo) {
-                    // Reset Combo, Add to missed tiles, remove from list
-                    this.gameComboMultiplier = 0;
-                    ++this.gameMissedTiles;
-                    timestamps.splice(t, 1)
+                    // if debug flag is on then don't reset combo on miss
+                    if (!this.debugCombo){
+                        // Reset Combo, Add to missed tiles, remove from list
+                        this.gameComboMultiplier = 0;
+                        ++this.gameMissedTiles;
+                        timestamps.splice(t, 1)
+                    }
                 }
             }
         }
