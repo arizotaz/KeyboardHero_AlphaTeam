@@ -11,6 +11,11 @@ let textures = [
     { id: "game_background" , url: "/assets/game/keyboardhero/textures/game_background.png" },
     { id: "button_base"     , url: "/assets/game/keyboardhero/textures/button_base.png"     },
     { id: "button_top"      , url: "/assets/game/keyboardhero/textures/button_topper.png"   },
+    { id: "score_perfect"   , url: "/assets/game/keyboardhero/textures/score_perfect.png"   },
+    { id: "score_great"     , url: "/assets/game/keyboardhero/textures/score_great.png"     },
+    { id: "score_good"      , url: "/assets/game/keyboardhero/textures/score_good.png"      },
+    { id: "score_ok"        , url: "/assets/game/keyboardhero/textures/score_ok.png"        },
+    { id: "score_miss"      , url: "/assets/game/keyboardhero/textures/score_miss.png"      },
     
 ];
 

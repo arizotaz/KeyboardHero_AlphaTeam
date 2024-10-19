@@ -39,6 +39,9 @@ class GameBoard {
         this.originY = originY;
         this.gameAudio = gameAudio;
         if (!this.canUpdate) return;
+        
+
+        let particle_force = 50;
 
 
         // For each lane
@@ -77,13 +80,19 @@ class GameBoard {
                         if (distanceL < distanceH) distance = distanceL;
 
                         // Get accuracy percentage
-                        let percentage = distance / (collectMSThresh / 1000)
+                        let percentage = distance / (collectMSThresh / 1000);
 
                         // Get the integer value of the percentage of maxComboAdd
-                        this.gameComboMultiplier += Math.round(maxComboAdd * (1 - percentage));
+                        this.gameComboMultiplier += Math.round(maxComboAdd * percentage);
 
                         //Add to Score
                         this.gameScore += this.gameComboMultiplier * pointsPerNote;
+
+                        if (percentage >= .9)                       particles.push(new Particle_PERFECT (this.gameWidth/2,this.gameHeight/2-100,0,-particle_force));
+                        if (percentage >= .8 && percentage < .9)    particles.push(new Particle_GREAT   (this.gameWidth/2,this.gameHeight/2-100,0,-particle_force));
+                        if (percentage >= .7 && percentage < .8)    particles.push(new Particle_GOOD    (this.gameWidth/2,this.gameHeight/2-100,0,-particle_force));
+                        if (percentage < .7)                        particles.push(new Particle_OK      (this.gameWidth/2,this.gameHeight/2-100,0,-particle_force));
+
 
                         // Remove from list to prevent double tapping the same note
                         timestamps.splice(t, 1)
@@ -96,6 +105,7 @@ class GameBoard {
                 // if debug flag is on then don't reset combo on miss
                 if (!this.debugCombo){
                     this.gameComboMultiplier = 0;
+                    particles.push(new Particle_MISS(this.gameWidth/2,this.gameHeight/2-100,0,-particle_force));
                 }
             }
         }
@@ -122,7 +132,8 @@ class GameBoard {
                         // Reset Combo, Add to missed tiles, remove from list
                         this.gameComboMultiplier = 0;
                         ++this.gameMissedTiles;
-                        timestamps.splice(t, 1)
+                        timestamps.splice(t, 1);
+                        particles.push(new Particle_MISS(this.gameWidth/2,this.gameHeight/2-100,0,-particle_force));
                     }
                 }
             }

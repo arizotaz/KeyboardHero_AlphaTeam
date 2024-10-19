@@ -45,6 +45,8 @@ class SinglePlayerGame extends Menu {
 
         LoadSettings();
 
+        particles = [];
+
         // Make canvas static
         document.getElementsByTagName("canvas")[0].style.position = "fixed";
 
@@ -105,6 +107,10 @@ class SinglePlayerGame extends Menu {
 
         // Run game update loop
         boards[0].Update(spOFFX, spOFFY, gameWidth, windowHeight,gameAudio);
+
+        // Process Particles
+        for (let i = 0; i < particles.length; ++i)
+            particles[i].Tick();
         
         // End game when all boards are completed and go to MENU_COMPLETE_SINGLEPLAYER
         let gameDone = true;
@@ -119,6 +125,10 @@ class SinglePlayerGame extends Menu {
         boards[0].Render();
         // Draw Debug Text
         DrawDebugInfo();
+
+        // Render Particles
+        for (let i = 0; i < particles.length; ++i)
+            particles[i].Render();
     }
     Leave() {
         // Run Exit function
