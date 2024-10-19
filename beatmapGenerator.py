@@ -5,6 +5,7 @@ import json
 import base64
 import sys
 import os.path
+import statistics
 
 # constants =======================================================================================
 version = "1.0"
@@ -22,25 +23,19 @@ y, sr = librosa.load(songLocation)
 # get onset/peak strengths throughout whole mp3
 onsetStrengths = librosa.onset.onset_strength(y=y,sr=sr)
 # get timestamps of beats
-tempo, beats = librosa.beat.beat_track(y=y, sr=sr,onset_envelope=onsetStrengths,tightness=50)
+tempo, beats = librosa.beat.beat_track(y=y, sr=sr,onset_envelope=onsetStrengths,tightness=40)
 # get onset strength of gathered beats
 beatStrengths = onsetStrengths[beats]
 
 beats = librosa.frames_to_time(beats, sr=sr) # convert frames to seconds
-timestamps = []
-for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)):
-    # beat timestamp, beat strength, and marker indicating if its included in the beatmap
-    timestamps.append([beats.item(),beatStrengths.item(),1])
+timestamps = [] # to hold timestamp information
 
-# get range of strengths
-min = 100
-max = -1
-for t in timestamps:
-    if (t[1] < min):
-        min = t[1]
-    if (t[1] > max):
-        max = t[1]
-strengthRange = max - min
+# iterate through beats and their strengths
+for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)): 
+    silenceThreshold = 0.2 # exclude beats below a certain strength (silent moments)
+    if (beatStrengths > silenceThreshold):
+        # beat timestamp, beat strength, include marker, and time till next beat
+        timestamps.append([beats.item(),beatStrengths.item(),1,0])
 
 n = 1 # index of next beat
 c = 0 # index of current beat
@@ -49,12 +44,13 @@ while (n < len(timestamps)):
     if (timestamps[n][0] - timestamps[c][0] < bufferTime):
         timestamps[n][2] = 0 # get rid of beat at index n
     else:
+        timestamps[c][3] = timestamps[n][0] - timestamps[c][0] # get time till next beat
         c = n # update index of current beat
-    n = n + 1
+    n = n + 1 # increment next beat
 
 # assign timestamps to lanes ======================================================================
 
-# create lists for lanest
+# create lists for tracks
 track0 = []
 track1 = []
 track2 = []
@@ -62,18 +58,42 @@ track3 = []
 tracks = [track0, track1, track2, track3]
 
 # assign timestamps to lanes based on amplitude
+pattern = 0
+currentGap = timestamps[0][3]
+median = statistics.median([t[1] for t in timestamps]) # get median of strength of beats
 for t in timestamps:
-    if (t[2] == 1):
-        if (t[1] > (min + strengthRange*.8)):
-            track0.append(t[0])
-            track1.append(t[0])
-            track2.append(t[0])
-            track3.append(t[0])
-        elif (t[1] > (min + strengthRange*.5)):
-            track1.append(t[0])
-            track2.append(t[0])
-        else:
-            (tracks[random.randint(0,3)]).append(t[0])
+
+    if (t[2] == 1): # only consider included beats
+
+        # change patterns if not similar gap between notes or there's a significant strength to the beat
+        if ((not (t[3] >= currentGap-0.10 and t[3] <= currentGap+0.10)) or t[1] > median):
+
+            # make sure pattern changes
+            prevPattern = pattern 
+            while (pattern == prevPattern): 
+                pattern = random.randint(0,6) 
+            
+            # update the currentGap
+            currentGap = t[3]
+
+        match pattern: # assign to lanes based on pattern
+            case 0:
+                track0.append(t[0])
+                track1.append(t[0])
+            case 1:
+                track2.append(t[0])
+                track3.append(t[0])
+            case 2:
+                track1.append(t[0])
+                track2.append(t[0])
+            case 3:
+                track0.append(t[0])
+            case 4:
+                track1.append(t[0])
+            case 5:
+                track2.append(t[0])
+            case 6:
+                track3.append(t[0])
 
 
 # get base64 data  ===============================================================================
