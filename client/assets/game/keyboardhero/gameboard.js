@@ -26,6 +26,12 @@ class GameBoard {
 
         // Flag to disable combo resets to test combo
         this.debugCombo = 0;
+
+
+        this.gameCompletionPercentage = -100;
+        this.gameStartCountdown = 4;
+        this.gameAudioCurrentTime = 0;
+        this.gameAudioLastPoll = 0;
     }
     // When the board is created, must be manually called
     Start() {
@@ -150,13 +156,43 @@ class GameBoard {
 
 
 
-
+        // Holds the input in another array for .25 seconds to display presses
         for (let i = 0; i < this.numberOfNotes; ++i) {
             if (this.inputAni[i] != null && this.inputAni[i] > 0)
                 this.inputAni[i] -= deltaTime/1000;
             if (this.input[i] != null && this.input[i] > 0)
                 this.inputAni[i] = .25;
         }
+
+
+        // if countdown is greater than 0
+        if (this.gameStartCountdown > 0) {
+            // set board to negative duration to keep the tiles above the screen
+            this.gameCompletionPercentage = (-this.gameStartCountdown/this.gameAudio.duration);
+            // decrement this time
+            this.gameStartCountdown -= deltaTime/1000;
+        } else {
+            // One shot to play music using gameStartCountdown, since its not longer in use
+            if (this.gameStartCountdown != -100) {
+                gameAudio.play();
+                this.gameStartCountdown = -100;
+            }
+
+            // Music smoothing function
+            // Firefox does not update the audio.currentTime handle as requently as edge or chome
+            // instead we keep updating the currentTime as a seperate value, and correct it when
+            // the browser updates
+            this.gameAudioCurrentTime += deltaTime/1000;
+            if (this.gameAudio.currentTime != this.gameAudioLastPoll) {
+                this.gameAudioLastPoll = this.gameAudio.currentTime;
+                this.gameAudioCurrentTime = this.gameAudioLastPoll;
+            }
+            
+            // Game completion using the new time
+            this.gameCompletionPercentage = this.gameAudioCurrentTime/this.gameAudio.duration;
+        }
+        
+
     }
 
     // Draws to the screen at the position specified in Update
@@ -166,7 +202,7 @@ class GameBoard {
 
         let buttonSize = this.gameWidth/this.numberOfNotes/2;
         this.DrawGameBar(this.originX, this.originY+this.gameHeight/2-buttonSize/2,buttonSize);
-        this.DrawGameTiles(this.originX, this.originY + this.gameHeight / 2 - buttonSize/2, GetAudioCompletion(this.gameAudio));
+        this.DrawGameTiles(this.originX, this.originY + this.gameHeight / 2 - buttonSize/2, this.gameCompletionPercentage);
     }
 
     // The Colors at the bottom of the screen
@@ -356,6 +392,10 @@ class GameBoard {
     // Completion
     CompletionPercentage() {
         return GetAudioCompletion(this.gameAudio);
+    }
+
+    StartCountdown() {
+        return this.gameStartCountdown;
     }
 
     // Is the game completed

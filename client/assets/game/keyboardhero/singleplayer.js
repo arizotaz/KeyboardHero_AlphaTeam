@@ -92,7 +92,6 @@ class SinglePlayerGame extends Menu {
             if (playersReady && gameAudio != null) {
                 singlePlayerStarted = true;
                 gameAudio.volume = Settings.GetKey(Setting_GameVolume);
-                gameAudio.play();
             }
         }
 
@@ -129,6 +128,16 @@ class SinglePlayerGame extends Menu {
         // Render Particles
         for (let i = 0; i < particles.length; ++i)
             particles[i].Render();
+
+        if (boards[0].StartCountdown() > 1) {
+            fill(0,0,0,100);
+            rect(0,0,windowWidth,windowHeight);
+            fill(255);
+            textSize(50);
+            textAlign(CENTER,CENTER);
+            text("Starting in",0,-25);
+            text(Math.ceil(boards[0].StartCountdown()) - 1,0,25);
+        }
     }
     Leave() {
         // Run Exit function
