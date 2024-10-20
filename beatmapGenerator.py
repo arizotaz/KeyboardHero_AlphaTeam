@@ -23,7 +23,7 @@ y, sr = librosa.load(songLocation)
 # get onset/peak strengths throughout whole mp3
 onsetStrengths = librosa.onset.onset_strength(y=y,sr=sr)
 # get timestamps of beats
-tempo, beats = librosa.beat.beat_track(y=y, sr=sr,onset_envelope=onsetStrengths,tightness=40)
+tempo, beats = librosa.beat.beat_track(y=y, sr=sr,onset_envelope=onsetStrengths,tightness=1)
 # get onset strength of gathered beats
 beatStrengths = onsetStrengths[beats]
 

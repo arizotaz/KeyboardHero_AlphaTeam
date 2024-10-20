@@ -107,3 +107,50 @@ function GetTexture(id) {
     return loadedTextures[id].img;
 }
 
+// Returns the texture id of the background of theme [themeID]
+function ThemeBackground    (themeID)       { return "theme_"+themeID+"_background"; }
+
+// Returns the lane key down texture id of lane [lane] in theme [themeID]
+function ThemeLaneKeyDown   (themeID,lane)  { return "theme_"+themeID+"_lane_"+lane+"_key_down"; }
+// Returns the lane key up texture id of lane [lane] in theme [themeID]
+function ThemeLaneKeyUp     (themeID,lane)  { return "theme_"+themeID+"_lane_"+lane+"_key_up"; }
+
+// Returns the lane background down texture id of lane [lane] in theme [themeID]
+function ThemeLaneBGDown    (themeID,lane)  { return "theme_"+themeID+"_lane_"+lane+"_bg_down"; }
+// Returns the lane background up texture id of lane [lane] in theme [themeID]
+function ThemeLaneBGUp      (themeID,lane)  { return "theme_"+themeID+"_lane_"+lane+"_bg_up"; }
+
+// Returns the texture id of the tile of theme [themeID]
+function ThemeTile          (themeID)       { return "theme_"+themeID+"_tile"; }
+
+// Creates entries for [themeID]
+function LoadTheme(themeID) {
+    AddTextureID(ThemeBackground(themeID));
+
+    for (let i = 0; i < 4; ++i) {
+        AddTextureID(ThemeLaneKeyDown(themeID,i));
+        AddTextureID(ThemeLaneKeyUp(themeID,i));
+        AddTextureID(ThemeLaneBGDown(themeID,i));
+        AddTextureID(ThemeLaneBGUp(themeID,i));
+    }
+
+    AddTextureID(ThemeTile(themeID));
+}
+
+// Removes texture
+function RemTextureID(tid) {
+    for (let i = textures.length-1; i >= 0; --i)
+        if (textures[i].id == tid)
+            textures.splice(i,1);
+    delete loadedTextures[tid];
+}
+
+// Adds texture
+function AddTextureID(tid) {
+    let li = { id: tid, url: "/assets/game/keyboardhero/textures/"+tid+".png"};
+    RemTextureID(tid);
+    textures.push(li);
+}
+
+// Load theme 0 as default
+LoadTheme(0);
