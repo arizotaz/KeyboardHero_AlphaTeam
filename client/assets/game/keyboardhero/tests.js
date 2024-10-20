@@ -161,6 +161,7 @@ function MakeAndRunTests() {
                 console.log("📋 Changed Menu to " + MENU_SINGLEPLAYER)
                 await waitDelay(1000);
 
+                await waitDelay(4000);
                 console.log("📋 Get first game position reading")
                 let firstReading = boards[0].CompletionPercentage();
                 await waitDelay(1000);
@@ -256,13 +257,13 @@ function MakeAndRunTests() {
             try {
                 MenuManager.GoTo(MENU_SINGLEPLAYER);
                 console.log("📋 Changed Menu to " + MENU_SINGLEPLAYER)
-                await waitDelay(250);   
+                await waitDelay(4000);   
                     
                 for (let i = 0; i < boards[0].input_keys.length; ++i) {
                     // End if the game completes to avoid a softlock
                     while (boards[0].gameScore == 0 && !boards[0].gameComplete){
                         // Wait 10 miliseconds between attempted input to avoid crashing the browser
-                        await waitDelay(10); 
+                        await waitDelay(100); 
                         boards[0].input[i] = 1;
                         // Force an update otherwise input isn't registered
                         boards[0].Update(boards[0].originX, boards[0].originY, boards[0].gameWidth, boards[0].gameHeight, boards[0].gameAudio);
