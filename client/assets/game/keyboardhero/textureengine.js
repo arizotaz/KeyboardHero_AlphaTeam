@@ -123,6 +123,15 @@ function ThemeLaneBGUp      (themeID,lane)  { return "theme_"+themeID+"_lane_"+l
 // Returns the texture id of the tile of theme [themeID]
 function ThemeTile          (themeID)       { return "theme_"+themeID+"_tile"; }
 
+function ThemeProgressFill  (themeID)       { return "theme_"+themeID+"_progress_fill"; }
+function ThemeProgressFillB (themeID)       { return "theme_"+themeID+"_progress_fill_start"; }
+function ThemeProgressFillE (themeID)       { return "theme_"+themeID+"_progress_fill_end"; }
+
+function ThemeProgressBG    (themeID)       { return "theme_"+themeID+"_progress_container"; }
+function ThemeProgressBGB   (themeID)       { return "theme_"+themeID+"_progress_container_start"; }
+function ThemeProgressBGE   (themeID)       { return "theme_"+themeID+"_progress_container_end"; }
+
+
 // Creates entries for [themeID]
 function LoadTheme(themeID) {
     AddTextureID(ThemeBackground(themeID));
@@ -135,6 +144,13 @@ function LoadTheme(themeID) {
     }
 
     AddTextureID(ThemeTile(themeID));
+
+    AddTextureID(ThemeProgressFill(themeID));
+    AddTextureID(ThemeProgressFillB(themeID));
+    AddTextureID(ThemeProgressFillE(themeID));
+    AddTextureID(ThemeProgressBG(themeID));
+    AddTextureID(ThemeProgressBGB(themeID));
+    AddTextureID(ThemeProgressBGE(themeID));    
 }
 
 // Removes texture

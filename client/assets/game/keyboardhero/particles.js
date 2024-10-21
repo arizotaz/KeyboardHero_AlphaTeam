@@ -33,18 +33,18 @@ class Particle{
 class Particle_MISS extends Particle {
     Render() {
         let h = particle_size;
-        let w = h*(100/30);;
-        let x = this.x + w/2;
-        let y = this.y - h/2;
+        let w = h*(100/30);
+        let x = this.x;
+        let y = this.y;
         image(GetTexture("score_miss"),x,y,w,h);
     }
 }
 class Particle_PERFECT extends Particle {
     Render() {
         let h = particle_size;
-        let w = h*(120/30);;
-        let x = this.x + w/2;
-        let y = this.y - h/2;
+        let w = h*(120/30);
+        let x = this.x;
+        let y = this.y;
         image(GetTexture("score_perfect"),x,y,w,h);
     }
 }
@@ -52,8 +52,8 @@ class Particle_GREAT extends Particle {
     Render() {
         let h = particle_size;
         let w = h*(100/30);
-        let x = this.x + w/2;
-        let y = this.y - h/2;
+        let x = this.x;
+        let y = this.y;
         image(GetTexture("score_great"),x,y,w,h);
     }
 }
@@ -61,8 +61,8 @@ class Particle_GOOD extends Particle {
     Render() {
         let h = particle_size;
         let w = h*(100/30);
-        let x = this.x + w/2;
-        let y = this.y - h/2;
+        let x = this.x;
+        let y = this.y;
         image(GetTexture("score_good"),x,y,w,h);
     }
 }
@@ -70,8 +70,8 @@ class Particle_OK extends Particle {
     Render() {
         let h = particle_size;
         let w = h*(45/30);;
-        let x = this.x + w/2;
-        let y = this.y - h/2;
+        let x = this.x;
+        let y = this.y;
         image(GetTexture("score_ok"),x,y,w,h);
     }
 }

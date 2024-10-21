@@ -11,7 +11,7 @@ class GameBoard {
         this.canUpdate = false;
         this.canRender = true;
         this.input = [];
-        this.inputAni = [];
+        this.inputAni = [1,1,1,1,1,1,1];
         this.inputOneShots = [];
 
         this.gameScore = 0;
@@ -32,6 +32,8 @@ class GameBoard {
         this.gameStartCountdown = 4;
         this.gameAudioCurrentTime = 0;
         this.gameAudioLastPoll = 0;
+
+        this.songName = "Loading...";
     }
     // When the board is created, must be manually called
     Start() {
@@ -95,10 +97,10 @@ class GameBoard {
                         //Add to Score
                         this.gameScore += this.gameComboMultiplier * pointsPerNote;
 
-                        if (percentage >= .9) particles.push(new Particle_PERFECT(this.gameWidth / 2, this.gameHeight / 2 - 100, 0, -particle_force));
-                        if (percentage >= .8 && percentage < .9) particles.push(new Particle_GREAT(this.gameWidth / 2, this.gameHeight / 2 - 100, 0, -particle_force));
-                        if (percentage >= .7 && percentage < .8) particles.push(new Particle_GOOD(this.gameWidth / 2, this.gameHeight / 2 - 100, 0, -particle_force));
-                        if (percentage < .7) particles.push(new Particle_OK(this.gameWidth / 2, this.gameHeight / 2 - 100, 0, -particle_force));
+                        if (percentage >= .9) particles.push(new Particle_PERFECT(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
+                        if (percentage >= .8 && percentage < .9) particles.push(new Particle_GREAT(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
+                        if (percentage >= .7 && percentage < .8) particles.push(new Particle_GOOD(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
+                        if (percentage < .7) particles.push(new Particle_OK(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
 
 
                         // Remove from list to prevent double tapping the same note
@@ -112,7 +114,7 @@ class GameBoard {
                 // if debug flag is on then don't reset combo on miss
                 if (!this.debugCombo) {
                     this.gameComboMultiplier = 0;
-                    particles.push(new Particle_MISS(this.gameWidth / 2, this.gameHeight / 2 - 100, 0, -particle_force));
+                    particles.push(new Particle_MISS(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
                 }
             }
         }
@@ -140,7 +142,7 @@ class GameBoard {
                         this.gameComboMultiplier = 0;
                         ++this.gameMissedTiles;
                         timestamps.splice(t, 1);
-                        particles.push(new Particle_MISS(this.gameWidth / 2, this.gameHeight / 2 - 100, 0, -particle_force));
+                        particles.push(new Particle_MISS(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
                     }
                 }
             }
@@ -203,6 +205,99 @@ class GameBoard {
         let buttonSize = this.gameWidth/this.numberOfNotes/2;
         this.DrawGameBar(this.originX, this.originY+this.gameHeight/2-buttonSize/2,buttonSize);
         this.DrawGameTiles(this.originX, this.originY + this.gameHeight / 2 - buttonSize/2, this.gameCompletionPercentage);
+    }
+
+    // Draw left and right panels
+    RenderGameStats() {
+        // Get Space left over from game board
+        let sectionWidth = windowWidth-this.gameWidth;
+
+        // Get the size of each side
+        sectionWidth = sectionWidth/2;
+
+        if (windowWidth > 1000) {
+            this.DrawLeftSec (this.originX-windowWidth/2+sectionWidth/2,this.originY,sectionWidth,this.gameHeight);
+            this.DrawRightSec(this.originX+windowWidth/2-sectionWidth/2,this.originY,sectionWidth,this.gameHeight);
+        } else {
+            this.particleXOrigin = this.originX+this.gameWidth/2+100;
+            this.particleYOrigin = this.originY+this.gameHeight/2;
+            
+        }
+        
+    }
+
+    DrawLeftSec(x,y,w,h) {
+
+        let sectionHeight = h/3;
+
+        let headerFontSize = sectionHeight/5;
+        let fontSize = headerFontSize/1.2; 
+
+
+        fill(255);
+        textAlign(CENTER,CENTER);
+
+        textSize(headerFontSize);
+        textFont('Berlin Sans FB');
+        text("Score",x,y-sectionHeight-fontSize/2);
+        textSize(fontSize);
+        //textFont('Courier New');
+        text(this.gameScore,x,y-sectionHeight+fontSize/2);
+
+        textSize(headerFontSize);
+        textFont('Berlin Sans FB');
+        text("Cambo",x,y-fontSize/2);
+        textSize(fontSize);
+        //textFont('Courier New');
+        text("X"+this.gameComboMultiplier,x,y+fontSize/2);
+
+        textSize(headerFontSize);
+        textFont('Berlin Sans FB');
+        text("Missed",x,y+sectionHeight-fontSize/2);
+        textSize(fontSize);
+        //textFont('Courier New');
+        text(this.gameMissedTiles,x,y+sectionHeight+fontSize/2);
+        
+    }
+    DrawRightSec(x,y,w,h) {
+
+        let sectionHeight = h/4;
+
+        let headerFontSize = w/this.songName.length*1.5; 
+        let fontSize = headerFontSize/1.2; 
+
+        textSize(headerFontSize);
+        textFont('Berlin Sans FB');
+        text(this.songName,x,y-sectionHeight-fontSize/2,w,h);
+
+
+        this.particleXOrigin = x;
+        this.particleYOrigin = y+sectionHeight+fontSize/2;
+
+        let per = this.gameCompletionPercentage;
+        if (per < 0) per = 0;
+        let bh = 20;
+        fill(0);
+        rect(x,y-sectionHeight+fontSize/2,headerFontSize*this.songName.length/2,10);
+
+        let px = x;
+        let py = y-sectionHeight+fontSize/2;
+        let ph = 10;
+        let pw = headerFontSize*this.songName.length/2;
+
+        let endWidth = 5;
+
+        let fillSize = pw-endWidth/2
+
+        image(GetTexture(ThemeProgressBG (gameTheme)),px,py,fillSize,ph);
+        image(GetTexture(ThemeProgressBGE(gameTheme)),px+pw/2-endWidth/2,py,endWidth,ph);
+        image(GetTexture(ThemeProgressBGB(gameTheme)),px-pw/2+endWidth/2,py,endWidth,ph);
+
+        let perw = pw*per;
+        fillSize = perw-endWidth/2;
+        image(GetTexture(ThemeProgressFill (gameTheme)),px-pw/2+endWidth+fillSize/2,py,fillSize,ph);
+        image(GetTexture(ThemeProgressFillE(gameTheme)),px-pw/2+endWidth+fillSize+endWidth/2,py,endWidth,ph);
+        image(GetTexture(ThemeProgressFillB(gameTheme)),px-pw/2+endWidth/2,py,endWidth,ph);
     }
 
     // The Colors at the bottom of the screen
@@ -378,6 +473,7 @@ class GameBoard {
     // Load Data
     LoadFileData(dataJSON) {
         this.gameFileData = dataJSON;
+        this.songName = this.gameFileData.song_title;
         // number of lanes
         this.numberOfNotes = this.gameFileData.beatmap_arrays.length;
         this.gameTotalTiles = 0;

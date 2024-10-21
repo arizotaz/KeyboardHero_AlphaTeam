@@ -122,8 +122,11 @@ class SinglePlayerGame extends Menu {
         DrawGameBG();
         // Render board
         boards[0].Render();
+        boards[0].RenderGameStats();
+
         // Draw Debug Text
-        DrawDebugInfo();
+        if (window.location.href.includes("localhost"))
+            DrawDebugInfo();
 
         // Render Particles
         for (let i = 0; i < particles.length; ++i)
