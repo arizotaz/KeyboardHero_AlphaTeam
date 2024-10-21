@@ -129,29 +129,7 @@
 
 <!-- JavaScript Section -->
 <script>
-    let gameArtiLatency = 2 / 1000; // Default latency in seconds
 
-    // Function to apply the latency value from the input field
-    function applyLatency() {
-        const latencyValue = parseInt(document.getElementById('latencyInput').value, 10);
-        
-        // Convert milliseconds to seconds and update gameArtiLatency
-        gameArtiLatency = latencyValue / 1000;
-
-        console.log(`Latency set to: ${gameArtiLatency} seconds`);
-
-        // Optionally, save the latency value to localStorage
-        localStorage.setItem('gameArtiLatency', latencyValue);
-    }
-
-    // Load latency value from localStorage on page load
-    window.onload = function() {
-        const savedLatency = localStorage.getItem('gameArtiLatency') || 0;
-        document.getElementById('latencyInput').value = savedLatency;
-        gameArtiLatency = savedLatency / 1000;
-
-        console.log(`Loaded latency: ${gameArtiLatency} seconds`);
-    };
 </script>
 
 
