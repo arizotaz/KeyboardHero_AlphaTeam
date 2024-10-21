@@ -23,7 +23,7 @@ y, sr = librosa.load(songLocation)
 # get onset/peak strengths throughout whole mp3
 onsetStrengths = librosa.onset.onset_strength(y=y,sr=sr)
 # get timestamps of beats
-tempo, beats = librosa.beat.beat_track(y=y,sr=sr,onset_envelope=onsetStrengths,tightness=0.1,trim=True)
+tempo, beats = librosa.beat.beat_track(y=y,sr=sr,onset_envelope=onsetStrengths,tightness=0.05,trim=True)
 # get onset strength of gathered beats
 beatStrengths = onsetStrengths[beats]
 
@@ -32,7 +32,7 @@ timestamps = [] # to hold timestamp information
 
 # iterate through beats and their strengths
 for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)): 
-    silenceThreshold = 1.1 # exclude beats below a certain strength (silent moments)
+    silenceThreshold = 1.5 # exclude beats below a certain strength (silent moments)
     if (beatStrengths > silenceThreshold):
         # beat timestamp, beat strength, include marker, and time till next beat
         timestamps.append([beats.item(),beatStrengths.item(),1,0])
