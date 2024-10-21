@@ -285,12 +285,7 @@ function MakeAndRunTests() {
         }
     );
 
-    RunTestTasks();
-}
-
-
-// THIS TEST WAS NOT FIXED
-function BrokenTest() {
+    // Test Combo
     CreateTest("Test Combo",
         "The the ability of the game's combo system",
         async function () {
@@ -346,5 +341,7 @@ function BrokenTest() {
             }
         }
     );
+
+    RunTestTasks();
 }
    
