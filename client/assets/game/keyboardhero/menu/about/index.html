@@ -1,13 +1,20 @@
 <style>
-    #aboutMenuContainer {
-        font-family: 'Courier New', Courier, monospace;
-        background: linear-gradient(to bottom right, #6a1b9a, #d5006d);
-        color: #ffffff;
-        text-align: center;
-        padding: 40px;
-        margin: 0;
-        height: 100%;
-    }
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#aboutMenuContainer {
+    font-family: 'Courier New', Courier, monospace;
+    background: linear-gradient(to bottom right, #6a1b9a, #d5006d);
+    color: #ffffff;
+    text-align: center;
+    padding: 40px;
+    margin: 0;
+    min-height: 100vh; /* Ensure the container extends to the viewport height */
+    box-sizing: border-box;
+}
 
     h1 {
         color: #ffea00;

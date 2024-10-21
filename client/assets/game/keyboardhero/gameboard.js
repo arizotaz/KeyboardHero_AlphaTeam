@@ -246,7 +246,7 @@ class GameBoard {
 
         textSize(headerFontSize);
         textFont('Berlin Sans FB');
-        text("Cambo",x,y-fontSize/2);
+        text("Combo",x,y-fontSize/2);
         textSize(fontSize);
         //textFont('Courier New');
         text("X"+this.gameComboMultiplier,x,y+fontSize/2);
