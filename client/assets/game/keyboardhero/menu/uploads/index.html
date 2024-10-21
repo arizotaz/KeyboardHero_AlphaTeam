@@ -91,13 +91,14 @@
     }
 </style>
 <div class="container">
-    <button class="back-button">Back</button>
+    <button class="back-button" onclick="MenuManager.GoBack()">Back</button>
     
-    <button class="settings-button">Settings</button>
+    <button class="settings-button" onclick="MenuManager.GoTo(MENU_SETTINGS)">Settings</button>
 
     <div class="upload-section">
         <h2>Upload Files</h2>
-        <input type="file" id="file-upload" multiple>
+        <input type="file" id="mp3FileUpload" multiple>
+        <button class="" onclick="UploadNewSong()">Upload</button>
     </div>
 
     <div class="slideshow container">
