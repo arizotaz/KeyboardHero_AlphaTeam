@@ -6,7 +6,25 @@
 let gameWidth = 500;            // play area in pixels
 let numberOfNotes = 4;        // number of tracks, dictated by file
 const gameSpeedMultiplier = 4;  // Speed and spacing of tiles
-let gameArtiLatency = 2 / 1000; // Added latency in seconds
+
+let gameArtiLatency = 2 / 1000; // Existing variable in your game logic
+
+// Function to apply the latency value from input
+function applyLatency() {
+    const latencyValue = parseInt(document.getElementById('latencyInput').value, 10);
+    
+    // Convert milliseconds to seconds and update gameArtiLatency
+    gameArtiLatency = latencyValue / 1000;
+
+    console.log(`Latency set to: ${gameArtiLatency} seconds`);
+    
+    // You can save the latency value to localStorage if needed
+    localStorage.setItem('gameArtiLatency', latencyValue);
+}
+
+
+
+// Added latency in seconds
 // List of input status per lane, one shot limits the user to tapping key rather than holding
 let input = [], inputOneShots = [];
 

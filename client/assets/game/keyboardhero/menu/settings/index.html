@@ -58,19 +58,29 @@
         }
     }
 </style>
+
+
+
 <div class="menuContainer">
     <div class="topBar">
-        <div class="backShortcut"><img onclick="MenuManager.GoBack();"
-                src="/assets/game/keyboardhero/textures/button_back.png" alt=""></div>
+        <div class="backShortcut">
+            <img onclick="MenuManager.GoBack();" 
+                 src="/assets/game/keyboardhero/textures/button_back.png" alt="">
+        </div>
     </div>
+
     <div class="mainSettingsPageContent neonButtons">
 
         <h3>Game Volume</h3>
-        <div class="shadow" style="width:100vw;max-width: 800px;"><input type="range" id="gameVolume"
-                class="neonSlider" min="0" max="100"></div>
+        <div class="shadow" style="width:100vw; max-width: 800px;">
+            <input type="range" id="gameVolume" class="neonSlider" min="0" max="100">
+        </div>
+
         <h3>Menu Volume</h3>
-        <div class="shadow" style="width:100vw;max-width: 800px;"><input type="range" id="menuVolume"
-                class="neonSlider" min="0" max="100"></div>
+        <div class="shadow" style="width:100vw; max-width: 800px;">
+            <input type="range" id="menuVolume" class="neonSlider" min="0" max="100">
+        </div>
+
         <div class="controlChanger">
             <select id="columnWidth" onchange="LoadKeysToControlChanger(this.value)">
                 <option value="1">1 - Lane</option>
@@ -78,13 +88,27 @@
                 <option value="4">4 - Lane</option>
                 <option value="5">5 - Lane</option>
             </select>
-            <div id="controlKeys">
-
-            </div>
+            <div id="controlKeys"></div>
         </div>
-        <div class="shadow"><button onclick="SaveSettingsMenuChanges()">Save</button></div>
+
+        <div class="shadow">
+            <button onclick="SaveSettingsMenuChanges()">Save</button>
+        </div>
 
     </div>
+</div>
+
+<!-- JavaScript Section -->
+<script>
+
+</script>
+
+
+
+
+
+
+
 </div>
 <script>
     function LoadKeysToControlChanger(laneWidth) {
