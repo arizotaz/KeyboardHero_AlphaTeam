@@ -124,7 +124,7 @@
     </div>
 </div>
 <script>
-    let slideIndex = 1;
+    slideIndex = 1;
     showSlides(slideIndex);
 
     function plusSlides(n) {
@@ -137,9 +137,8 @@
 
     function showSlides(n) {
     
-        let i;
-        let slides = document.getElementsByClassName("mySlides");
-        let dots = document.getElementsByClassName("dot");
+        slides = document.getElementsByClassName("mySlides");
+        dots = document.getElementsByClassName("dot");
 
         if (n > slides.length) {slideIndex = 1}
 
