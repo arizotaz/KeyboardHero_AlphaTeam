@@ -10,23 +10,24 @@
     }
 
     .container {
-        width: 65%;
+        width: 62%;
         margin: auto;
-        padding: 20px;
-        background: white;
+        padding: 30px;
+        background: rgb(219, 218, 218);
         border-radius: 10px;
         position: relative;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 1);
     }
 
     #uploadSongsMenuContainer button {
-        padding: 10px 15px;
+        padding: 8px 13px;
         border: none;
-        background-color: #007BFF;
+        background-color: #000000;
         color: white;
         border-radius: 5px;
         cursor: pointer;
         margin-bottom: 20px;
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease; 
     }
 
     #uploadSongsMenuContainer button:hover {
@@ -55,130 +56,103 @@
         padding: 10px;
     }
 
-    .carousel-container {
+    .slideshow-container {
         position: relative;
-        text-align: center;
-        width: 350px;
-        height: 350px;
-        margin: 0 auto;
-        overflow: hidden;
-        padding: 20px;
-        background-color: #ffffff;
+        margin: auto;
     }
 
-    .carousel {
-        display: flex;
-        transition: transform 0.5s ease-in-out;
-        width: 100%;
-        height: 100%;
+    .mySlides {
+        display: none;
     }
 
-    .carousel-item {
-        min-width: 100%;
-        height: 100%;
-        background-image: url('/assets/game/keyboardhero/menu/uploads/song1.jpg');
-        color: white;
-        text-align: center;
-        border-radius: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-size: cover;
-        background-position: center;
-    }
-
-    .prev,
-    .next {
-        background-color: #007BFF;
-        border: none;
-        padding: 10px;
-        color: white;
-        border-radius: 5px;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
+    .dot {
         cursor: pointer;
-        transition: transform 0.3s ease;
-        font-size: 20px;
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        transition: background-color 0.6s ease;
     }
 
-    .prev:hover,
-    .next:hover {
-        transform: scale(1.2) translateY(-50%);
+    .active, .dot:hover {
+        background-color: #717171;
     }
 
-    .prev {
-        right: -40px;
+    .fade {
+        animation-name: fade;
+        animation-duration: 1.5s;
     }
 
-    .next {
-        left: -40px;
-    }
-
-
-
-    @media (max-width: 600px) {
-        .carousel-item {
-            padding: 20px;
-        }
-
-        button {
-            padding: 8px 12px;
-        }
-
-        .back-button,
-        .settings-button {
-            padding: 8px 12px;
-            top: 10px;
-        }
+    @keyframes fade {
+        from {opacity: .4}
+        to {opacity: 1}
     }
 </style>
 <div class="container">
-    <button class="back-button" onclick="MenuManager.GoTo(MENU_MAIN);">Back</button>
-
-    <button class="settings-button" onclick="MenuManager.GoTo(MENU_SETTINGS);">Settings</button>
+    <button class="back-button">Back</button>
+    
+    <button class="settings-button">Settings</button>
 
     <div class="upload-section">
         <h2>Upload Files</h2>
-        <div method="POST" enctype="multipart/form-data">
-            <input id="mp3FileUpload" type="file" name="file" required>
-            <button onclick="UploadNewSong()" type="submit">Upload</button>
-        </div>
+        <input type="file" id="file-upload" multiple>
     </div>
 
-    <div class="carousel-container">
-        <h2>Demo Songs</h2>
-        <div class="carousel">
-            <div class="carousel-item">Song 1</div>
-            <div class="carousel-item">Song 2</div>
-            <div class="carousel-item">Song 3</div>
+    <div class="slideshow container">
+        <div class="mySlides fade">
+            <img src="/assets/game/keyboardhero/menu/uploads/song1.jpg" style="width:100%">
         </div>
-        <button class="next">&#9654;</button> <!-- Right Arrow -->
-        <button class="prev">&#9664;</button> <!-- Left Arrow -->
+        
+        <div class="mySlides fade">
+            <img src="/assets/game/keyboardhero/menu/uploads/song1.jpg" style="width:100%">
+        </div>
+        
+        <div class="mySlides fade">
+            <img src="/assets/game/keyboardhero/menu/uploads/song1.jpg" style="width:100%">
+        </div>
+        <br>
+        
+        <div style="text-align:center">
+          <span class="dot" onclick="currentSlide(1)"></span>
+          <span class="dot" onclick="currentSlide(2)"></span>
+          <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+
     </div>
 </div>
 <script>
-    currentIndex = 0;
-    items = document.querySelectorAll('.carousel-item');
-    totalItems = items.length;
+    let slideIndex = 1;
+    showSlides(slideIndex);
 
-    document.querySelector('.next').addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % totalItems;
-        updateCarousel();
-    });
-
-    document.querySelector('.prev').addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-        updateCarousel();
-    });
-
-    function updateCarousel() {
-        items.forEach((item, index) => {
-            item.style.transform = `translateX(${(index - currentIndex) * 100}%)`;
-        });
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
     }
 
-    updateCarousel();
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+    
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+        let dots = document.getElementsByClassName("dot");
+
+        if (n > slides.length) {slideIndex = 1}
+
+        if (n < 1) {slideIndex = slides.length}
+
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[slideIndex-1].style.display = "block";
+        dots[slideIndex-1].className += " active";
+    }
 
     function UploadNewSong() {
         var fd = new FormData();
