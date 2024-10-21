@@ -161,6 +161,7 @@ function MakeAndRunTests() {
                 console.log("📋 Changed Menu to " + MENU_SINGLEPLAYER)
                 await waitDelay(1000);
 
+                await waitDelay(4000);
                 console.log("📋 Get first game position reading")
                 let firstReading = boards[0].CompletionPercentage();
                 await waitDelay(1000);
@@ -256,20 +257,20 @@ function MakeAndRunTests() {
             try {
                 MenuManager.GoTo(MENU_SINGLEPLAYER);
                 console.log("📋 Changed Menu to " + MENU_SINGLEPLAYER)
-                await waitDelay(250);   
+                await waitDelay(4000);   
                     
                 for (let i = 0; i < boards[0].input_keys.length; ++i) {
                     // End if the game completes to avoid a softlock
                     while (boards[0].gameScore == 0 && !boards[0].gameComplete){
                         // Wait 10 miliseconds between attempted input to avoid crashing the browser
-                        await waitDelay(10); 
+                        await waitDelay(100); 
                         boards[0].input[i] = 1;
                         // Force an update otherwise input isn't registered
                         boards[0].Update(boards[0].originX, boards[0].originY, boards[0].gameWidth, boards[0].gameHeight, boards[0].gameAudio);
                     }
                     // If the game completes it's assumed the tests failed
                     if (!boards[0].gameComplete){
-                        console.log("✅ Lane " + (i+1) + " registered")
+                        console.log("📋 Lane " + (i+1) + " registered")
                         boards[0].gameScore = 0;
                     }else{
                         MenuManager.GoTo(MENU_MAIN);
@@ -280,6 +281,63 @@ function MakeAndRunTests() {
                 return 0;               
             } catch (e) {
                 return e;
+            }
+        }
+    );
+
+    // Test Combo
+    CreateTest("Test Combo",
+        "The the ability of the game's combo system",
+        async function () {
+            try {
+                // Ensure a restart
+                await waitDelay(500); 
+                MenuManager.GoTo(MENU_MAIN);
+                // Start game
+                MenuManager.GoTo(MENU_SINGLEPLAYER);
+                console.log("📋 Changed Menu to " + MENU_SINGLEPLAYER)
+                await waitDelay(250);   
+                // Set debug flag
+                boards[0].debugCombo = 1;
+
+                // End if the game completes as a fall back, otherwise till 50 (assumes the sample song is being played)
+                while (boards[0].gameComboMultiplier < 50 && !boards[0].gameComplete){
+                    /*
+                    // Optional for any sized boards, since it sounds like we're sticking to 4 though will remain unused
+                    for (let i = 0; i < boards[0].input_keys.length; ++i) {
+                        boards[0].input[i] = 1;
+                    }
+                    */
+                    boards[0].input = [1, 1, 1, 1];
+                    // Force an update otherwise input isn't registered
+                    boards[0].Update(boards[0].originX, boards[0].originY, boards[0].gameWidth, boards[0].gameHeight, boards[0].gameAudio);
+                    // Wait 5 miliseconds between attempted input to avoid crashing the browser 
+                    await waitDelay(5); 
+                }
+
+                if (!boards[0].gameComplete){
+                    console.log("📋 Combo reached threshold.")
+                    // Reset debug flag
+                    boards[0].debugCombo = 0;
+                    // Break combo
+                    await waitDelay(1000);
+                    if (boards[0].gameComboMultiplier == 0){
+                        console.log("📋 Combo broke properly, test passed.")
+                        MenuManager.GoTo(MENU_MAIN);  
+                        return 0; 
+                    }else {
+                        console.log("❌ Combo did't reset properly.")
+                        MenuManager.GoTo(MENU_MAIN);  
+                        return;
+                    }
+                }else{
+                    // If the game completes before this point it's assumed something went wrong
+                    console.log("❌ Song completed. Combo didn't reach target in time.")
+                    MenuManager.GoTo(MENU_MAIN);  
+                    return;
+                }                       
+            } catch (e) {
+                    return e;
             }
         }
     );

@@ -21,6 +21,12 @@ class AudioCalibrationMenu extends Menu {
             document.getElementById('acMenu').style.display = 'block';
         });
     }
+    Update() {
+
+    }
+    Render() {
+        
+    }
     Leave() {
         $( "#acMenuContainer" ).remove();
         $( "#acMenu" ).append("<div id=\"acMenuContainer\"></div>");

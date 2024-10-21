@@ -12,7 +12,7 @@ const { exec } = require("child_process");
 // File System Library
 const fs = require('fs');
 // database functions
-const { getScores } = require('./client/database.js');
+const { getScores } = require('./database.js');
 
 // The cmd to start python
 // change file python.conf

@@ -4,13 +4,14 @@
 //# and processing of the game.  It will not load the file
 //# or handle input.  These funciton will instead be
 //# handled by the host of this object
-
+let gameTheme = 0;
 
 class GameBoard {
     constructor() {
         this.canUpdate = false;
         this.canRender = true;
         this.input = [];
+        this.inputAni = [1,1,1,1,1,1,1];
         this.inputOneShots = [];
 
         this.gameScore = 0;
@@ -22,6 +23,17 @@ class GameBoard {
         this.gameMissedTiles = 0;
         this.gameComplete = false;
         this.maxReachedCombo = 0;
+
+        // Flag to disable combo resets to test combo
+        this.debugCombo = 0;
+
+
+        this.gameCompletionPercentage = -100;
+        this.gameStartCountdown = 4;
+        this.gameAudioCurrentTime = 0;
+        this.gameAudioLastPoll = 0;
+
+        this.songName = "Loading...";
     }
     // When the board is created, must be manually called
     Start() {
@@ -36,6 +48,9 @@ class GameBoard {
         this.originY = originY;
         this.gameAudio = gameAudio;
         if (!this.canUpdate) return;
+
+
+        let particle_force = 50;
 
 
         // For each lane
@@ -74,13 +89,19 @@ class GameBoard {
                         if (distanceL < distanceH) distance = distanceL;
 
                         // Get accuracy percentage
-                        let percentage = distance / (collectMSThresh / 1000)
+                        let percentage = distance / (collectMSThresh / 1000);
 
                         // Get the integer value of the percentage of maxComboAdd
-                        this.gameComboMultiplier += Math.round(maxComboAdd * (1 - percentage));
+                        this.gameComboMultiplier += Math.round(maxComboAdd * percentage);
 
                         //Add to Score
                         this.gameScore += this.gameComboMultiplier * pointsPerNote;
+
+                        if (percentage >= .9) particles.push(new Particle_PERFECT(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
+                        if (percentage >= .8 && percentage < .9) particles.push(new Particle_GREAT(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
+                        if (percentage >= .7 && percentage < .8) particles.push(new Particle_GOOD(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
+                        if (percentage < .7) particles.push(new Particle_OK(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
+
 
                         // Remove from list to prevent double tapping the same note
                         timestamps.splice(t, 1)
@@ -90,7 +111,11 @@ class GameBoard {
 
             // if lane is down but did not gain a note
             if (ld && !gainedNote) {
-                this.gameComboMultiplier = 0;
+                // if debug flag is on then don't reset combo on miss
+                if (!this.debugCombo) {
+                    this.gameComboMultiplier = 0;
+                    particles.push(new Particle_MISS(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
+                }
             }
         }
 
@@ -111,10 +136,14 @@ class GameBoard {
 
                 // If note was passed
                 if (pressedTimeStamp > thresLo) {
-                    // Reset Combo, Add to missed tiles, remove from list
-                    this.gameComboMultiplier = 0;
-                    ++this.gameMissedTiles;
-                    timestamps.splice(t, 1)
+                    // if debug flag is on then don't reset combo on miss
+                    if (!this.debugCombo) {
+                        // Reset Combo, Add to missed tiles, remove from list
+                        this.gameComboMultiplier = 0;
+                        ++this.gameMissedTiles;
+                        timestamps.splice(t, 1);
+                        particles.push(new Particle_MISS(this.particleXOrigin,this.particleYOrigin, 0, -particle_force));
+                    }
                 }
             }
         }
@@ -126,64 +155,206 @@ class GameBoard {
 
         // Game is done when audio is completed
         this.gameComplete = GetAudioCompletion(this.gameAudio) >= 1;
+
+
+
+        // Holds the input in another array for .25 seconds to display presses
+        for (let i = 0; i < this.numberOfNotes; ++i) {
+            if (this.inputAni[i] != null && this.inputAni[i] > 0)
+                this.inputAni[i] -= deltaTime/1000;
+            if (this.input[i] != null && this.input[i] > 0)
+                this.inputAni[i] = .25;
+        }
+
+
+        // if countdown is greater than 0
+        if (this.gameStartCountdown > 0) {
+            // set board to negative duration to keep the tiles above the screen
+            this.gameCompletionPercentage = (-this.gameStartCountdown/this.gameAudio.duration);
+            // decrement this time
+            this.gameStartCountdown -= deltaTime/1000;
+        } else {
+            // One shot to play music using gameStartCountdown, since its not longer in use
+            if (this.gameStartCountdown != -100) {
+                gameAudio.play();
+                this.gameStartCountdown = -100;
+            }
+
+            // Music smoothing function
+            // Firefox does not update the audio.currentTime handle as requently as edge or chome
+            // instead we keep updating the currentTime as a seperate value, and correct it when
+            // the browser updates
+            this.gameAudioCurrentTime += deltaTime/1000;
+            if (this.gameAudio.currentTime != this.gameAudioLastPoll) {
+                this.gameAudioLastPoll = this.gameAudio.currentTime;
+                this.gameAudioCurrentTime = this.gameAudioLastPoll;
+            }
+            
+            // Game completion using the new time
+            this.gameCompletionPercentage = this.gameAudioCurrentTime/this.gameAudio.duration;
+        }
+        
+
     }
 
     // Draws to the screen at the position specified in Update
     Render() {
         if (!this.canRender) return;
-        this.DrawGameBar(this.originX, this.originY);
-        this.DrawGameTiles(this.originX, this.originY + this.gameHeight / 2 - (this.gameWidth / this.numberOfNotes) / 2, GetAudioCompletion(this.gameAudio));
+        this.DrawGameLaneBackgrounds(this.originX,this.originY);
+
+        let buttonSize = this.gameWidth/this.numberOfNotes/2;
+        this.DrawGameBar(this.originX, this.originY+this.gameHeight/2-buttonSize/2,buttonSize);
+        this.DrawGameTiles(this.originX, this.originY + this.gameHeight / 2 - buttonSize/2, this.gameCompletionPercentage);
+    }
+
+    // Draw left and right panels
+    RenderGameStats() {
+        // Get Space left over from game board
+        let sectionWidth = windowWidth-this.gameWidth;
+
+        // Get the size of each side
+        sectionWidth = sectionWidth/2;
+
+        if (windowWidth > 1000) {
+            this.DrawLeftSec (this.originX-windowWidth/2+sectionWidth/2,this.originY,sectionWidth,this.gameHeight);
+            this.DrawRightSec(this.originX+windowWidth/2-sectionWidth/2,this.originY,sectionWidth,this.gameHeight);
+        } else {
+            this.particleXOrigin = this.originX+this.gameWidth/2+100;
+            this.particleYOrigin = this.originY+this.gameHeight/2;
+            
+        }
+        
+    }
+
+    DrawLeftSec(x,y,w,h) {
+
+        let sectionHeight = h/3;
+
+        let headerFontSize = sectionHeight/5;
+        let fontSize = headerFontSize/1.2; 
+
+
+        fill(255);
+        textAlign(CENTER,CENTER);
+
+        textSize(headerFontSize);
+        textFont('Berlin Sans FB');
+        text("Score",x,y-sectionHeight-fontSize/2);
+        textSize(fontSize);
+        //textFont('Courier New');
+        text(this.gameScore,x,y-sectionHeight+fontSize/2);
+
+        textSize(headerFontSize);
+        textFont('Berlin Sans FB');
+        text("Combo",x,y-fontSize/2);
+        textSize(fontSize);
+        //textFont('Courier New');
+        text("X"+this.gameComboMultiplier,x,y+fontSize/2);
+
+        textSize(headerFontSize);
+        textFont('Berlin Sans FB');
+        text("Missed",x,y+sectionHeight-fontSize/2);
+        textSize(fontSize);
+        //textFont('Courier New');
+        text(this.gameMissedTiles,x,y+sectionHeight+fontSize/2);
+        
+    }
+    DrawRightSec(x,y,w,h) {
+
+        let sectionHeight = h/4;
+
+        let headerFontSize = w/this.songName.length*1.5; 
+        let fontSize = headerFontSize/1.2; 
+
+        textSize(headerFontSize);
+        textFont('Berlin Sans FB');
+        text(this.songName,x,y-sectionHeight-fontSize/2,w,h);
+
+
+        this.particleXOrigin = x;
+        this.particleYOrigin = y+sectionHeight+fontSize/2;
+
+        let per = this.gameCompletionPercentage;
+        if (per < 0) per = 0;
+        let bh = 20;
+        fill(0);
+        rect(x,y-sectionHeight+fontSize/2,headerFontSize*this.songName.length/2,10);
+
+        let px = x;
+        let py = y-sectionHeight+fontSize/2;
+        let ph = 10;
+        let pw = headerFontSize*this.songName.length/2;
+
+        let endWidth = 5;
+
+        let fillSize = pw-endWidth/2
+
+        image(GetTexture(ThemeProgressBG (gameTheme)),px,py,fillSize,ph);
+        image(GetTexture(ThemeProgressBGE(gameTheme)),px+pw/2-endWidth/2,py,endWidth,ph);
+        image(GetTexture(ThemeProgressBGB(gameTheme)),px-pw/2+endWidth/2,py,endWidth,ph);
+
+        let perw = pw*per;
+        fillSize = perw-endWidth/2;
+        image(GetTexture(ThemeProgressFill (gameTheme)),px-pw/2+endWidth+fillSize/2,py,fillSize,ph);
+        image(GetTexture(ThemeProgressFillE(gameTheme)),px-pw/2+endWidth+fillSize+endWidth/2,py,endWidth,ph);
+        image(GetTexture(ThemeProgressFillB(gameTheme)),px-pw/2+endWidth/2,py,endWidth,ph);
     }
 
     // The Colors at the bottom of the screen
-    DrawGameBar() {
+    DrawGameBar(ox, oy, bs) {
         let noteRowSize = this.gameWidth / this.numberOfNotes;
 
-        // Colors of buttons
-        let colors = [
-            color(42, 125, 45), // Green
-            color(179, 44, 23), // Red
-            color(229, 232, 44), // Yellow
-            color(198, 39, 207), // Purple
-            color(224, 146, 36), // Orange
-        ];
+        let buttonSize = bs;
 
-        // For each note
         for (let i = 0; i < this.numberOfNotes; ++i) {
 
-            // Color increase when active
-            let incLevel = 40;
+            // Color decrease when active
             if (this.input[i] == null) this.input[i] = null;
-            if (colors[i] == null) colors[i] = color(140, 140, 140);
-            tint(color(colors[i].levels[0] + incLevel * this.input[i],
-                colors[i].levels[1] + incLevel * this.input[i],
-                colors[i].levels[2] + incLevel * this.input[i]
-            ));
 
 
-            // Lightup part
-            image(GetTexture("button_top"), this.originX - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
-                this.originY + this.gameHeight / 2 - noteRowSize / 2,
-                noteRowSize,
-                noteRowSize
-            );
-            // Button base
-            noTint();
             fill(255);
-            image(GetTexture("button_base"), this.originX - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
-                this.originY + this.gameHeight / 2 - noteRowSize / 2,
-                noteRowSize,
-                noteRowSize
-            );
+            if (this.inputAni[i] > 0) {
+                // Down
+                image(GetTexture(ThemeLaneKeyDown(gameTheme, i)), ox - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
+                    oy,
+                    noteRowSize,
+                    buttonSize
+                );
+            } else {
+                // UP
+                image(GetTexture(ThemeLaneKeyUp(gameTheme, i)), ox - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
+                    oy,
+                    noteRowSize,
+                    buttonSize
+                );
+            }
+
 
             // Draw the corresponding key label on each button
             fill(255);
             textAlign(CENTER, CENTER);
             textSize(24);  // You can adjust the size as needed
-            text(String.fromCharCode(this.input_keys[i]), this.originX - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
-                this.originY + this.gameHeight / 2 - noteRowSize / 2
+            text(String.fromCharCode(this.input_keys[i]), ox - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
+            oy,
             );
         }
+    }
+
+
+    // Lane Key BGs
+    DrawGameLaneBackgrounds(ox,oy) {
+
+        let noteRowSize = this.gameWidth / this.numberOfNotes;
+
+        for (let i = 0; i < this.numberOfNotes; ++i) {
+            if (this.inputAni[i] > 0) {
+                image(GetTexture(ThemeLaneBGDown(gameTheme,i)), ox - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,oy,noteRowSize,this.gameHeight);
+            } else {
+                image(GetTexture(ThemeLaneBGUp(gameTheme,i)), ox - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,oy,noteRowSize,this.gameHeight);
+            }
+
+        }
+
     }
 
     // Draw the Game Tiles based on game completion
@@ -204,6 +375,7 @@ class GameBoard {
                 // Get the origin of the lane and draw the tiles in the lane
                 let lhx = hx - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i;
                 let lhy = hy;
+
                 this.DrawTilesInLane(beatmap_array, noteRowSize, lhx, lhy, gc);
             }
         }
@@ -217,6 +389,7 @@ class GameBoard {
 
         // The height of the highest note possible
         let laneHeight = this.gameAudio.duration * noteRowSize * gameSpeedMultiplier;
+
         // for each timestamp
         for (let i = 0; i < timestamps.length; ++i) {
             let timestamp = timestamps[i];
@@ -229,14 +402,14 @@ class GameBoard {
             // Set render parms
             let x = lhx;
             let y = lhy - location + gc * laneHeight;
-            let w = noteRowSize / 2;
+            let w = noteRowSize/1.4;
             let h = noteRowSize * .9;
-            h = ((collectMSThresh/1000)/this.gameAudio.duration) * laneHeight;
+            h = ((collectMSThresh / 1000) / this.gameAudio.duration) * laneHeight;
 
             // If the note is visible on the screen, render, otherwise dont
             if (y > -this.gameHeight / 2 - h / 2 && y < this.gameHeight / 2 + h / 2) {
                 fill(255);
-                rect(x, y, w, h)
+                image(GetTexture(ThemeTile(gameTheme)),x, y, w, h)
             }
         }
     }
@@ -300,6 +473,7 @@ class GameBoard {
     // Load Data
     LoadFileData(dataJSON) {
         this.gameFileData = dataJSON;
+        this.songName = this.gameFileData.song_title;
         // number of lanes
         this.numberOfNotes = this.gameFileData.beatmap_arrays.length;
         this.gameTotalTiles = 0;
@@ -314,6 +488,10 @@ class GameBoard {
     // Completion
     CompletionPercentage() {
         return GetAudioCompletion(this.gameAudio);
+    }
+
+    StartCountdown() {
+        return this.gameStartCountdown;
     }
 
     // Is the game completed
@@ -352,7 +530,7 @@ class GameBoard {
 function DrawGameBG() {
     background(50);
     fill(255);
-    let img = GetTexture("game_background");
+    let img = GetTexture(ThemeBackground(gameTheme));
     let w = img.width;
     let h = img.height;
     let haspect = w / h;
