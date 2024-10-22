@@ -91,6 +91,9 @@ class GameBoard {
                         // Get accuracy percentage
                         let percentage = distance / (collectMSThresh / 1000);
 
+                        // If debug is active then make every input perfect
+                        if (this.debugCombo) percentage = 1;
+                        
                         // Get the integer value of the percentage of maxComboAdd
                         this.gameComboMultiplier += Math.round(maxComboAdd * percentage);
 
