@@ -25,7 +25,7 @@ async function getScores() {
 
 async function getSongScores(song_id) {
     try {
-        const [rows] = await promisePool.query("SELECT * FROM scores WHERE song_id = ?;");
+        const [rows] = await promisePool.query("SELECT * FROM scores WHERE song_id = ?;", [song_id]);
         return rows;
     } catch (err) {
         console.error(err);
