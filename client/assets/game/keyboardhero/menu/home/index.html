@@ -89,6 +89,30 @@
     <div class="topBar">
         <div class="settingsShortcut"><img onclick="MenuManager.GoTo(MENU_SETTINGS);"
                 src="/assets/game/keyboardhero/textures/gear.png" alt=""></div>
+        
+        <div>
+            <!-- It wasn't seeing the style unless I had it here, will see if there is a better way to do this. Likely just something I'm unaware of with HTML right now -->
+            <style>        
+                .buttonLogin {
+                width: 100px;
+                background-color: transparent;
+                border: none;
+                color: white;
+                padding: 10px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                border-radius: 8px;
+                float: left;
+                }
+            </style>
+            
+            <button class="buttonLogin" onclick="MenuManager.GoTo(MENU_LOGIN);">Login</button>
+        </div>
+        
     </div>
     <div class="mainPageContent">
         <div class="HomePageLogo">
