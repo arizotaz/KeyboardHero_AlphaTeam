@@ -35,14 +35,16 @@ let gameAudio;
 let mobile = false;
 
 // Menu ID alieses
-const MENU_MAIN         = 0;
-const MENU_SETTINGS     = 1;
-const MENU_AUDIOCALI    = 2;
-const MENU_ABOUT        = 3;
-const MENU_SINGLEPLAYER = 9;
-const MENU_GAME_OLD     = 4;
-const MENU_COMPLETE_SINGLEPLAYER     = 5;
-const MENU_UPLOAD_SONGS = 6;
+const MENU_MAIN                     = 0;
+const MENU_SETTINGS                 = 1;
+const MENU_AUDIOCALI                = 2;
+const MENU_ABOUT                    = 3;
+const MENU_GAME_OLD                 = 4;
+const MENU_COMPLETE_SINGLEPLAYER    = 5;
+const MENU_UPLOAD_SONGS             = 6;
+const MENU_LOGIN                    = 7;
+const MENU_REGISTER                 = 8;
+const MENU_SINGLEPLAYER             = 9;
 
 // Array of game boards
 let boards = [];
@@ -67,7 +69,9 @@ function ApplicationStart() {
     MenuManager.AddMenu(MENU_SINGLEPLAYER, new SinglePlayerGame());
     MenuManager.AddMenu(MENU_COMPLETE_SINGLEPLAYER,  new GameCompletedMenu());
     MenuManager.AddMenu(MENU_UPLOAD_SONGS,  new UploadSongsMenu());
-
+    
+    MenuManager.AddMenu(MENU_LOGIN,     new LoginMenu   ());
+    MenuManager.AddMenu(MENU_REGISTER,     new RegisterMenu   ());
     // Add more menus here
     
 }
