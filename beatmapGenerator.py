@@ -49,6 +49,7 @@ y, sr = librosa.load(songLocation)
 onsetStrengths = librosa.onset.onset_strength(y=y,sr=sr)
 # get timestamps of beats
 tempo, beats = librosa.beat.beat_track(y=y,sr=sr,onset_envelope=onsetStrengths,tightness=0.01,trim=True)
+tempo, beats = librosa.beat.beat_track(y=y,sr=sr,onset_envelope=onsetStrengths,tightness=0.01,trim=True)
 # get onset strength of gathered beats
 beatStrengths = onsetStrengths[beats]
 beats = librosa.frames_to_time(beats, sr=sr) # convert frames to seconds
@@ -56,6 +57,7 @@ beats = librosa.frames_to_time(beats, sr=sr) # convert frames to seconds
 timestamps = [] # to hold timestamp information
 # iterate through beats and their strengths
 for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)): 
+    silenceThreshold = 2.5 # exclude beats below a certain strength (silent moments)
     if (beatStrengths > silenceThreshold):
         # beat timestamp, beat strength, include marker, and time till next beat
         timestamps.append([beats.item()-0.05,beatStrengths.item(),1,0])
@@ -63,7 +65,7 @@ for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)):
 
 n = 1 # index of next beat
 c = 0 # index of current beat
-bufferTime = 0.25 # minimum time (seconds) between notes
+bufferTime = 0.20 # minimum time (seconds) between notes
 while (n < len(timestamps)):
     if (timestamps[n][0] - timestamps[c][0] < bufferTime):
         timestamps[n][2] = 0 # get rid of beat at index n
@@ -117,7 +119,7 @@ for t in timestamps:
     if (t[2] == 1): # only consider included beats
 
         # change patterns if not similar gap between notes or there's a significant strength to the beat
-        if ((not (t[3] >= currentGap-0.10 and t[3] <= currentGap+0.10)) or t[1] > swapThreshold or pattern == 7):
+        if ((not (t[3] >= currentGap-0.10 and t[3] <= currentGap+0.10)) or t[1] > median or pattern == 7):
 
             # make sure pattern changes
             prevPattern = pattern 
