@@ -44,7 +44,7 @@ for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)):
 
 n = 1 # index of next beat
 c = 0 # index of current beat
-bufferTime = 0.10 # minimum time (seconds) between notes
+bufferTime = 0.25 # minimum time (seconds) between notes
 while (n < len(timestamps)):
     if (timestamps[n][0] - timestamps[c][0] < bufferTime):
         timestamps[n][2] = 0 # get rid of beat at index n
