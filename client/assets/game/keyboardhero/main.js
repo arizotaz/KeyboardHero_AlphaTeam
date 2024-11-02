@@ -45,6 +45,8 @@ const MENU_UPLOAD_SONGS             = 6;
 const MENU_LOGIN                    = 7;
 const MENU_REGISTER                 = 8;
 const MENU_SINGLEPLAYER             = 9;
+//const MENU_LEVEL_SELECT            = 10;
+
 
 // Array of game boards
 let boards = [];
@@ -72,6 +74,7 @@ function ApplicationStart() {
     
     MenuManager.AddMenu(MENU_LOGIN,     new LoginMenu   ());
     MenuManager.AddMenu(MENU_REGISTER,     new RegisterMenu   ());
+//
     // Add more menus here
     
 }
