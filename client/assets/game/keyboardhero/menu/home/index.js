@@ -16,6 +16,10 @@
 
 class MainMenu extends Menu {
     Open() {
+        if (!Settings.GetKey(Setting_AuCalCompleted)) {
+            MenuManager.GoTo(MENU_AUDIOCALI);
+            return;
+        }
         $.get("/assets/game/keyboardhero/menu/home/index.html", function( data ) {
             $( "#homeMenuContainer" ).append( data );
             document.getElementById('homeMenu').style.display = 'block';

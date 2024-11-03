@@ -82,6 +82,7 @@ function ApplicationStart() {
 // Called every frame as long as the game is set to run
 function ApplicationLoop() {
     MenuManager.Update();
+    DrawGameBG();
     MenuManager.Render();
 }
 
