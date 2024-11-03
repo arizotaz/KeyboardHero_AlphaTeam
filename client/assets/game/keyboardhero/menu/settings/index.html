@@ -69,16 +69,16 @@
         </div>
     </div>
 
-    <div class="mainSettingsPageContent neonButtons">
+    <div class="mainSettingsPageContent bubbleButtons">
 
         <h3>Game Volume</h3>
         <div class="shadow" style="width:100vw; max-width: 800px;">
-            <input type="range" id="gameVolume" class="neonSlider" min="0" max="100">
+            <input type="range" id="gameVolume" class="bubbleSlider" min="0" max="100">
         </div>
 
         <h3>Menu Volume</h3>
         <div class="shadow" style="width:100vw; max-width: 800px;">
-            <input type="range" id="menuVolume" class="neonSlider" min="0" max="100">
+            <input type="range" id="menuVolume" class="bubbleSlider" min="0" max="100">
         </div>
 
         <div class="controlChanger">
@@ -92,38 +92,12 @@
         </div>
 
         <div class="shadow">
+            <button onclick="MenuManager.GoTo(MENU_AUDIOCALI)">Audio Calibration</button>
+        </div>
+
+        <div class="shadow">
             <button onclick="SaveSettingsMenuChanges()">Save</button>
         </div>
-
-        <!-- Latency Adjustment Section -->
-        <div class="shadow" style="margin-top: 20px;">
-            <h3>Latency Adjustment (ms)</h3>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <label for="latencyInput">Latency:</label>
-                <input 
-                    type="number" 
-                    id="latencyInput" 
-                    min="0" 
-                    max="1000" 
-                    value="0" 
-                    step="1" 
-                    style="width: 80px; padding: 5px; text-align: center;">
-                <button onclick="applyLatency()">Apply</button>
-            </div>
-        </div>
-
-        <!-- YouTube Video Embed -->
-        <div class="shadow" style="margin-top: 20px;">
-            <div class="responsive-iframe">
-                <iframe 
-                    src="https://www.youtube.com/embed/aEUjjIM5gmI" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-
     </div>
 </div>
 
