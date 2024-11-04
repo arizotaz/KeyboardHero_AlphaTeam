@@ -45,7 +45,8 @@ const MENU_UPLOAD_SONGS             = 6;
 const MENU_LOGIN                    = 7;
 const MENU_REGISTER                 = 8;
 const MENU_SINGLEPLAYER             = 9;
-const MENU_LEVELSELECT            = 10;
+const MENU_LEVELSELECT              = 10;
+const MENU_STATISTICS               = 11;
 
 
 // Array of game boards
@@ -64,17 +65,19 @@ function ApplicationStart() {
     // Setup Menus
     MenuManager.GoTo(MENU_MAIN);//MENU_GAME);
     // Create the menus
-    MenuManager.AddMenu(MENU_MAIN,      new MainMenu    ());
-    MenuManager.AddMenu(MENU_SETTINGS,  new SettingsMenu());
-    MenuManager.AddMenu(MENU_AUDIOCALI, new AudioCalibrationMenu());
-    MenuManager.AddMenu(MENU_ABOUT,     new AboutMenu   ());
-    MenuManager.AddMenu(MENU_SINGLEPLAYER, new SinglePlayerGame());
-    MenuManager.AddMenu(MENU_COMPLETE_SINGLEPLAYER,  new GameCompletedMenu());
-    MenuManager.AddMenu(MENU_LEVELSELECT,  new LevelSelectorMenu());
-    MenuManager.AddMenu(MENU_UPLOAD_SONGS,  new UploadSongsMenu());
+    MenuManager.AddMenu(MENU_MAIN,                  new MainMenu    ());
+    MenuManager.AddMenu(MENU_SETTINGS,              new SettingsMenu());
+    MenuManager.AddMenu(MENU_AUDIOCALI,             new AudioCalibrationMenu());
+    MenuManager.AddMenu(MENU_ABOUT,                 new AboutMenu   ());
+    MenuManager.AddMenu(MENU_SINGLEPLAYER,          new SinglePlayerGame());
+    MenuManager.AddMenu(MENU_COMPLETE_SINGLEPLAYER, new GameCompletedMenu());
+    MenuManager.AddMenu(MENU_LEVELSELECT,           new LevelSelectorMenu());
+    MenuManager.AddMenu(MENU_UPLOAD_SONGS,          new UploadSongsMenu());
     
-    MenuManager.AddMenu(MENU_LOGIN,     new LoginMenu   ());
-    MenuManager.AddMenu(MENU_REGISTER,     new RegisterMenu   ());
+    MenuManager.AddMenu(MENU_LOGIN,                 new LoginMenu   ());
+    MenuManager.AddMenu(MENU_REGISTER,              new RegisterMenu   ());
+
+    MenuManager.AddMenu(MENU_STATISTICS,            new StatisticsMenu   ());
 //
     // Add more menus here
     
