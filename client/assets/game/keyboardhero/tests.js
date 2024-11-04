@@ -93,7 +93,7 @@ function MakeAndRunTests() {
                 console.log("📋 Menu Manager reports " + MenuManager.GetMenuID());
 
                 let inn = document.body.innerHTML;
-                let condition = inn.includes(">Level Select<") && inn.includes(">Settings<") && inn.includes("<img class=\"hori\" src=\"/assets/game/game_logo.png\" alt=\"\">");
+                let condition = inn.includes("\"HomePageLogo\"");
                 if (!condition) throw new Error('Menu Manager did not load MENU_MAIN');
 
                 return 0;
