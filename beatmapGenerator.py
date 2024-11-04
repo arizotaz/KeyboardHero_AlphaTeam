@@ -48,7 +48,17 @@ while (n < len(timestamps)):
         c = n # update index of current beat
     n = n + 1 # increment next beat
 
-# assign timestamps to lanes ======================================================================
+# get identifier ======================================================================
+
+identifier = ""
+first = timestamps[0][0]
+for t in timestamps:
+    if (t[0] != first):
+        toAdd = str(int(t[0] - first))
+        if (identifier != ""): identifier = identifier + "-"
+        identifier = identifier + toAdd
+        
+# assign timestamps to lanes ==========================================================
 
 # create lists for tracks
 track0 = []
@@ -121,6 +131,7 @@ b64_data = base64.b64encode(binaryData)
 dictionary = {
     "version": version,
     "song_title": songName,
+    "song_identifier": identifier,
     "units": units,
     "beatmap_arrays": [
         {

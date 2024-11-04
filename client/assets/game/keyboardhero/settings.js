@@ -36,13 +36,19 @@
 const Setting_KeyArray      = "input.keys.types"; // JSON TEXT ARRAY OF KEYCODES
 const Setting_GameVolume    = "sound.game"; // Integer [0,1]
 const Setting_MenuVolume    = "sound.menu"; // Integer [0,1]
+const Setting_AuCalibration = "sound.offset"; // Integer
+const Setting_AuCalCompleted= "sound.calDone"; // boolean
 
 
 // Sets values to their defaults
 function SetDefaultOptions() {
-    if (!Settings.KeyExists(Setting_KeyArray))  { Settings.SetKey(Setting_KeyArray,JSON.stringify([[32],[70,74],[70,74],[68,70,74,75],[68,70,74,75,76]])); }
-    if (!Settings.KeyExists(Setting_GameVolume)){ Settings.SetKey(Setting_GameVolume,1) }
-    if (!Settings.KeyExists(Setting_MenuVolume)){ Settings.SetKey(Setting_MenuVolume,1) }
+    if (!Settings.KeyExists(Setting_KeyArray))      { Settings.SetKey(Setting_KeyArray,JSON.stringify([[32],[70,74],[70,74],[68,70,74,75],[68,70,74,75,76]])); }
+    if (!Settings.KeyExists(Setting_GameVolume))    { Settings.SetKey(Setting_GameVolume,1) }
+    if (!Settings.KeyExists(Setting_MenuVolume))    { Settings.SetKey(Setting_MenuVolume,1) }
+    if (!Settings.KeyExists(Setting_AuCalibration)) { Settings.SetKey(Setting_AuCalibration,0) }
+    if (!Settings.KeyExists(Setting_AuCalCompleted)){ Settings.SetKey(Setting_AuCalCompleted,false) }
+
+
     SaveSettings();
 }
 
