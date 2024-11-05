@@ -35,14 +35,19 @@ let gameAudio;
 let mobile = false;
 
 // Menu ID alieses
-const MENU_MAIN         = 0;
-const MENU_SETTINGS     = 1;
-const MENU_AUDIOCALI    = 2;
-const MENU_ABOUT        = 3;
-const MENU_SINGLEPLAYER = 9;
-const MENU_GAME_OLD     = 4;
-const MENU_COMPLETE_SINGLEPLAYER     = 5;
-const MENU_UPLOAD_SONGS = 6;
+const MENU_MAIN                     = 0;
+const MENU_SETTINGS                 = 1;
+const MENU_AUDIOCALI                = 2;
+const MENU_ABOUT                    = 3;
+const MENU_GAME_OLD                 = 4;
+const MENU_COMPLETE_SINGLEPLAYER    = 5;
+const MENU_UPLOAD_SONGS             = 6;
+const MENU_LOGIN                    = 7;
+const MENU_REGISTER                 = 8;
+const MENU_SINGLEPLAYER             = 9;
+const MENU_LEVELSELECT              = 10;
+const MENU_STATISTICS               = 11;
+
 
 // Array of game boards
 let boards = [];
@@ -60,20 +65,27 @@ function ApplicationStart() {
     // Setup Menus
     MenuManager.GoTo(MENU_MAIN);//MENU_GAME);
     // Create the menus
-    MenuManager.AddMenu(MENU_MAIN,      new MainMenu    ());
-    MenuManager.AddMenu(MENU_SETTINGS,  new SettingsMenu());
-    MenuManager.AddMenu(MENU_AUDIOCALI, new AudioCalibrationMenu());
-    MenuManager.AddMenu(MENU_ABOUT,     new AboutMenu   ());
-    MenuManager.AddMenu(MENU_SINGLEPLAYER, new SinglePlayerGame());
-    MenuManager.AddMenu(MENU_COMPLETE_SINGLEPLAYER,  new GameCompletedMenu());
-    MenuManager.AddMenu(MENU_UPLOAD_SONGS,  new UploadSongsMenu());
+    MenuManager.AddMenu(MENU_MAIN,                  new MainMenu    ());
+    MenuManager.AddMenu(MENU_SETTINGS,              new SettingsMenu());
+    MenuManager.AddMenu(MENU_AUDIOCALI,             new AudioCalibrationMenu());
+    MenuManager.AddMenu(MENU_ABOUT,                 new AboutMenu   ());
+    MenuManager.AddMenu(MENU_SINGLEPLAYER,          new SinglePlayerGame());
+    MenuManager.AddMenu(MENU_COMPLETE_SINGLEPLAYER, new GameCompletedMenu());
+    MenuManager.AddMenu(MENU_LEVELSELECT,           new LevelSelectorMenu());
+    MenuManager.AddMenu(MENU_UPLOAD_SONGS,          new UploadSongsMenu());
+    
+    MenuManager.AddMenu(MENU_LOGIN,                 new LoginMenu   ());
+    MenuManager.AddMenu(MENU_REGISTER,              new RegisterMenu   ());
 
+    MenuManager.AddMenu(MENU_STATISTICS,            new StatisticsMenu   ());
+//
     // Add more menus here
     
 }
 // Called every frame as long as the game is set to run
 function ApplicationLoop() {
     MenuManager.Update();
+    DrawGameBG();
     MenuManager.Render();
 }
 

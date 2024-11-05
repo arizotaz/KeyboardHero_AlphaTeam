@@ -151,6 +151,39 @@ console.log(`Server started on: http://localhost:${port}`);
 
 
 
+// Login system 
+
+// Needed to parse inputs for account creation
+var bodyParser = require('body-parser'); 
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Cookies for accounts
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+// Process account creation
+app.post('/createAccount', function(req, res){
+
+    var bcrypt = require('bcryptjs');
+    console.log("Username : " + req.body.username);
+    console.log("Email : " + req.body.email);
+    var hash = bcrypt.hashSync(req.body.password, 10);
+    console.log("Hashed & salted password : " + hash);
+   
+    // Create Cookies with the username and email, will make a session once I learn how to do so
+    res.cookie('username', req.body.username);
+    res.cookie('email', req.body.email);
+    res.redirect('/');
+});
+
+// Clear current login info
+app.post('/logout', function(req, res){
+res.clearCookie('username');
+res.clearCookie('email');
+res.redirect('/');
+});
+
+
 
 // Below will be the code for multiplayer and score system. 
 

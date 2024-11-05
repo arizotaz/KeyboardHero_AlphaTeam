@@ -14,21 +14,17 @@
 
 
 
-class MainMenu extends Menu {
+class LoginMenu extends Menu {
     Open() {
-        if (!Settings.GetKey(Setting_AuCalCompleted)) {
-            MenuManager.GoTo(MENU_AUDIOCALI);
-            return;
-        }
-        $.get("/assets/game/keyboardhero/menu/home/index.html", function( data ) {
-            $( "#homeMenuContainer" ).append( data );
-            document.getElementById('homeMenu').style.display = 'block';
-            socket.emit("requestClients")
+        $.get("/assets/game/keyboardhero/menu/login/index.html", function( data ) {
+            $( "#loginMenuContainer" ).append( data );
+            document.getElementById('loginMenu').style.display = 'block';
         });
     }
+    
     Leave() {
-        $( "#homeMenuContainer" ).remove();
-        $( "#homeMenu" ).append("<div id=\"homeMenuContainer\"></div>");
-        document.getElementById('homeMenu').style.display = 'none';
+        $( "#loginMenuContainer" ).remove();
+        $( "#loginMenu" ).append("<div id=\"loginMenuContainer\"></div>");
+        document.getElementById('loginMenu').style.display = 'none';
     }
 }

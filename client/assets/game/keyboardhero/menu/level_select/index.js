@@ -13,22 +13,17 @@
 //# are used by the game it self.
 
 
-
-class MainMenu extends Menu {
+class LevelSelectorMenu extends Menu {
     Open() {
-        if (!Settings.GetKey(Setting_AuCalCompleted)) {
-            MenuManager.GoTo(MENU_AUDIOCALI);
-            return;
-        }
-        $.get("/assets/game/keyboardhero/menu/home/index.html", function( data ) {
-            $( "#homeMenuContainer" ).append( data );
-            document.getElementById('homeMenu').style.display = 'block';
-            socket.emit("requestClients")
+        $.get("/assets/game/keyboardhero/menu/level_select/index.html", function( data ) {
+            $( "#levelSelectMenuContainer" ).append( data );
+            document.getElementById('levelSelectMenu').style.display = 'block';
         });
     }
+    
     Leave() {
-        $( "#homeMenuContainer" ).remove();
-        $( "#homeMenu" ).append("<div id=\"homeMenuContainer\"></div>");
-        document.getElementById('homeMenu').style.display = 'none';
+        $( "#levelSelectMenuContainer" ).remove();
+        $( "#levelSelectMenu" ).append("<div id=\"levelSelectMenuContainer\"></div>");
+        document.getElementById('levelSelectMenu').style.display = 'none';
     }
 }

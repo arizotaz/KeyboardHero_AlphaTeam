@@ -23,7 +23,7 @@ y, sr = librosa.load(songLocation)
 # get onset/peak strengths throughout whole mp3
 onsetStrengths = librosa.onset.onset_strength(y=y,sr=sr)
 # get timestamps of beats
-tempo, beats = librosa.beat.beat_track(y=y,sr=sr,onset_envelope=onsetStrengths,tightness=0.05,trim=True)
+tempo, beats = librosa.beat.beat_track(y=y,sr=sr,onset_envelope=onsetStrengths,tightness=0.001,trim=True)
 # get onset strength of gathered beats
 beatStrengths = onsetStrengths[beats]
 
@@ -39,7 +39,7 @@ for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)):
 
 n = 1 # index of next beat
 c = 0 # index of current beat
-bufferTime = 0.25 # minimum time (seconds) between notes
+bufferTime = 0.10 # minimum time (seconds) between notes
 while (n < len(timestamps)):
     if (timestamps[n][0] - timestamps[c][0] < bufferTime):
         timestamps[n][2] = 0 # get rid of beat at index n
@@ -48,7 +48,17 @@ while (n < len(timestamps)):
         c = n # update index of current beat
     n = n + 1 # increment next beat
 
-# assign timestamps to lanes ======================================================================
+# get identifier ======================================================================
+
+identifier = ""
+first = timestamps[0][0]
+for t in timestamps:
+    if (t[0] != first):
+        toAdd = str(int(t[0] - first))
+        if (identifier != ""): identifier = identifier + "-"
+        identifier = identifier + toAdd
+        
+# assign timestamps to lanes ==========================================================
 
 # create lists for tracks
 track0 = []
@@ -61,6 +71,7 @@ tracks = [track0, track1, track2, track3]
 pattern = 0
 currentGap = timestamps[0][3]
 median = statistics.median([t[1] for t in timestamps]) # get median of strength of beats
+topBeats = np.percentile([t[1] for t in timestamps],98)
 for t in timestamps:
 
     if (t[2] == 1): # only consider included beats
@@ -71,7 +82,10 @@ for t in timestamps:
             # make sure pattern changes
             prevPattern = pattern 
             while (pattern == prevPattern): 
-                pattern = random.randint(0,6) 
+                if (t[1] >= topBeats and pattern != 7):
+                    pattern = 7
+                else:
+                    pattern = random.randint(0,6) 
             
             # update the currentGap
             currentGap = t[3]
@@ -94,6 +108,11 @@ for t in timestamps:
                 track2.append(t[0])
             case 6:
                 track3.append(t[0])
+            case 7:
+                track0.append(t[0])
+                track1.append(t[0])
+                track2.append(t[0])
+                track3.append(t[0])
 
 
 # get base64 data  ===============================================================================
@@ -112,6 +131,7 @@ b64_data = base64.b64encode(binaryData)
 dictionary = {
     "version": version,
     "song_title": songName,
+    "song_identifier": identifier,
     "units": units,
     "beatmap_arrays": [
         {

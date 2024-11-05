@@ -93,7 +93,7 @@ function MakeAndRunTests() {
                 console.log("📋 Menu Manager reports " + MenuManager.GetMenuID());
 
                 let inn = document.body.innerHTML;
-                let condition = inn.includes(">Level Select<") && inn.includes(">Settings<") && inn.includes("<img class=\"hori\" src=\"/assets/game/game_logo.png\" alt=\"\">");
+                let condition = inn.includes("\"HomePageLogo\"");
                 if (!condition) throw new Error('Menu Manager did not load MENU_MAIN');
 
                 return 0;
@@ -257,7 +257,9 @@ function MakeAndRunTests() {
             try {
                 MenuManager.GoTo(MENU_SINGLEPLAYER);
                 console.log("📋 Changed Menu to " + MENU_SINGLEPLAYER)
-                await waitDelay(4000);   
+                await waitDelay(4000);  
+                // Avoid "X Miss" Spam
+                boards[0].debugCombo = 1;
                     
                 for (let i = 0; i < boards[0].input_keys.length; ++i) {
                     // End if the game completes to avoid a softlock
@@ -273,10 +275,12 @@ function MakeAndRunTests() {
                         console.log("📋 Lane " + (i+1) + " registered")
                         boards[0].gameScore = 0;
                     }else{
+                        boards[0].debugCombo = 0;
                         MenuManager.GoTo(MENU_MAIN);
                         return;
                     }
                 }
+                boards[0].debugCombo = 0;
                 MenuManager.GoTo(MENU_MAIN);
                 return 0;               
             } catch (e) {
@@ -302,17 +306,11 @@ function MakeAndRunTests() {
 
                 // End if the game completes as a fall back, otherwise till 50 (assumes the sample song is being played)
                 while (boards[0].gameComboMultiplier < 50 && !boards[0].gameComplete){
-                    /*
-                    // Optional for any sized boards, since it sounds like we're sticking to 4 though will remain unused
-                    for (let i = 0; i < boards[0].input_keys.length; ++i) {
-                        boards[0].input[i] = 1;
-                    }
-                    */
                     boards[0].input = [1, 1, 1, 1];
                     // Force an update otherwise input isn't registered
                     boards[0].Update(boards[0].originX, boards[0].originY, boards[0].gameWidth, boards[0].gameHeight, boards[0].gameAudio);
-                    // Wait 5 miliseconds between attempted input to avoid crashing the browser 
-                    await waitDelay(5); 
+                    // Wait 20 miliseconds between attempted input to avoid crashing the browser 
+                    await waitDelay(20); 
                 }
 
                 if (!boards[0].gameComplete){
