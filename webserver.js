@@ -1,18 +1,29 @@
 /*   Require Packages from Node JS   */
 // Web Server Wrapper
+console.log("Loading Express");
 var express = require('express');
 // Web Server Wrapper Object
+console.log("Getting Express");
 var app = express();
 // HTTP Server
+console.log("Http Server");
 var serv = require('http').Server(app);
 // Cors access policy
+console.log("Loading Cores");
 var cors = require('cors');
 // Allow execution of binaries on the server
+console.log("Loading Child Process");
 const { exec } = require("child_process");
 // File System Library
+console.log("Loading FS");
 const fs = require('fs');
 // database functions
+console.log("Loading database.js");
 const { getScores } = require('./database.js');
+// Socket IO
+console.log("Loading Socket.IO");
+let io = require('socket.io')(serv, {});
+
 
 // The cmd to start python
 // change file python.conf
@@ -28,6 +39,7 @@ if (!fs.existsSync(tempFileUploads)) fs.mkdirSync(tempFileUploads);
 const multer = require('multer');
 // require for running python processing script
 const { spawn } = require("child_process");
+const { log } = require('console');
 
 //storage for uploaded files
 const storage = multer.diskStorage({
@@ -71,6 +83,11 @@ app.get('/', function (req, res) {
 // Allow a folder to be viewed in the web-server
 // All files in the "/client/assets" folder will be vieable to the client
 app.use('/assets', express.static(__dirname + '/client/assets'));
+
+app.get('/assets/socket.io/socket.io.js', function (req, res) {
+    let socketioclient = __dirname + "/node_modules/socket.io/client-dist/socket.io.js";
+    res.sendFile(socketioclient);
+});
 
 
 //api to get scores using for testing
@@ -136,3 +153,47 @@ console.log(`Server started on: http://localhost:${port}`);
 
 
 // Below will be the code for multiplayer and score system. 
+
+let clients = [];
+function NumOfClients() {
+    let n = 0;
+    for (let i in clients) ++n;
+    return n;
+}
+
+io.sockets.on('connection', function (socket) {
+    try {
+        socket.emit("handshake");
+        clients[socket.id] = new GameClient(socket);
+        console.log(socket.id + " Connected")
+        console.log(clients);
+        socket.on('disconnect', function (data) {
+            console.log(socket.id + " Disconnected")
+            delete clients[socket.id];
+        });
+        io.emit("clients", { clients: NumOfClients() });
+        socket.on("requestClients", function () { try { socket.emit("clients", { clients: NumOfClients() }); } catch (e) { console.error(e) } });
+        socket.on("currentMenu", function (data) { try { clients[socket.id].SetCurrentMenu(data.id) } catch (e) { console.error(e) } });
+        socket.emit("msg", "test");
+    } catch (e) { console.error(e); }
+
+});
+
+
+
+
+
+
+class GameClient {
+    constructor(socket) {
+        this.socket = socket;
+        this.id = socket.id;
+        this.username = "User" + Math.round(Math.random() * 10000);
+        this.currentMenu = 0;
+        this.roomID = "";
+    }
+    SetCurrentMenu(id) {
+        if (id == null) throw new Error("id is null");
+        this.currentMenu = id;
+    }
+}

@@ -19,6 +19,7 @@ class MainMenu extends Menu {
         $.get("/assets/game/keyboardhero/menu/home/index.html", function( data ) {
             $( "#homeMenuContainer" ).append( data );
             document.getElementById('homeMenu').style.display = 'block';
+            socket.emit("requestClients")
         });
     }
     Leave() {
