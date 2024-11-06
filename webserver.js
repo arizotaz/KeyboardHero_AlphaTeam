@@ -162,25 +162,80 @@ var cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 // Process account creation
-app.post('/createAccount', function(req, res){
 
+const { createAccount } = require('./database.js');
+
+app.post('/createAccount', async function(req, res){
+
+    try {
     var bcrypt = require('bcryptjs');
-    console.log("Username : " + req.body.username);
-    console.log("Email : " + req.body.email);
     var hash = bcrypt.hashSync(req.body.password, 10);
-    console.log("Hashed & salted password : " + hash);
-   
-    // Create Cookies with the username and email, will make a session once I learn how to do so
-    res.cookie('username', req.body.username);
-    res.cookie('email', req.body.email);
+
+    //console.log("Username : " + req.body.username);
+    //console.log("Email : " + req.body.email);
+    //console.log("Hashed & salted password : " + hash);
+
+    // Make users account
+    var newSessionId = Math.floor(Math.random() * 999999999);
+    var sessionID = bcrypt.hashSync(newSessionId.toString(), 5);
+
+    var time = Date.now();
+    var userID = await createAccount(req.body.username,req.body.email,hash, time, sessionID);
+    //console.log(available);
+
+    if (userID){
+        res.cookie('userID', userID);
+        res.cookie('sessionID', sessionID);
+    }
     res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error making account' });
+    }
+
+    
+});
+
+// login system
+const { login } = require('./database.js');
+const { createSession } = require('./database.js');
+
+app.post('/login', async function(req, res){
+    try {
+        var data = await login(req.body.username);
+        var bcrypt = require('bcryptjs');
+        userID = data[0];
+        hash = data[1];
+
+
+
+        if(bcrypt.compareSync(req.body.password, hash)){
+            var newSessionId = Math.floor(Math.random() * 999999999);
+            var sessionID = bcrypt.hashSync(newSessionId.toString(), 5);
+            var time = Date.now();
+            createSession(userID, sessionID, time);
+
+            res.cookie('userID', userID);
+            res.cookie('sessionID', sessionID);
+        }
+
+        res.redirect('/');
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Failed to log in' });
+        }
 });
 
 // Clear current login info
 app.post('/logout', function(req, res){
-res.clearCookie('username');
-res.clearCookie('email');
-res.redirect('/');
+    // deprecated, just in case
+    res.clearCookie('username');
+    res.clearCookie('email');
+
+    // current system
+    res.clearCookie('userID');
+    res.clearCookie('sessionID');
+    res.redirect('/');
 });
 
 
