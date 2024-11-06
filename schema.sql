@@ -30,6 +30,15 @@ CREATE TABLE `scores` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+CREATE TABLE `users` (
+  user_id int NOT NULL,
+  user_password LONGTEXT NOT NULL,
+  user_email LONGTEXT NOT NULL,
+  last_login bigint,
+  session_id LONGTEXT,
+  PRIMARY KEY (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 --
 -- Dumping data for table `scores`
 --
