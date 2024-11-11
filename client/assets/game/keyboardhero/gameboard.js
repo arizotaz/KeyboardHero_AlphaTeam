@@ -6,6 +6,13 @@
 //# handled by the host of this object
 let gameTheme = 0;
 
+ChangeGameTheme(1);
+
+function ChangeGameTheme(id) {
+    gameTheme = id;
+    LoadTheme(id);
+}
+
 class GameBoard {
     constructor() {
         this.canUpdate = false;
