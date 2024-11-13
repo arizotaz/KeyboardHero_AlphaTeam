@@ -209,6 +209,9 @@ io.sockets.on('connection', function (socket) {
         socket.on("currentMenu", function (data) { try { clients[socket.id].SetCurrentMenu(data.id) } catch (e) { console.error(e) } });
 
         socket.on("requestMultiplayer",(data) => { clients[socket.id].RegisterMultiplayer(); });
+
+
+        socket.on("ping", () => { socket.emit("pong"); })
     } catch (e) { console.error(e); }
 
 });
