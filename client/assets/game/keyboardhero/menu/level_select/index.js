@@ -13,11 +13,13 @@
 //# are used by the game it self.
 
 
+let songlist = [];
 class LevelSelectorMenu extends Menu {
     Open() {
         $.get("/assets/game/keyboardhero/menu/level_select/index.html", function( data ) {
             $( "#levelSelectMenuContainer" ).append( data );
             document.getElementById('levelSelectMenu').style.display = 'block';
+            LoadSongList();
         });
     }
     

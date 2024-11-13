@@ -1,122 +1,433 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="stylesheet" href="/assets/css/header.css">
-    <link rel="stylesheet" href="/assets/css/ui_elements.css">
-    <style>
-        .menuContainer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+<link rel="stylesheet" href="/assets/css/header.css">
+<link rel="stylesheet" href="/assets/css/ui_elements.css">
+<style>
+    .menuContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background-image: url('/assets/game/keyboardhero/textures/game_background.png');
+        background-position: center;
+        background-size: cover;
+    }
+
+    .mainPageContent {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        background-color: rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+        grid-gap: 10px;
+        /* no idea why this works, but this fixes the overlap issue */
+        /* CSS is hard to like :( */
+        height: 1;
+    }
+
+    .backShortcut {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+    }
+    .backShortcut img {
+        height: 40px;
+        filter: invert();
+        cursor: pointer;
+    }
+    .settingsShortcut {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+    .settingsShortcut img {
+        height: 40px;
+        filter: invert();
+        cursor: pointer;
+    }
+    
+
+    .uploadSelections {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0);
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        border: 5px solid rgba(80, 80, 80, 1);
+        overflow: hidden;
+        transition: all ease .2s;
+        cursor: pointer;
+        padding: 10px;
+        color: #fff;
+    }
+
+    .uploadSelectionsContent {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .uploadSelectionsContent .setupOptions {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .uploadSelectionsContent .setupOptions img {
+        height: 100px;
+        filter: invert(1);
+        margin: 10px;
+    }
+
+
+    .uploadInput {
+        padding: 10px;
+    }
+
+    .uploadInput input {}
+
+    .uploadSelectionsContent .fineTune {
+        display: none;
+    }
+
+
+    .songList {
+        width: 100%;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0);
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        border: 5px solid rgba(80, 80, 80, 1);
+        flex: 1;
+        padding: 10px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: relative;
+    }
+
+    .songListContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .songListLoader {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(10px);
+        background-color: rgba(0, 0, 0, 0.1);
+        color: #fff;
+    }
+
+    .songListLoaderContainer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 100%;
+    }
+
+    .songListProgressBar {
+        width: 100%;
+        height: 20px;
+        min-width: 500px;
+        background-color: rgba(80, 80, 80, 1);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .songListProgress {
+        background-color: rgb(0, 73, 183);
+        height: 100%;
+        width: 0%;
+    }
+
+    .song {
+        color: #fff;
+        margin: 5px;
+        width: 30%;
+    }
+
+
+
+    .song .coverImage {
+        aspect-ratio: 1;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 10px;
+        transition: all ease .2s;
+        cursor: pointer;
+    }
+
+    .song:hover .coverImage {
+        transform: scale(1.05);
+    }
+
+    .song .coverTitle {
+        margin: 10px 0px;
+        text-decoration: underline;
+        font-size: 20px;
+    }
+
+    .song .coverAlbum {}
+
+    .song .coverArtist {}
+
+
+
+
+
+    .uploadModel {
+        display: none;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        z-index: 1000;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(5px);
+    }
+
+    .uploadModel .content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 20px;
+        overflow: hidden;
+        text-align: left;
+    }
+
+    .uploadModel .content .container {
+        border: 3px solid #f1f1f1;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+
+    .uploadModel .content .row {
+        padding: 10px;
+        background: #f1f1f1;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+
+    .uploadModel .content .column {
+        float: left;
+    }
+
+    .uploadModel .content .left {
+        width: 15%;
+    }
+
+    .uploadModel .content .right {
+        width: 10%;
+    }
+
+    .uploadModel .content .middle {
+        width: 75%;
+    }
+
+    .uploadModel .content .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    .uploadModel .content .dot {
+        margin-top: 4px;
+        height: 12px;
+        width: 12px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .uploadModel .content input[type=text] {
+        width: 100%;
+        border-radius: 3px;
+        border: none;
+        background-color: white;
+        margin-top: -8px;
+        height: 25px;
+        color: #666;
+        padding: 5px;
+    }
+
+    .uploadModel .content .bar {
+        width: 17px;
+        height: 3px;
+        background-color: #aaa;
+        margin: 3px 0;
+        display: block;
+    }
+
+    .uploadModel .content .pageContent {
+        padding: 10px;
+    }
+
+    .uploadProgressBar {
+        width: 100%;
+        height: 20px;
+        min-width: 500px;
+        background-color: rgba(80, 80, 80, 1);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .uploadProgress {
+        background-color: rgb(0, 73, 183);
+        height: 100%;
+        width: 0%;
+    }
+
+    .receiveProgress {
+        background-color: rgb(0, 73, 183);
+        height: 100%;
+        width: 0%;
+    }
+
+    #uploadProcessingDisplay {
+        min-width: 300px;
+    }
+
+
+    .songSelector {
+        display: none;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        z-index: 1000;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(5px);
+    }
+
+    .songSelectorModel {
+        width: 800px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(40, 40, 40, 1);
+        background-image: url('/assets/game/keyboardhero/textures/game_background.png');
+        background-size: cover;
+        background-position: center;
+        border: 5px solid rgba(80, 80, 80, 1);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .songSelectorModel .actionBar {
+        width: 100%;
+        height: 50px;
+        padding: 5px;
+        background-color: rgba(120, 120, 120, 1);
+    }
+
+    .songSelectorModel .actionBar img {
+        height: 100%;
+        filter: invert();
+        float:left;
+        cursor: pointer;
+    }
+
+
+    .songSelectorModel .pageContent {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        padding: 10px;
+    }
+
+    .songSelectorModel .pageContent .mainContent {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        align-items: center;
+    }
+
+    .songSelectorModel .pageContent .mainContent .albumCover {
+        aspect-ratio: 1;
+        width: 100%;
+        max-width: 400px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 10px;
+    }
+
+    .songSelectorModel .pageContent .mainContent .aboutSection {
+        flex: 1;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        color:#fff;
+        align-items: center;
+
+    }
+
+    .songSelectorModel .pageContent .leaderBoard {}
+
+    #songSelectorTitle { font-size: 40px; }
+    #songSelectorAlbum { font-size: 30px;}
+    #songSelectorArtist { font-size: 24px;}
+    #songSelectorRelease { font-size: 18px;}
+    #songSelectorDifficultyBar {
+        width: 80%;
+        background-color: rgba(80, 80, 80, 1);
+        height: 20px;
+    }
+    #songSelectorDifficulty {
+        height:100%;
+    }
+
+
+    @media screen and (max-width: 1100px) {
+        .song {
+            width: 48%;
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+
+        .uploadModel .content {
             width: 100%;
             height: 100%;
-            background-image: url('/assets/game/keyboardhero/textures/game_background.png');
-            background-position: center;
-            background-size: cover;
+        }
+
+        .uploadModel .content .row {
+            display: none;
+        }
+
+        .uploadProgressBar {
+            min-width: 100px;
+            width: 100%;
         }
 
         .mainPageContent {
+            padding: 0px;
+        }
+
+        .song {
             width: 100%;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            background-color: rgba(0, 0, 0, 0.1);
-            padding: 10px;
-            text-align: center;
+            padding-left: 0px;
+            padding-right: 0px;
         }
 
-        .backShortcut {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-        }
-
-        .backShortcut img {
-            height: 40px;
-            filter: invert();
-            cursor: pointer;
-        }
-
-        .levelSelectContainer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 80%;
-            max-width: 800px;
-            height: 300px;
-            margin-top: 100px;
-            position: relative;
-        }
-
-        .leftArrowContainer,
-        .rightArrowContainer {
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .arrow {
-            cursor: pointer;
-            font-size: 3rem;
-            color: #fff;
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 50%;
-            visibility: visible;
-        }
-
-        .arrow.hidden {
-            visibility: hidden;
-        }
-
-        .songPanelContainer {
-            display: flex;
-            overflow: hidden;
-            width: 700px;
-            justify-content: center;
-            transition: transform 0.5s ease;
-        }
-
-        .songPanel {
-            min-width: 100%;
-            height: 500px;
-            text-align: center;
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            display: none;
-            border-radius: 10px;
-        }
-
-        .songPanel.active {
-            display: block;
-        }
-
-        .songImage {
-            width: 80%; /* Make the image width smaller */
-            height: auto; /* Maintain aspect ratio */
-            max-height: 2500px; /* Set a maximum height */
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .songInfoContainer {
-            margin-top: 110px;
+    }
+    @media screen and (max-width: 800px) {
+        .songSelectorModel {
             width: 100%;
-            max-width: 700px;
-            padding: 15px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            text-align: center;
-            border-radius: 10px;
-        }
-
-        .songInfoText {
-            margin: 0;
-            font-size: 1.2rem;
+            height: 100%;
         }
 
         .playButton {
@@ -134,141 +445,371 @@
             background-color: #218838;
         }
 
-        @media screen and (max-width: 800px) {
-            .mainPageContent {
-                flex-direction: column;
-            }
+        .songSelectorModel .pageContent .mainContent {
+            flex-direction: column;
         }
-    </style>
-</head>
-<body>
-    <div class="menuContainer">
-        <div class="topBar">
-            <div class="backShortcut">
-                <img onclick="MenuManager.GoBack();" src="/assets/game/keyboardhero/textures/button_back.png" alt="">
+    }
+</style>
+<div class="menuContainer">
+    <div class="topBar">
+        <div class="backShortcut">
+            <img onclick="MenuManager.GoBack();" src="/assets/game/keyboardhero/textures/button_back.png" alt="">
+        </div>
+        <div class="settingsShortcut">
+            <img onclick="MenuManager.GoTo(MENU_SETTINGS);" src="/assets/game/keyboardhero/textures/settings.png" alt="">
+        </div>
+    </div>
+    <div class="mainPageContent">
+        <div class="uploadModel">
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="column left">
+                            <span class="dot" style="background:#ED594A;"></span>
+                            <span class="dot" style="background:#FDD800;"></span>
+                            <span class="dot" style="background:#5AC05A;"></span>
+                        </div>
+                        <div class="column middle">
+                            <input type="text" value="" id="uploadURL">
+                        </div>
+                        <div class="column right">
+                            <div style="float:right">
+                                <span class="bar"></span>
+                                <span class="bar"></span>
+                                <span class="bar"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pageContent">
+                        <div id="uploadProgressDisplay">
+                            <h3>Uploading File</h3>
+                            <div class="uploadProgressBar">
+                                <div class="uploadProgress"></div>
+                            </div>
+                        </div>
+                        <div id="uploadProcessingDisplay">
+                            <h3>Processing</h3>
+                            This may take a few minutes
+                        </div>
+                        <div id="uploadReceiveDisplay">
+                            <h3>Retrieving Processed File</h3>
+                            <div class="uploadProgressBar">
+                                <div class="receiveProgress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="uploadSelections">
+            <div class="uploadSelectionsContent">
+                <div class="setupOptions">
+                    <img src="/assets/game/keyboardhero/textures/upload.png" alt="">
+                    <div class="uploadInput">
+                        <h1>Upload a song to create a custom level</h1>
+                        <div class="mp3Input"><input type="file" name="" id="mp3FileUpload"
+                                onchange="ShowUploadOptions()" accept=".mp3"></div>
+                    </div>
+                </div>
+                <div class="fineTune" id="fineTuneOptions">
+                    <div class="difficultySelect bubbleButtons">
+                        <h3>Difficulty</h3>
+                        <div class="shadow" style="width:100vw; max-width: 800px;">
+                            <input type="range" id="difficulty" min="1" max="3" class="bubbleSlider"
+                                onchange="DifficultyText()">
+                        </div>
+                        <h3 id="difficultyText">Medium</h3>
+                    </div>
+                    <div>
+                        <h3>Theme</h3>
+                        <select id="themeSelect">
+                            <option value="0">Bubble</option>
+                            <option value="1">Delozier</option>
+                            <option value="2">Winter</option>
+                            <option value="3">Spring</option>
+                        </select>
+                    </div>
+                    <div class="submit bubbleButtons">
+                        <div class="shadow">
+                            <button onclick="UploadSong()">Process</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="songList">
+            <div class="songListContainer" id="songListContainer">
+            </div>
+            <div class="songListLoader" id="songListLoader">
+                <div class="songListLoaderContainer" id="songListLoaderContainer">
+                    <div class="songListProgressBar">
+                        <div class="songListProgress"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="mainPageContent">
-            <!-- Scrolling Level Select Container -->
-            <div class="levelSelectContainer">
-                <div class="leftArrowContainer">
-                    <div class="arrow leftArrow" id="leftArrow" onclick="scrollToLeft()">❮</div>
+        <div class="songSelector" id="songSelector">
+            <div class="songSelectorModel">
+                <div class="actionBar">
+                    <img src="/assets/game/keyboardhero/textures/button_back.png" alt="" onclick="document.getElementById('songSelector').style.display = 'none';">
                 </div>
-                <div class="songPanelContainer">
-                    <div class="songPanel active" id="song1">
-                        <img src="/assets/game/keyboardhero/textures/song1.png" alt="Song 1" class="songImage">
+                <div class="pageContent">
+                    <div class="mainContent">
+                        <div class="albumCover" id="songSelectorImg"></div>
+                        <div class="aboutSection bubbleButtons">
+                            <div id="songSelectorTitle"></div>
+                            <div id="songSelectorAlbum"></div>
+                            <div id="songSelectorArtist"></div>
+                            <div id="songSelectorRelease"></div>
+                            <div id="songSelectorDifficultyBar"><div id="songSelectorDifficulty"></div></div>
+                            <div class="shadow">
+                                <button id="songSelectorPlay">Play</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="songPanel" id="song2">
-                        <img src="/assets/game/keyboardhero/textures/3.jpg" alt="Song 2" class="songImage">
-                    </div>
-                    <div class="songPanel" id="song3">
-                        <img src="/assets/game/keyboardhero/textures/6.jpg" alt="Song 3" class="songImage">
-                    </div>
-                    <!-- Add more song panels as needed -->
+                    <div class="leaderBoard"></div>
                 </div>
-                <div class="rightArrowContainer">
-                    <div class="arrow rightArrow" onclick="scrollToRight()">❯</div>
-                </div>
-            </div>
-
-            <!-- Song Info Container -->
-            <div class="songInfoContainer">
-                <p class="songInfoText" id="songName">Song 1 - Artist</p>
-                <p class="songInfoText" id="songDifficulty">Difficulty: Easy</p>
-            </div>
-            
-            <!-- Play Button -->
-            <div class="playButton">
-                <input type="file" id="mp3FileUpload" multiple>
-                <button class="" onclick="UploadNewSong()">Upload</button>
             </div>
         </div>
     </div>
-
-    <script>
-        (function() {
-            let currentSongIndex = 0;
-            const songs = document.querySelectorAll('.songPanel');
-            const leftArrow = document.getElementById('leftArrow');
-            const songInfo = [
-                { name: 'Song 1 - Artist', difficulty: 'Easy' },
-                { name: 'Song 2 - Artist', difficulty: 'Medium' },
-                { name: 'Song 3 - Artist', difficulty: 'Hard' }
-                // Add more song info as needed
-            ];
-            const songNameElement = document.getElementById('songName');
-            const songDifficultyElement = document.getElementById('songDifficulty');
-
-            function showSong(index) {
-                songs.forEach((song, i) => {
-                    song.classList.remove('active');
-                    if (i === index) {
-                        song.classList.add('active');
-                    }
-                });
-                // Update song info text
-                songNameElement.textContent = songInfo[index].name;
-                songDifficultyElement.textContent = `Difficulty: ${songInfo[index].difficulty}`;
-                
-                // Always show the left arrow (as requested)
-                leftArrow.classList.remove('hidden');
-            }
-
-            window.scrollToLeft = function() {
-                currentSongIndex = (currentSongIndex === 0) ? songs.length - 1 : currentSongIndex - 1;
-                showSong(currentSongIndex);
-            }
-
-            window.scrollToRight = function() {
-                currentSongIndex = (currentSongIndex === songs.length - 1) ? 0 : currentSongIndex + 1;
-                showSong(currentSongIndex);
-            }
-
-            window.playSong = function() {
-                MenuManager.GoTo(MENU_UPLOAD_SONGS); // Redirect to the level select
-            }
-
-            // Initialize the first song panel as active
-            showSong(currentSongIndex);
-        })();
-
-        function UploadNewSong() {
-            var fd = new FormData();
-
-            fd.append('name', document.getElementById('mp3FileUpload').files[0].name);
-            fd.append('file', document.getElementById('mp3FileUpload').files[0]);
-
-            $.ajax({
-                type: "POST",
-                xhr: function () {
-                    var xhr = new window.XMLHttpRequest();
-                    xhr.upload.addEventListener("progress", function (evt) {
-                        if (evt.lengthComputable) {
-                            var percentComplete = (evt.loaded / evt.total) * 100;
-                            //document.getElementById("updateProgress").style.width = percentComplete + "%";
-                        }
-                    }, false);
-                    return xhr;
-                },
-                url: "/newSongUpload",
-                data: fd,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function (text) {
-                    if (text.startsWith("{")) {
-                        gamePASSData = text;
-                        MenuManager.GoTo(MENU_SINGLEPLAYER);
-                    } else {
-                        alert(text.replace(/<\/[^>]+(>|$)/g, ""));
-                    }
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert("Can't connect to host\n" + textStatus + " - " + errorThrown);
-                }
-            });
+</div>
+<script>
+    ShowUploadOptions = () => {
+        document.getElementById("fineTuneOptions").style.display = "block";
+        DifficultyText();
+    }
+    DifficultyText = () => {
+        let elm = document.getElementById("difficultyText");
+        let val = document.getElementById("difficulty").value;
+        switch (parseInt(val)) {
+            case 1: elm.innerHTML = "Easy"; break;
+            case 2: elm.innerHTML = "Medium"; break;
+            case 3: elm.innerHTML = "Hard"; break;
+            default:
+                elm.innerHTML = "NA";
         }
-    </script>
-</body>
-</html>
+    }
+    UploadSong = () => {
+
+        let elms = document.getElementsByClassName('uploadModel');
+        for (let i = 0; i < elms.length; ++i) {
+            elms[i].style.display = "block";
+        }
+        document.getElementById("uploadURL").value = window.location.protocol + "//" + window.location.host + "/upload";
+        document.getElementById("uploadProgressDisplay").style.display = "block";
+        document.getElementById("uploadProcessingDisplay").style.display = "none";
+        document.getElementById("uploadReceiveDisplay").style.display = "none";
+
+
+        var fd = new FormData();
+        fd.append('name', document.getElementById('mp3FileUpload').files[0].name);
+        fd.append('file', document.getElementById('mp3FileUpload').files[0]);
+        fd.append('difficulty', document.getElementById("themeSelect").value);
+        fd.append('theme', document.getElementById("themeSelect").value);
+        $.ajax({
+            type: "POST",
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = (evt.loaded / evt.total) * 100;
+
+                        let elms = document.getElementsByClassName('uploadProgress');
+                        for (let i = 0; i < elms.length; ++i) {
+                            elms[i].style.width = percentComplete + "%";
+                        }
+
+                        if (percentComplete >= 99) {
+                            document.getElementById("uploadProcessingDisplay").style.display = "block";
+                            document.getElementById("uploadProgressDisplay").style.display = "none";
+                            document.getElementById("uploadReceiveDisplay").style.display = "none";
+                        }
+                    }
+                }, false);
+                xhr.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = (evt.loaded / evt.total) * 100;
+
+                        document.getElementById("uploadReceiveDisplay").style.display = "block";
+                        document.getElementById("uploadProcessingDisplay").style.display = "none";
+                        document.getElementById("uploadProgressDisplay").style.display = "none";
+
+                        let elms = document.getElementsByClassName('receiveProgress');
+                        for (let i = 0; i < elms.length; ++i) {
+                            elms[i].style.width = percentComplete + "%";
+                        }
+                    }
+                }, false);
+                return xhr;
+            },
+            url: "/newSongUpload",
+            data: fd,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (text) {
+                if (text.startsWith("{")) {
+                    let elms = document.getElementsByClassName('uploadModel');
+                    for (let i = 0; i < elms.length; ++i) {
+                        elms[i].style.display = "none";
+                    }
+                    gamePASSData = text;
+                    MenuManager.GoTo(MENU_SINGLEPLAYER);
+                } else {
+                    let elms = document.getElementsByClassName('uploadModel');
+                    for (let i = 0; i < elms.length; ++i) {
+                        elms[i].style.display = "none";
+                    }
+                    alert(text.replace(/<\/[^>]+(>|$)/g, ""));
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                let elms = document.getElementsByClassName('uploadModel');
+                for (let i = 0; i < elms.length; ++i) {
+                    elms[i].style.display = "none";
+                }
+                alert("Can't connect to host\n" + textStatus + " - " + errorThrown);
+            }
+        });
+    }
+    LoadSongList = () => {
+        document.getElementById("songListLoader").style.display = "block";
+        $.ajax({
+            type: "GET",
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+                xhr.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = (evt.loaded / evt.total) * 100;
+
+                        let elms = document.getElementsByClassName('songListProgress');
+                        for (let i = 0; i < elms.length; ++i) {
+                            elms[i].style.width = percentComplete + "%";
+                        }
+                    }
+                }, false);
+                return xhr;
+            },
+            dataType: "text",
+            url: "/levelselect/songs",
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (text) {
+                if (text.startsWith("[")) {
+                    try {
+                        ProcessSongList(text);
+                        //SelectSong(0);
+                        document.getElementById("songListLoader").style.display = "none";
+                    } catch (e) {
+                        document.getElementById("songListLoaderContainer").innerHTML = "<h3>Failed to load song list.</h3>" + e;
+                    }
+                } else {
+                    document.getElementById("songListLoaderContainer").innerHTML = "<h3>Failed to load song list.</h3>" + text.replace(/<\/[^>]+(>|$)/g, "");
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                let msg = (textStatus + " - " + errorThrown);
+                document.getElementById("songListLoaderContainer").innerHTML = "<h3>Failed to load song list.</h3>" + msg;
+            }
+        });
+    }
+    ProcessSongList = (text) => {
+        songlist = JSON.parse(text);
+        let slc = document.getElementById("songListContainer");
+        for (let i = 0; i < songlist.length; ++i) {
+            slc.innerHTML += ProcessSongFromList(songlist[i], i);
+        }
+    }
+    ProcessSongFromList = (jsonObj, i) => {
+
+        if (jsonObj["coverURL"] == null || jsonObj["coverURL"] == "") {
+            jsonObj["coverURL"] = "/assets/game/keyboardhero/textures/song_na.png";
+        }
+
+
+        let obj = "";
+
+        obj += "<div class=\"song\">";
+
+        obj += "<div class=\"coverImage\" style=\"background-image:url('" + jsonObj["coverURL"] + "');\" onclick=\"SelectSong(" + i + ")\">";
+        obj += "</div>";
+
+        obj += "<div class=\"coverTitle\">";
+        obj += jsonObj["title"];
+        obj += "</div>";
+
+        if (jsonObj["album"] != null && jsonObj["album"] != "") {
+            obj += "<div class=\"coverAlbum\">";
+            obj += jsonObj["album"];
+            obj += "</div>"
+        }
+
+        obj += "<div class=\"coverArtist\">";
+        obj += jsonObj["author"];
+        obj += "</div>"
+
+        obj += "</div>";
+
+        return obj;
+    }
+    SelectSong = (id) => {
+        try {
+            let entry = songlist[id];
+
+            document.getElementById("songSelectorImg").style.backgroundImage = "url('"+entry["coverURL"]+"')";
+            document.getElementById("songSelectorTitle").innerHTML = entry["title"];
+            document.getElementById("songSelectorAlbum").innerHTML = entry["album"];
+            document.getElementById("songSelectorArtist").innerHTML = entry["author"];
+            document.getElementById("songSelectorRelease").innerHTML = entry["releaseDate"];
+
+            let difficulty = entry["difficulty"];
+
+            let p = difficulty/3*100;
+            let r,g,b;
+
+            switch (difficulty) {
+                case 1:
+                    r = 14;
+                    g = 181;
+                    b = 26;
+                    break;
+                case 2:
+                    r = 245;
+                    g = 189;
+                    b = 5;
+                    break;
+                case 3:
+                    r = 204;
+                    g = 33;
+                    b = 10;
+                    break;    
+                default:
+                    r = 209;
+                    g =  25;
+                    b = 194;
+            }
+
+
+            document.getElementById("songSelectorDifficulty").style.width = p+"%";
+            document.getElementById("songSelectorDifficulty").style.backgroundColor = "rgb("+r+","+g+","+b+")";
+
+            document.getElementById("songSelectorPlay").onclick = function() { PlayLevel(id); };
+
+            document.getElementById("songSelector").style.display = "block";
+        } catch(e) {
+            alert(e);
+        }
+    }
+
+    PlayLevel = (id) => {
+        try {
+            let entry = songlist[id];
+            let lf = entry["levelFile"];
+            gameFileURI = lf;
+            MenuManager.GoTo(MENU_SINGLEPLAYER);
+        } catch(e) { alert(e); }
+    }
+</script>
