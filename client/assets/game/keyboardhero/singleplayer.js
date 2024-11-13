@@ -24,11 +24,19 @@ function LoadSinglePlayerData(data) {
         // Create audio object from base64
         gameAudio = new Audio(gameFileData.data);
 
+        // Set the game theme based on the file
+        if (gameFileData.theme != null && Number.isInteger(gameFileData.theme)) {
+            ChangeGameTheme(gameFileData.theme);
+        } else {
+            if (gameTheme != 0) ChangeGameTheme(0);
+        }
+
         // Get Game Input Keys
         game_input_keys = JSON.parse(Settings.GetKey(Setting_KeyArray));
 
         // Load data to board
         boards[0].LoadFileData(gameFileData,game_input_keys);
+
 
         // Run Finish Loop
         FinishGFLOnTexDone(boards[0]);
