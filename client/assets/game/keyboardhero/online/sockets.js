@@ -46,11 +46,14 @@ function GameMessage(msg) {
 
     let gameBanner = document.getElementById("gameBanner");
     if (msg == null || msg == "") if (gameBanner != null) { gameBanner.remove(); return; }
+    if (msg == null || msg == "") if (gameBanner != null) { gameBanner.remove(); return; }
 
+    if (gameBanner == null && msg != null && msg != "") {
     if (gameBanner == null && msg != null && msg != "") {
         gameBanner = document.createElement("div");
         gameBanner.id = "gameBanner";
         document.body.append(gameBanner)
     }
+    gameBanner.innerHTML = msg;
     gameBanner.innerHTML = msg;
 }
