@@ -10,13 +10,6 @@ function ChangeGameTheme(id) {
     LoadTheme(id);
 }
 
-ChangeGameTheme(1);
-
-function ChangeGameTheme(id) {
-    gameTheme = id;
-    LoadTheme(id);
-}
-
 class GameBoard {
     constructor() {
         this.canUpdate = false;

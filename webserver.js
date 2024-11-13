@@ -92,6 +92,10 @@ app.get('/levelselect/songs/', function (req, res) {
     let socketioclient = __dirname + "/songlist.json";
     res.sendFile(socketioclient);
 });
+app.get('/levelselect/songs/', function (req, res) {
+    let socketioclient = __dirname + "/songlist.json";
+    res.sendFile(socketioclient);
+});
 
 
 //api to get scores using for testing
