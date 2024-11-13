@@ -35,6 +35,15 @@ socket.on("msg", (data) => {
     GameMessage(data);
 });
 
+socket.on("pong", () => {
+    console.log("Pong - took " + (Date.now()-pingMS) + "ms");
+});
+let pingMS = 0;
+function Ping() {
+    pingMS = Date.now();
+    socket.emit("ping");
+}
+
 
 
 
