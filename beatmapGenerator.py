@@ -24,10 +24,13 @@ y, sr = librosa.load(songLocation)
 #D_harmonic, D_percussive = librosa.decompose.hpss(librosa.stft(y))
 #y = librosa.istft(D_percussive, length=len(y))
 
+# focus on percussive part of song (better for beat detection)
+#D_harmonic, D_percussive = librosa.decompose.hpss(librosa.stft(y))
+#y = librosa.istft(D_percussive, length=len(y))
+
 # get onset/peak strengths throughout whole mp3
 onsetStrengths = librosa.onset.onset_strength(y=y,sr=sr)
 # get timestamps of beats
-tempo, beats = librosa.beat.beat_track(y=y,sr=sr,onset_envelope=onsetStrengths,tightness=0.01,trim=True)
 tempo, beats = librosa.beat.beat_track(y=y,sr=sr,onset_envelope=onsetStrengths,tightness=0.01,trim=True)
 # get onset strength of gathered beats
 beatStrengths = onsetStrengths[beats]
@@ -38,8 +41,10 @@ timestamps = [] # to hold timestamp information
 # iterate through beats and their strengths
 for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)): 
     silenceThreshold = 1.5
+    silenceThreshold = 1.5
     if (beatStrengths > silenceThreshold):
         # beat timestamp, beat strength, include marker, and time till next beat
+        timestamps.append([beats.item()-0.05,beatStrengths.item(),1,0])
         timestamps.append([beats.item()-0.05,beatStrengths.item(),1,0])
 
 n = 1 # index of next beat
@@ -52,6 +57,14 @@ while (n < len(timestamps)):
         timestamps[c][3] = timestamps[n][0] - timestamps[c][0] # get time till next beat
         c = n # update index of current beat
     n = n + 1 # increment next beat
+
+n = 1 # index of next beat
+c = 0 # index of current beat
+while (n < len(timestamps)):
+    if (timestamps[n][1] < (timestamps[c][1] - 0.5) and timestamps[c][3] < 0.25 and timestamps[c][2] == 1):
+        timestamps[n][2] = 0
+    n = n + 1
+    c = c + 1
 
 n = 1 # index of next beat
 c = 0 # index of current beat
@@ -85,13 +98,13 @@ pattern = 0
 currentGap = timestamps[0][3]
 median = statistics.median([t[1] for t in timestamps]) # get median of strength of beats
 median = np.percentile([t[1] for t in timestamps],75)
+median = np.percentile([t[1] for t in timestamps],75)
 topBeats = np.percentile([t[1] for t in timestamps],98)
 for t in timestamps:
 
     if (t[2] == 1): # only consider included beats
 
         # change patterns if not similar gap between notes or there's a significant strength to the beat
-        if ((not (t[3] >= currentGap-0.10 and t[3] <= currentGap+0.10)) or t[1] > median or pattern == 7):
         if ((not (t[3] >= currentGap-0.10 and t[3] <= currentGap+0.10)) or t[1] > median or pattern == 7):
 
             # make sure pattern changes
