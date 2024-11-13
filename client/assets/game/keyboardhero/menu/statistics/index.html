@@ -130,7 +130,7 @@ html, body {
             var username = cookie[0].substring(9,cookie[0].length-1);
             var email = cookie[1].substring(6,cookie[1].length-1);
 
-            document.getElementById("title").textContent = username + "'s account";
+            document.getElementById("title").textContent = "User ID : " + username;
         }else{
             MenuManager.GoTo(MENU_LOGIN);
         }
