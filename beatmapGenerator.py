@@ -20,6 +20,10 @@ songName = sys.argv[2]
 # load in the audio file
 y, sr = librosa.load(songLocation)
 
+# focus on percussive part of song (better for beat detection)
+#D_harmonic, D_percussive = librosa.decompose.hpss(librosa.stft(y))
+#y = librosa.istft(D_percussive, length=len(y))
+
 # get onset/peak strengths throughout whole mp3
 onsetStrengths = librosa.onset.onset_strength(y=y,sr=sr)
 # get timestamps of beats
@@ -32,14 +36,14 @@ timestamps = [] # to hold timestamp information
 
 # iterate through beats and their strengths
 for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)): 
-    silenceThreshold = 2.5 # exclude beats below a certain strength (silent moments)
+    silenceThreshold = 1.5
     if (beatStrengths > silenceThreshold):
         # beat timestamp, beat strength, include marker, and time till next beat
-        timestamps.append([beats.item(),beatStrengths.item(),1,0])
+        timestamps.append([beats.item()-0.05,beatStrengths.item(),1,0])
 
 n = 1 # index of next beat
 c = 0 # index of current beat
-bufferTime = 0.20 # minimum time (seconds) between notes
+bufferTime = 0.10 # minimum time (seconds) between notes
 while (n < len(timestamps)):
     if (timestamps[n][0] - timestamps[c][0] < bufferTime):
         timestamps[n][2] = 0 # get rid of beat at index n
@@ -47,6 +51,14 @@ while (n < len(timestamps)):
         timestamps[c][3] = timestamps[n][0] - timestamps[c][0] # get time till next beat
         c = n # update index of current beat
     n = n + 1 # increment next beat
+
+n = 1 # index of next beat
+c = 0 # index of current beat
+while (n < len(timestamps)):
+    if (timestamps[n][1] < (timestamps[c][1] - 0.5) and timestamps[c][3] < 0.25 and timestamps[c][2] == 1):
+        timestamps[n][2] = 0
+    n = n + 1
+    c = c + 1
 
 # get identifier ======================================================================
 
@@ -71,6 +83,7 @@ tracks = [track0, track1, track2, track3]
 pattern = 0
 currentGap = timestamps[0][3]
 median = statistics.median([t[1] for t in timestamps]) # get median of strength of beats
+median = np.percentile([t[1] for t in timestamps],75)
 topBeats = np.percentile([t[1] for t in timestamps],98)
 for t in timestamps:
 
