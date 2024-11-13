@@ -36,14 +36,14 @@ timestamps = [] # to hold timestamp information
 
 # iterate through beats and their strengths
 for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)): 
-    silenceThreshold = 1.5 # exclude beats below a certain strength (silent moments)
+    silenceThreshold = 1.5
     if (beatStrengths > silenceThreshold):
         # beat timestamp, beat strength, include marker, and time till next beat
         timestamps.append([beats.item()-0.05,beatStrengths.item(),1,0])
 
 n = 1 # index of next beat
 c = 0 # index of current beat
-bufferTime = 0.20 # minimum time (seconds) between notes
+bufferTime = 0.10 # minimum time (seconds) between notes
 while (n < len(timestamps)):
     if (timestamps[n][0] - timestamps[c][0] < bufferTime):
         timestamps[n][2] = 0 # get rid of beat at index n
