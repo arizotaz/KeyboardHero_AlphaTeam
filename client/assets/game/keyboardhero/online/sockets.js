@@ -19,6 +19,7 @@ socket.on("disconnect", function (data) {
 });
 socket.on("handshake", function (data) {
     //if (disconnected) window.location.reload();
+    //if (disconnected) window.location.reload();
 });
 
 socket.on("clients", function (data) {
@@ -57,3 +58,4 @@ function GameMessage(msg) {
     gameBanner.innerHTML = msg;
     gameBanner.innerHTML = msg;
 }
+
