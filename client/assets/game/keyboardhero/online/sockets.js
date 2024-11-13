@@ -1,6 +1,19 @@
 let socket = io();
 let clients = 0;
 let disconnected = false;
+
+
+
+let pingMS = 0;
+function Ping() {
+    pingMS = Date.now();
+    socket.emit("ping");
+}
+socket.on("pong", (data) => {
+    console.log(data);
+    console.log("Pong - took " + (Date.now()-pingMS) + "ms");
+});
+
 socket.on("disconnect", function (data) {
     disconnected = true;
 });
@@ -21,14 +34,7 @@ socket.on("msg", (data) => {
     GameMessage(data);
 });
 
-socket.on("pong", () => {
-    console.log("Pong - took " + (Date.now()-pingMS) + "ms");
-});
-let pingMS = 0;
-function Ping() {
-    pingMS = Date.now();
-    socket.emit("ping");
-}
+
 
 
 
