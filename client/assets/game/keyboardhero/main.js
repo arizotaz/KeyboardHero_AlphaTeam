@@ -48,6 +48,11 @@ const MENU_SINGLEPLAYER             = 9;
 const MENU_LEVELSELECT              = 10;
 const MENU_STATISTICS               = 11;
 
+const MENU_MULTIPLAYER              = 30;
+const MENU_MULTIPLAYER_SETUP        = 31;
+const MENU_MULTIPLAYER_HOST         = 32;
+const MENU_MULTIPLAYER_JOIN         = 33;
+const MENU_MULTIPLAYER_GAME         = 34;
 
 // Array of game boards
 let boards = [];
@@ -65,19 +70,25 @@ function ApplicationStart() {
     // Setup Menus
     MenuManager.GoTo(MENU_MAIN);//MENU_GAME);
     // Create the menus
-    MenuManager.AddMenu(MENU_MAIN,                  new MainMenu    ());
-    MenuManager.AddMenu(MENU_SETTINGS,              new SettingsMenu());
+    MenuManager.AddMenu(MENU_MAIN,                  new MainMenu            ());
+    MenuManager.AddMenu(MENU_SETTINGS,              new SettingsMenu        ());
     MenuManager.AddMenu(MENU_AUDIOCALI,             new AudioCalibrationMenu());
-    MenuManager.AddMenu(MENU_ABOUT,                 new AboutMenu   ());
-    MenuManager.AddMenu(MENU_SINGLEPLAYER,          new SinglePlayerGame());
-    MenuManager.AddMenu(MENU_COMPLETE_SINGLEPLAYER, new GameCompletedMenu());
-    MenuManager.AddMenu(MENU_LEVELSELECT,           new LevelSelectorMenu());
-    MenuManager.AddMenu(MENU_UPLOAD_SONGS,          new UploadSongsMenu());
+    MenuManager.AddMenu(MENU_ABOUT,                 new AboutMenu           ());
+    MenuManager.AddMenu(MENU_SINGLEPLAYER,          new SinglePlayerGame    ());
+    MenuManager.AddMenu(MENU_COMPLETE_SINGLEPLAYER, new GameCompletedMenu   ());
+    MenuManager.AddMenu(MENU_LEVELSELECT,           new LevelSelectorMenu   ());
+    MenuManager.AddMenu(MENU_UPLOAD_SONGS,          new UploadSongsMenu     ());
     
-    MenuManager.AddMenu(MENU_LOGIN,                 new LoginMenu   ());
-    MenuManager.AddMenu(MENU_REGISTER,              new RegisterMenu   ());
+    MenuManager.AddMenu(MENU_LOGIN,                 new LoginMenu           ());
+    MenuManager.AddMenu(MENU_REGISTER,              new RegisterMenu        ());
+    MenuManager.AddMenu(MENU_STATISTICS,            new StatisticsMenu      ());
 
-    MenuManager.AddMenu(MENU_STATISTICS,            new StatisticsMenu   ());
+    MenuManager.AddMenu(MENU_MULTIPLAYER,           new Multiplayer    ());
+    MenuManager.AddMenu(MENU_MULTIPLAYER_SETUP,     new MultiplayerSetup    ());
+    MenuManager.AddMenu(MENU_MULTIPLAYER_HOST,      new MultiplayerHost     ());
+    MenuManager.AddMenu(MENU_MULTIPLAYER_JOIN,      new MultiplayerJoin     ());
+    MenuManager.AddMenu(MENU_MULTIPLAYER_GAME,      new MultiplayerGame     ());
+
 //
     // Add more menus here
     
