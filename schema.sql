@@ -23,12 +23,22 @@ DROP TABLE IF EXISTS `scores`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `scores` (
-  user_id char(3) NOT NULL,
+  user_id int NOT NULL,
   song_id LONGTEXT NOT NULL,
   score int NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(user_id),
   PRIMARY KEY (user_id, song_id(255), score)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE TABLE `users` (
+  user_id int NOT NULL,
+  user_password LONGTEXT NOT NULL,
+  user_email LONGTEXT NOT NULL,
+  last_login bigint,
+  session_id LONGTEXT,
+  PRIMARY KEY (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `scores`

@@ -31,7 +31,10 @@ class UIManager {
     leave that screen and update on every frame of the current menu
     */
     Update() {
-        this.currentMenu = this.changeToMenu;
+        if (this.changeToMenu != this.currentMenu) {
+            this.currentMenu = this.changeToMenu;
+            socket.emit("currentMenu",{id:this.currentMenu});
+        }
 
         if (this.currentMenu !== this.lastMenu) {
             if (this.menus[this.lastMenu] != null) {this.menus[this.lastMenu].Leave();}

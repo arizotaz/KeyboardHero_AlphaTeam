@@ -1,0 +1,164 @@
+<style>
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#statisticsMenuContainer {
+    display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background-image: url('/assets/game/keyboardhero/textures/game_background.png');
+        background-position: center;
+        background-size: cover;
+}
+
+    h1 {
+        color: #ffea00;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    h2 {
+        color: #ffea00;
+        font-size: 2em;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    p {
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin: 10px 0;
+    }
+
+    .highlight {
+        color: #ff4081;
+        font-weight: bold;
+    }
+
+    .loginhighlight {
+        color: #ffea00;
+        font-weight: bold;
+    }
+
+    .container {
+        width: 90%;
+        height: 90%;
+        margin: auto;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        position: relative;
+    }
+
+    ul {
+        text-align: left;
+        margin: 0 auto;
+        display: inline-block;
+    }
+
+    .backShortcut {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        cursor: pointer;
+    }
+
+    .backShortcut img {
+        height: 40px;
+        filter: invert();
+    }
+
+    input[type=text] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 0px 0;
+        box-sizing: border-box;
+        border: none;
+        color: #ffffff;
+        border-bottom: 2px solid #ff4081;
+        background-color:transparent;
+    }
+    input[type=password] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 0px 0;
+        box-sizing: border-box;
+        border: none;
+        color: #ffffff;
+        border-bottom: 2px solid #ff4081;
+        background-color:transparent;
+    }
+    .verticalLine {
+        border-left: 6px solid rgb(255, 255, 255);
+        height: 100%;
+        position: absolute;
+        left: 50%;
+        top: 0;
+    }
+    .horizontalLine {
+        height: 6px;  
+        background-color: rgb(255, 255, 255);  
+        width: 100%;
+        top: 0;
+    }
+    .leftStatistic{
+        left: 1%;
+        position: absolute;
+    }
+    .rightStatistic{
+        left: 51%;
+        position: absolute;
+    }
+
+</style>
+<div class="container">
+    <div class="backShortcut" onclick="MenuManager.GoTo(MENU_MAIN);">
+        <img src="/assets/game/keyboardhero/textures/button_back.png" alt="Back">
+    </div>
+    <script>
+        if (document.cookie != "") {
+            // Why are cookies stored this way
+            var cookie = document.cookie.split(" ");
+            var username = cookie[0].substring(9,cookie[0].length-1);
+            var email = cookie[1].substring(6,cookie[1].length-1);
+
+            document.getElementById("title").textContent = "User ID : " + username;
+        }else{
+            MenuManager.GoTo(MENU_LOGIN);
+        }
+    </script>
+    <h1 id = "title">Statitics</h1>
+    <form action="/logout" method="post">
+        <button id = "buttonUsername" class="buttonLogin">Delete Account</button>
+    </form>
+
+    <div class="verticalLine"></div>
+    <div>
+        <h1 class = "leftStatistic">Your Statistics</h1>
+        <h1 class = "rightStatistic">Global Statistics</h1>
+        <br></br>
+        <br></br>
+        <hr class = "horizontalLine">
+        <br>
+            <h1 class = "leftStatistic">Accuracy : </h1>
+            <h1 class = "rightStatistic">Accuracy : </h1>
+        </br>
+        <br>
+            <h1 class = "leftStatistic">Missed : </h1>
+            <h1 class = "rightStatistic">Missed : </h1>
+        </br>
+        <br>
+            <h1 class = "leftStatistic">Excellents : </h1>
+            <h1 class = "rightStatistic">Excellents : </h1>
+        </br>
+    </div>
+
+</div>
