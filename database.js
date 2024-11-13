@@ -43,6 +43,71 @@ async function sortHighToLow(items){
     }
 }
 
+// login stuff
+async function createAccount(username, email, password, time, sessionID) {
+    try {   
+        // check if username is in use, if so then return false
+        const checkAvailability = "select * from users where user_name = \"" + username + "\";";
+        var availableJSON = await promisePool.query(checkAvailability);
+        var userid;
+
+        // only make account if username is available 
+        if (Object.keys(availableJSON[0]).length === 0){
+
+            var IDused = true;
+            while (IDused){
+                userid = Math.floor(Math.random() * 999999999);
+                const checkIDAvailability = "select * from users where user_id = \"" + userid + "\";";
+                var availableIDJSON = await promisePool.query(checkIDAvailability);
+
+                if (Object.keys(availableIDJSON[0]).length === 0){
+                    IDused = false;
+                }
+            }
+            const query = "insert into users (user_id, user_name, user_password, user_email, last_login, session_id) values (" + userid + ",\"" + username + "\",\"" + password + "\",\"" + email + "\",\"" + time + "\",\"" + sessionID +"\");";
+            await promisePool.execute(query);
+
+            // give webserver the go ahead to make a cookie for user
+            return userid;
+        }else{
+            return 0;
+        }
+    } catch (err) {
+        console.error(err);
+        throw err;
+        
+    }
+}
+
+async function login(username) {
+    try {
+        const getHash = "select * from users where user_name = \"" + username + "\";";
+        var userdataJSON = await promisePool.query(getHash);
+
+        if (Object.keys(userdataJSON[0]).length !== 0){
+            var convert = JSON.stringify(userdataJSON[0]);
+            var converted = JSON.parse(convert);  
+
+            return [converted[0].user_id, converted[0].user_password];
+        }else{
+            return "account not found";
+        }
+    } catch (err) {
+        console.error(err);
+        throw err;  
+    }
+}
+
+async function createSession(userID, sessionID, time) {
+    try {
+        const query = "update users set session_id = \"" + sessionID + "\", last_login = \"" + time + "\" where user_id = \"" + userID + "\";";
+        await promisePool.execute(query);
+    } catch (err) {
+        console.error(err);
+        throw err;  
+    }
+}
+
 module.exports = {
-    getScores, getSongScores, sortHighToLow
+    getScores, getSongScores, sortHighToLow, createAccount, login, createSession
 };
