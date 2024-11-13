@@ -9,21 +9,21 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            min-height: 100vh; /* Ensure it covers the full viewport height */
+            height: 100%;
             background-image: url('/assets/game/keyboardhero/textures/game_background.png');
             background-position: center;
             background-size: cover;
-            padding-bottom: 20px; /* Add some padding at the bottom */
         }
 
         .mainPageContent {
             width: 100%;
+            flex: 1;
             display: flex;
-            height: 100%;
             align-items: center;
+            flex-direction: column;
             background-color: rgba(0, 0, 0, 0.1);
             padding: 10px;
-            margin-bottom: 20px; /* Space below the main content */
+            text-align: center;
         }
 
         .backShortcut {
@@ -41,32 +41,54 @@
         .levelSelectContainer {
             display: flex;
             align-items: center;
-            width: 66.67%;
-            height: 100vh;
-            position: relative;
             justify-content: center;
+            width: 80%;
+            max-width: 800px;
+            height: 300px;
+            margin-top: 100px;
+            position: relative;
+        }
+
+        .leftArrowContainer,
+        .rightArrowContainer {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .arrow {
+            cursor: pointer;
+            font-size: 3rem;
+            color: #fff;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            visibility: visible;
+        }
+
+        .arrow.hidden {
+            visibility: hidden;
         }
 
         .songPanelContainer {
             display: flex;
-            width: 90%;
-            height: 90%;
+            overflow: hidden;
+            width: 700px;
             justify-content: center;
-            position: relative;
-            padding: 10px;
-            background-color: rgba(152, 144, 144, 0.5);
-            border-radius: 20px;
+            transition: transform 0.5s ease;
         }
 
         .songPanel {
-            width: 100%;
-            height: 100%;
+            min-width: 100%;
+            height: 500px;
             text-align: center;
-            background-color: transparent;
+            background-color: #333;
             color: #fff;
+            padding: 10px;
             display: none;
-            overflow: hidden;
-            position: relative;
+            border-radius: 10px;
         }
 
         .songPanel.active {
@@ -74,78 +96,47 @@
         }
 
         .songImage {
-            width: 100%;
-            height: 100%;
+            width: 80%; /* Make the image width smaller */
+            height: auto; /* Maintain aspect ratio */
+            max-height: 2500px; /* Set a maximum height */
             object-fit: cover;
             border-radius: 10px;
         }
 
-        .buttonContainer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            margin-top: 10px;
+        .songInfoContainer {
+            margin-top: 110px;
+            width: 100%;
+            max-width: 700px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            text-align: center;
+            border-radius: 10px;
         }
 
-        .arrowButton {
-            position: absolute;
-            left: -230px; /* Adjust this to shift the arrow left */
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 2.5rem;
-            color: #000;
-            background-color: #fff;
-            border-radius: 50%;
-            padding: 10px;
-            cursor: pointer;
+        .songInfoText {
+            margin: 0;
+            font-size: 1.2rem;
         }
 
         .playButton {
-            margin-top: -130px; /* Move the play button up */
-            padding: 15px 30px; /* Make the play button larger */
-            font-size: 1.5rem; /* Increase font size */
-            color: #000000;
-            background-color: #e9e9e9;
+            margin-top: 5px; /* 5px below the song info container */
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            color: #fff;
+            background-color: #28a745;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        .rightSection {
-            width: 33.33%;
-            padding-left: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            text-align: left; /* Set to left-align for the whole section */
-            height: 100vh;
-        }
-
-        .songInfoContainer {
-            width: 100%;
-            height: 500px; /* Adjust height to auto for content */
-            max-width: 400px;
-            padding: 15px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            border-radius: 10px;
-        }
-
-        .songInfoText {
-            margin: 5px 0; /* Adjust margins for spacing between rows */
-            font-size: 1.2rem;
+        .playButton:hover {
+            background-color: #218838;
         }
 
         @media screen and (max-width: 800px) {
             .mainPageContent {
                 flex-direction: column;
-            }
-            .levelSelectContainer, .rightSection {
-                width: 100%;
-                height: auto;
             }
         }
     </style>
@@ -159,8 +150,11 @@
         </div>
 
         <div class="mainPageContent">
-            <!-- Scrolling Level Select Container (Left Section) -->
+            <!-- Scrolling Level Select Container -->
             <div class="levelSelectContainer">
+                <div class="leftArrowContainer">
+                    <div class="arrow leftArrow" id="leftArrow" onclick="scrollToLeft()">❮</div>
+                </div>
                 <div class="songPanelContainer">
                     <div class="songPanel active" id="song1">
                         <img src="/assets/game/keyboardhero/textures/song1.png" alt="Song 1" class="songImage">
@@ -171,22 +165,23 @@
                     <div class="songPanel" id="song3">
                         <img src="/assets/game/keyboardhero/textures/6.jpg" alt="Song 3" class="songImage">
                     </div>
+                    <!-- Add more song panels as needed -->
+                </div>
+                <div class="rightArrowContainer">
+                    <div class="arrow rightArrow" onclick="scrollToRight()">❯</div>
                 </div>
             </div>
 
-            <!-- Right Section with Song Info, Arrow, and Play Button -->
-            <div class="rightSection">
-                <div class="songInfoContainer">
-                    <p class="songInfoText" id="albumName">Album 1</p> <!-- Album name added here -->
-                    <p class="songInfoText" id="songName">Song 1</p>
-                    <p class="songInfoText" id="songDifficulty">Difficulty: Easy</p>
-                    <p class="songInfoText" id="songArtist">Artist: Artist 1</p>
-                    <p class="songInfoText" id="songYear">Release Year: 2023</p>
-                </div>
-                <div class="buttonContainer">
-                    <div class="arrowButton" onclick="scrollToRight()">❯</div>
-                    <button class="playButton" onclick="playSong()">Play</button>
-                </div>
+            <!-- Song Info Container -->
+            <div class="songInfoContainer">
+                <p class="songInfoText" id="songName">Song 1 - Artist</p>
+                <p class="songInfoText" id="songDifficulty">Difficulty: Easy</p>
+            </div>
+            
+            <!-- Play Button -->
+            <div class="playButton">
+                <input type="file" id="mp3FileUpload" multiple>
+                <button class="" onclick="UploadNewSong()">Upload</button>
             </div>
         </div>
     </div>
@@ -195,16 +190,15 @@
         (function() {
             let currentSongIndex = 0;
             const songs = document.querySelectorAll('.songPanel');
+            const leftArrow = document.getElementById('leftArrow');
             const songInfo = [
-                { Album: 'Album 1', name: 'Song 1', difficulty: 'Easy', artist: 'Artist 1', year: '2023' },
-                { Album: 'Album 2', name: 'Song 2', difficulty: 'Medium', artist: 'Artist 2', year: '2022' },
-                { Album: 'Album 3', name: 'Song 3', difficulty: 'Hard', artist: 'Artist 3', year: '2021' }
+                { name: 'Song 1 - Artist', difficulty: 'Easy' },
+                { name: 'Song 2 - Artist', difficulty: 'Medium' },
+                { name: 'Song 3 - Artist', difficulty: 'Hard' }
+                // Add more song info as needed
             ];
             const songNameElement = document.getElementById('songName');
             const songDifficultyElement = document.getElementById('songDifficulty');
-            const songArtistElement = document.getElementById('songArtist');
-            const songYearElement = document.getElementById('songYear');
-            const albumNameElement = document.getElementById('albumName'); // Added for album name
 
             function showSong(index) {
                 songs.forEach((song, i) => {
@@ -213,11 +207,12 @@
                         song.classList.add('active');
                     }
                 });
-                albumNameElement.textContent = songInfo[index].Album; // Update album name
+                // Update song info text
                 songNameElement.textContent = songInfo[index].name;
                 songDifficultyElement.textContent = `Difficulty: ${songInfo[index].difficulty}`;
-                songArtistElement.textContent = `Artist: ${songInfo[index].artist}`;
-                songYearElement.textContent = `Release Year: ${songInfo[index].year}`;
+                
+                // Always show the left arrow (as requested)
+                leftArrow.classList.remove('hidden');
             }
 
             window.scrollToLeft = function() {
@@ -231,11 +226,49 @@
             }
 
             window.playSong = function() {
-                MenuManager.GoTo(MENU_SINGLEPLAYER);
+                MenuManager.GoTo(MENU_UPLOAD_SONGS); // Redirect to the level select
             }
 
+            // Initialize the first song panel as active
             showSong(currentSongIndex);
         })();
+
+        function UploadNewSong() {
+            var fd = new FormData();
+
+            fd.append('name', document.getElementById('mp3FileUpload').files[0].name);
+            fd.append('file', document.getElementById('mp3FileUpload').files[0]);
+
+            $.ajax({
+                type: "POST",
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = (evt.loaded / evt.total) * 100;
+                            //document.getElementById("updateProgress").style.width = percentComplete + "%";
+                        }
+                    }, false);
+                    return xhr;
+                },
+                url: "/newSongUpload",
+                data: fd,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (text) {
+                    if (text.startsWith("{")) {
+                        gamePASSData = text;
+                        MenuManager.GoTo(MENU_SINGLEPLAYER);
+                    } else {
+                        alert(text.replace(/<\/[^>]+(>|$)/g, ""));
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Can't connect to host\n" + textStatus + " - " + errorThrown);
+                }
+            });
+        }
     </script>
 </body>
 </html>
