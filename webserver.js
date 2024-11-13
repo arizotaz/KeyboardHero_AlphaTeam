@@ -114,11 +114,17 @@ app.post('/newSongUpload', upload.single('file'), (req, res) => {
 
     const songFilePath = levelLocation + req.file.originalname; // final mp3 file path
     const songName = req.file.originalname.replaceAll(".mp3", ""); // original mp3 name
+    const difficulty = req.body.difficulty;
 
     const JSONFilePath = levelLocation + songName + ".json";
 
+    console.log("Calling Python script with the following arguments:");
+    console.log("songFilePath:", songFilePath);
+    console.log("songName:", songName);
+    console.log("difficulty:", difficulty);
+
     // launch python process with song file path and original mp3 name
-    const pythonProcess = spawn(pythonBinary, [__dirname + "/beatmapGenerator.py", songFilePath, songName]);
+    const pythonProcess = spawn(pythonBinary, [__dirname + "/beatmapGenerator.py", songFilePath, songName, difficulty]);
 
     // delete original mp3 when python process closes
     pythonProcess.on('close', (code) => {
