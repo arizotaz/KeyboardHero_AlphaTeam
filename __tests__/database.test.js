@@ -45,7 +45,7 @@ describe('getScores', () => {
 
 describe('getSongScores', () => {
   it('should return scores from the database that have a certain song_id', async () => {
-    const mockScores = [{ score: 100, song_id: "abc", user_id: "adv"}];
+    const mockScores = [{ score: 100, song_id: "abc", user_id: "123"}];
     mysql.createPool().promise().query.mockResolvedValue([mockScores]);
 
     const result = await getSongScores("abc");
@@ -76,18 +76,18 @@ describe('sortHighToLow', () => {
   
   it('should sort the items in descending order by score', async () => {
     const items = [
-      { score: 100, song_id: "A", user_id: "AAA" },
-      { score: 300, song_id: "B", user_id: "BBB" },
-      { score: 200, song_id: "C", user_id: "CCC" }
+      { score: 100, song_id: "A", user_id: "111" },
+      { score: 300, song_id: "B", user_id: "222" },
+      { score: 200, song_id: "C", user_id: "333" }
     ];
 
     const sortedItems = await sortHighToLow(items);
     
     // Check if it sorts in descending order
     expect(sortedItems).toEqual([
-      { score: 300, song_id: "B", user_id: "BBB" },
-      { score: 200, song_id: "C", user_id: "CCC" },
-      { score: 100, song_id: "A", user_id: "AAA" }
+      { score: 300, song_id: "B", user_id: "222" },
+      { score: 200, song_id: "C", user_id: "333" },
+      { score: 100, song_id: "A", user_id: "111" }
     ]);
   });
 

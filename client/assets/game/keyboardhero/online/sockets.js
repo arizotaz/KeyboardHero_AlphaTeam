@@ -1,11 +1,24 @@
 let socket = io();
 let clients = 0;
 let disconnected = false;
+
+
+
+let pingMS = 0;
+function Ping() {
+    pingMS = Date.now();
+    socket.emit("ping");
+}
+socket.on("pong", (data) => {
+    console.log(data);
+    console.log("Pong - took " + (Date.now()-pingMS) + "ms");
+});
+
 socket.on("disconnect", function (data) {
     disconnected = true;
 });
 socket.on("handshake", function (data) {
-    if (disconnected) window.location.reload();
+    //if (disconnected) window.location.reload();
 });
 
 socket.on("clients", function (data) {
@@ -23,17 +36,19 @@ socket.on("msg", (data) => {
 
 
 
+
+
 let currMSG = "", lastMSG = "";
 function GameMessage(msg) {
     currMSG = msg;
 
     let gameBanner = document.getElementById("gameBanner");
-    if (b == null || b == "") if (gameBanner != null) { gameBanner.remove(); return; }
+    if (msg == null || msg == "") if (gameBanner != null) { gameBanner.remove(); return; }
 
-    if (gameBanner == null && b != null && b != "") {
+    if (gameBanner == null && msg != null && msg != "") {
         gameBanner = document.createElement("div");
         gameBanner.id = "gameBanner";
         document.body.append(gameBanner)
     }
-    gameBanner.getElement("co");
+    gameBanner.innerHTML = msg;
 }
