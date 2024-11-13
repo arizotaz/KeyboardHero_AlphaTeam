@@ -28,12 +28,12 @@ function GameMessage(msg) {
     currMSG = msg;
 
     let gameBanner = document.getElementById("gameBanner");
-    if (b == null || b == "") if (gameBanner != null) { gameBanner.remove(); return; }
+    if (msg == null || msg == "") if (gameBanner != null) { gameBanner.remove(); return; }
 
-    if (gameBanner == null && b != null && b != "") {
+    if (gameBanner == null && msg != null && msg != "") {
         gameBanner = document.createElement("div");
         gameBanner.id = "gameBanner";
         document.body.append(gameBanner)
     }
-    gameBanner.getElement("co");
+    gameBanner.innerHTML = msg;
 }

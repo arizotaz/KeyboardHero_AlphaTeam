@@ -262,7 +262,8 @@ io.sockets.on('connection', function (socket) {
         io.emit("clients", { clients: NumOfClients() });
         socket.on("requestClients", function () { try { socket.emit("clients", { clients: NumOfClients() }); } catch (e) { console.error(e) } });
         socket.on("currentMenu", function (data) { try { clients[socket.id].SetCurrentMenu(data.id) } catch (e) { console.error(e) } });
-        socket.emit("msg", "test");
+
+        socket.on("requestMultiplayer",(data) => { clients[socket.id].RegisterMultiplayer(); });
     } catch (e) { console.error(e); }
 
 });
