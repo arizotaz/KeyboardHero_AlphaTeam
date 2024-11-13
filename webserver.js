@@ -387,7 +387,7 @@ io.sockets.on('connection', function (socket) {
         socket.on("requestMultiplayer",(data) => { clients[socket.id].RegisterMultiplayer(); });
 
 
-        socket.on("ping", () => { console.log(socket.id + " pinged the server");socket.emit("pong"); })
+        socket.on("ping", function() { socket.emit("pong", { msg:"Ping return"}); console.log(socket.id + " pinged the server"); })
     } catch (e) { console.error(e); }
 
 });
