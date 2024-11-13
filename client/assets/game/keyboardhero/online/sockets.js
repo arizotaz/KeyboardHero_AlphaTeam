@@ -50,5 +50,5 @@ function GameMessage(msg) {
         gameBanner.id = "gameBanner";
         document.body.append(gameBanner)
     }
-    gameBanner.getElement("co");
+    gameBanner.innerHTML = msg;
 }
