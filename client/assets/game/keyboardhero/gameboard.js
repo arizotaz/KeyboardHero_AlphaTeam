@@ -5,9 +5,6 @@
 //# or handle input.  These funciton will instead be
 //# handled by the host of this object
 let gameTheme = 0;
-
-ChangeGameTheme(1);
-
 function ChangeGameTheme(id) {
     gameTheme = id;
     LoadTheme(id);
