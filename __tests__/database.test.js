@@ -1,6 +1,7 @@
 const { getScores } = require('../database');
 const { getSongScores } = require('../database');
 const { sortHighToLow } = require('../database');
+const { submitScore } = require('../database');
 const mysql = require('mysql2');
 
 // Mock the MySQL pool
@@ -106,5 +107,76 @@ describe('sortHighToLow', () => {
 
     // Check if the function throws an error
     await expect(sortHighToLow(invalidInput)).rejects.toThrow();
+  });
+});
+
+describe('submitScore', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should submit the score successfully', async () => {
+      // Mock successful response
+      jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: jest.fn().mockResolvedValue({ message: 'Score recorded successfully!' }),
+      });
+
+      const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+      await submitScore(1, 'song123', 95);
+
+      expect(fetch).toHaveBeenCalledWith(
+          'http://localhost:32787/submitScore',
+          expect.objectContaining({
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ user_id: 1, song_id: 'song123', score: 95 }),
+          })
+      );
+      expect(consoleLogSpy).toHaveBeenCalledWith('Score submitted successfully:', 'Score recorded successfully!');
+
+      consoleLogSpy.mockRestore();
+  });
+
+  it('should throw an error for missing input', async () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      await submitScore(null, 'song123', 95);
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error during score submission:', 'Invalid inpust: All fields are required.');
+
+      consoleErrorSpy.mockRestore();
+  });
+
+  it('should handle server error responses', async () => {
+      // Mock server error response
+      jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+        ok: false, // Simulates the `ok` property for non-200 responses
+        status: 500, // Server error status
+        json: jest.fn().mockResolvedValue({ error: 'Something went wrong on the server.' }), // Error message in the response body
+      });
+
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      await submitScore(1, 'song123', 95);
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to submit score:', 'Something went wrong on the server.');
+
+      consoleErrorSpy.mockRestore();
+  });
+
+  it('should handle network errors', async () => {
+      // Mock network error
+      global.fetch = jest.fn(() => Promise.reject(new Error('Network Error')));
+
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      await submitScore(1, 'song123', 95);
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error during score submission:', 'Network Error');
+
+      consoleErrorSpy.mockRestore();
   });
 });
