@@ -43,6 +43,34 @@ async function sortHighToLow(items){
     }
 }
 
+async function submitScore(user_id, song_id, score) {
+    try {
+        if (!user_id || !song_id ||typeof score !== 'number') {
+            throw new Error('Invalid inpust: All fields are required.');
+        }
+
+        //send POST request to the server
+        const response = await fetch('http://localhost:32787/submitScore', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify({user_id, song_id, score}),
+        });
+
+        //parse the JSON response
+        const result = await response.json();
+
+        if(response.ok){
+            console.log('Score submitted successfully:', result.message);
+        } else {
+            console.error('Failed to submit score:', result.error);
+        }
+    } catch(error){
+        console.error('Error during score submission:', error.message);
+    }
+};
+
 // login stuff
 async function createAccount(username, email, password, time, sessionID) {
     try {   
@@ -109,5 +137,5 @@ async function createSession(userID, sessionID, time) {
 }
 
 module.exports = {
-    getScores, getSongScores, sortHighToLow, createAccount, login, createSession
+    getScores, getSongScores, sortHighToLow, submitScore, createAccount, login, createSession
 };

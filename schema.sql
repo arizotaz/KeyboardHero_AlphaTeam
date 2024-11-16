@@ -27,7 +27,7 @@ CREATE TABLE `scores` (
   song_id LONGTEXT NOT NULL,
   score int NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(user_id),
-  PRIMARY KEY (user_id, song_id(255), score)
+  PRIMARY KEY (user_id, song_id(255))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

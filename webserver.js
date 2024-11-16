@@ -101,6 +101,58 @@ app.get('/scores', async (req, res) => {
     }
 });
 
+// upload new score to scoreboard
+app.post('/submitScore', (rep, res) => {
+    const {user_id, song_id, score } = req.body;
+    if (!user_id || !song_id ||typeof score !== 'number') {
+        return res.status(400).json({error: 'Invalid input'});
+    }
+
+    //check to see if a score already exists for that song an the user
+    const checkQuery = 'SELECT score from scores WHERE user_id = ? AND song_id = ?;';
+
+    db.query(checkQuery, [user_id, song_id], (err, results) => {
+        if(err) {
+            console.error('Database error:', err);
+            return res.status(500).json({error: 'Database error'});
+        }
+
+        //if there is a existing score compare to new score
+        if (results.length > 0) {
+            const existingScore = results[0].score;
+            
+            //update score if new score is higher
+            if(score > existingScore) {
+                const updateuery = 'UPDATE scores SET score = ? WHERE user_id = ? AND song_id = ?;';
+
+                db.query(updateQuery, [score, user_id, song_id], (err)=> {
+                    if(err) {
+                        console.error('Database error:' , err);
+                        return res.status (500).json({error: 'Database error'});
+                    }
+
+                    return res.status(200).json({message: 'High score updated!'});
+                }); 
+            } else {
+                //score to low will not update
+                return res.status(200).json({messsage: 'Score not high enough, will not be updated.'});
+            }
+        } else {
+            //no score for that song and user, adds score
+            const insertQuery = 'INSERT INTO scores (user_id, song_id, score) VALUES(?, ?, ?);';
+
+            db.query(insertQuery, [user_id, song_id, score], (err)=> {
+                if(err) {
+                    console.error('Database error:' , err);
+                    return res.status (500).json({error: 'Database error'});
+                }
+
+                return res.status(200).json({message: 'High score added!'});
+            }); 
+        }
+    });
+});
+
 
 // upload and process files
 app.post('/newSongUpload', upload.single('file'), (req, res) => {
