@@ -136,6 +136,14 @@
             height: 40px;
             filter: invert();
         }
+
+        .errorMessage {
+            color: #ff0000;
+            font-size: 1em;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
     
     </style>
     <div class="container">
@@ -148,18 +156,87 @@
         <h1>Register</h1>
         <p>
     
-        <form action="/createAccount" method="post">
-    
-                <span class="highlight"><label>Username</label>
-                <input type="username" name="username">
+            <script>
+                function makeAccount(){
+                    //console.log(document.getElementById('username').value);
+                    //console.log(document.getElementById('email').value);
+                    //console.log(document.getElementById('password').value);
+                    //console.log(document.getElementById('confirmPassword').value);
+
+                    var usernameValid = false;
+                    var passwordValid = false;
+                    
+
+                    if (document.getElementById('password').value.length < 8){
+                        document.getElementById("errorPassword").textContent="Password is too short."; 
+                    }else{
+                        document.getElementById("errorPassword").textContent="";
+                        if (document.getElementById('password').value != document.getElementById('confirmPassword').value){
+                                document.getElementById("errorPassword").textContent="Passwords do not match.";
+                        }else{
+                            passwordValid = true;
+                            document.getElementById("errorPassword").textContent="";
+                        }
+                    }
+
+                   
+                    if (document.getElementById('username').value.length < 3 || document.getElementById('username').value.length > 12){
+                        document.getElementById("errorUsername").textContent="Invalid username."; 
+                    }else{
+                        usernameValid = true;
+                        document.getElementById("errorUsername").textContent=""; 
+                    }
+
+                    if (passwordValid && usernameValid){
+                        if (document.getElementById('email').value){
+                            document.getElementById("errorUsername").textContent="";
+                            document.getElementById("errorPassword").textContent="";
+
+                            var formData = {
+                                username: document.getElementById('username').value,
+                                email: document.getElementById('email').value,
+                                password: document.getElementById('password').value,
+                            };
+
+                            $.ajax({
+                                type: "POST",
+                                url: "/createAccount",
+                                data: formData,
+                                sentType: "json",
+                                encode: true,
+                                success: function (text) {
+                                    //document.getElementById("errorPassword").textContent="Success";
+                                    MenuManager.GoTo(MENU_STATISTICS);
+                                },
+                                error: function (errorThrown) {
+                                    document.getElementById("errorPassword").textContent="Username already in use.";
+                                }    
+                            }); 
+                        }else{
+                            document.getElementById("errorPassword").textContent="Invalid email.";
+                        }
+                    }
+                }
+
+
+
+            </script>
+        <!--  <form action="/createAccount" method="post"> -->
+            <p>
+                <label id = "errorUsername" class = "errorMessage"></label>
+                <label id = "errorPassword" class = "errorMessage"></label>
+        </p>
+
+                <span class="highlight"><label>Username (3-12 characters long)</label></span>
+                <input id = "username" type="username" name="username">
     
             <p></p>
     
-                <span class="highlight"><label>Email</label>
-                <input type="email" name="email">
+                <span class="highlight"><label>Email</label></span>
+                <input id = "email" type="email" name="email">
             <p></p>
     
-                <span class="highlight"><label>Password</label></span>
+                <span class="highlight"><label>Password (at least 8 characters long)</label></span>
                 <input id = "password" type="password" name="password">
     
             <p></p>
@@ -167,16 +244,18 @@
                 <span class="highlight"><label>Confirm Password</label></span>
                 <input id = "confirmPassword" type="password" name="confirmpassword">
     
-                <label id = "passwordCheck" style = "display:none">Passwords don't match</label>
+                
             <p>
-                <button id = "register" type="submit" class = "buttonLogin">Register</button>
+                <!-- <button id = "register" type="submit" class = "buttonLogin">Register</button> -->
+                
                 <!-- <button id = "register" class="buttonLogin" onclick="MenuManager.GoTo(MENU_MAIN);">Create Account</button> -->
                 
             </p>
     
-        </form>
+        <!--  </form> -->
+        <button type="button" onclick = "makeAccount();" class = "buttonLogin" >Register</button>
                <!-- <button class="buttonRegister" onclick="MenuManager.GoTo(MENU_LOGIN);">Back</button> -->
-    
+
         </p>
     
     
