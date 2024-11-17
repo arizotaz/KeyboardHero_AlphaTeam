@@ -32,22 +32,25 @@
         top: 5px;
         left: 5px;
     }
+
     .backShortcut img {
         height: 40px;
         filter: invert();
         cursor: pointer;
     }
+
     .settingsShortcut {
         position: absolute;
         top: 5px;
         right: 5px;
     }
+
     .settingsShortcut img {
         height: 40px;
         filter: invert();
         cursor: pointer;
     }
-    
+
 
     .uploadSelections {
         width: 100%;
@@ -89,6 +92,9 @@
 
     .uploadSelectionsContent .fineTune {
         display: none;
+        max-width: 600px;
+        margin: auto;
+        width: 100%;
     }
 
 
@@ -148,8 +154,8 @@
 
     .song {
         color: #fff;
-        margin: 5px;
-        width: 30%;
+        margin: 10px;
+        width: 20%;
     }
 
 
@@ -178,6 +184,18 @@
 
     .song .coverArtist {}
 
+    .difficultySelect h3 {
+        margin-bottom: 5px;
+    }
+
+    #difficultyText {
+        margin-top: 5px;
+    }
+
+    .themeSelectContainer h3 {
+        margin-top: 30px;
+        margin-bottom: 5px;
+    }
 
 
 
@@ -336,7 +354,7 @@
     .songSelectorModel .actionBar img {
         height: 100%;
         filter: invert();
-        float:left;
+        float: left;
         cursor: pointer;
     }
 
@@ -370,30 +388,48 @@
         padding: 10px;
         display: flex;
         flex-direction: column;
-        color:#fff;
+        color: #fff;
         align-items: center;
 
     }
 
     .songSelectorModel .pageContent .leaderBoard {}
 
-    #songSelectorTitle { font-size: 40px; }
-    #songSelectorAlbum { font-size: 30px;}
-    #songSelectorArtist { font-size: 24px;}
-    #songSelectorRelease { font-size: 18px;}
+    #songSelectorTitle {
+        font-size: 40px;
+    }
+
+    #songSelectorAlbum {
+        font-size: 30px;
+    }
+
+    #songSelectorArtist {
+        font-size: 24px;
+    }
+
+    #songSelectorRelease {
+        font-size: 18px;
+    }
+
     #songSelectorDifficultyBar {
         width: 80%;
         background-color: rgba(80, 80, 80, 1);
         height: 20px;
     }
+
     #songSelectorDifficulty {
-        height:100%;
+        height: 100%;
     }
 
-
-    @media screen and (max-width: 1100px) {
+    @media screen and (max-width: 1200px) {
         .song {
-            width: 48%;
+            width: 30%;
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        .song {
+            width: 45%;
         }
     }
 
@@ -424,6 +460,7 @@
         }
 
     }
+
     @media screen and (max-width: 800px) {
         .songSelectorModel {
             width: 100%;
@@ -456,7 +493,8 @@
             <img onclick="MenuManager.GoBack();" src="/assets/game/keyboardhero/textures/button_back.png" alt="">
         </div>
         <div class="settingsShortcut">
-            <img onclick="MenuManager.GoTo(MENU_SETTINGS);" src="/assets/game/keyboardhero/textures/settings.png" alt="">
+            <img onclick="MenuManager.GoTo(MENU_SETTINGS);" src="/assets/game/keyboardhero/textures/settings.png"
+                alt="">
         </div>
     </div>
     <div class="mainPageContent">
@@ -515,13 +553,13 @@
                 <div class="fineTune" id="fineTuneOptions">
                     <div class="difficultySelect bubbleButtons">
                         <h3>Difficulty</h3>
-                        <div class="shadow" style="width:100vw; max-width: 800px;">
+                        <div class="shadow" style="width:100%; max-width: 800px;">
                             <input type="range" id="difficulty" min="1" max="3" class="bubbleSlider"
                                 onchange="DifficultyText()">
                         </div>
                         <h3 id="difficultyText">Medium</h3>
                     </div>
-                    <div>
+                    <div class="bubbleButtons themeSelectContainer">
                         <h3>Theme</h3>
                         <select id="themeSelect">
                             <option value="0">Bubble</option>
@@ -553,7 +591,8 @@
         <div class="songSelector" id="songSelector">
             <div class="songSelectorModel">
                 <div class="actionBar">
-                    <img src="/assets/game/keyboardhero/textures/button_back.png" alt="" onclick="document.getElementById('songSelector').style.display = 'none';">
+                    <img src="/assets/game/keyboardhero/textures/button_back.png" alt=""
+                        onclick="document.getElementById('songSelector').style.display = 'none';">
                 </div>
                 <div class="pageContent">
                     <div class="mainContent">
@@ -563,7 +602,9 @@
                             <div id="songSelectorAlbum"></div>
                             <div id="songSelectorArtist"></div>
                             <div id="songSelectorRelease"></div>
-                            <div id="songSelectorDifficultyBar"><div id="songSelectorDifficulty"></div></div>
+                            <div id="songSelectorDifficultyBar">
+                                <div id="songSelectorDifficulty"></div>
+                            </div>
                             <div class="shadow">
                                 <button id="songSelectorPlay">Play</button>
                             </div>
@@ -584,9 +625,9 @@
         let elm = document.getElementById("difficultyText");
         let val = document.getElementById("difficulty").value;
         switch (parseInt(val)) {
-            case 1: elm.innerHTML = "Easy"; break;
-            case 2: elm.innerHTML = "Medium"; break;
-            case 3: elm.innerHTML = "Hard"; break;
+            case 1: elm.innerHTML = "Easy"; elm.style.color = "rgb(14,181,26)"; break;
+            case 2: elm.innerHTML = "Medium"; elm.style.color = "rgb(245,189,5)"; break;
+            case 3: elm.innerHTML = "Hard"; elm.style.color = "rgb(204,33,10)"; break;
             default:
                 elm.innerHTML = "NA";
         }
@@ -606,7 +647,7 @@
         var fd = new FormData();
         fd.append('name', document.getElementById('mp3FileUpload').files[0].name);
         fd.append('file', document.getElementById('mp3FileUpload').files[0]);
-        fd.append('difficulty', document.getElementById("themeSelect").value);
+        fd.append('difficulty', document.getElementById("difficulty").value);
         fd.append('theme', document.getElementById("themeSelect").value);
         $.ajax({
             type: "POST",
@@ -759,7 +800,7 @@
         try {
             let entry = songlist[id];
 
-            document.getElementById("songSelectorImg").style.backgroundImage = "url('"+entry["coverURL"]+"')";
+            document.getElementById("songSelectorImg").style.backgroundImage = "url('" + entry["coverURL"] + "')";
             document.getElementById("songSelectorTitle").innerHTML = entry["title"];
             document.getElementById("songSelectorAlbum").innerHTML = entry["album"];
             document.getElementById("songSelectorArtist").innerHTML = entry["author"];
@@ -767,8 +808,8 @@
 
             let difficulty = entry["difficulty"];
 
-            let p = difficulty/3*100;
-            let r,g,b;
+            let p = difficulty / 3 * 100;
+            let r, g, b;
 
             switch (difficulty) {
                 case 1:
@@ -785,21 +826,21 @@
                     r = 204;
                     g = 33;
                     b = 10;
-                    break;    
+                    break;
                 default:
                     r = 209;
-                    g =  25;
+                    g = 25;
                     b = 194;
             }
 
 
-            document.getElementById("songSelectorDifficulty").style.width = p+"%";
-            document.getElementById("songSelectorDifficulty").style.backgroundColor = "rgb("+r+","+g+","+b+")";
+            document.getElementById("songSelectorDifficulty").style.width = p + "%";
+            document.getElementById("songSelectorDifficulty").style.backgroundColor = "rgb(" + r + "," + g + "," + b + ")";
 
-            document.getElementById("songSelectorPlay").onclick = function() { PlayLevel(id); };
+            document.getElementById("songSelectorPlay").onclick = function () { PlayLevel(id); };
 
             document.getElementById("songSelector").style.display = "block";
-        } catch(e) {
+        } catch (e) {
             alert(e);
         }
     }
@@ -810,6 +851,6 @@
             let lf = entry["levelFile"];
             gameFileURI = lf;
             MenuManager.GoTo(MENU_SINGLEPLAYER);
-        } catch(e) { alert(e); }
+        } catch (e) { alert(e); }
     }
 </script>

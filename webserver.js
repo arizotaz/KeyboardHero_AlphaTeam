@@ -159,6 +159,11 @@ app.post('/submitScore', (rep, res) => {
 
 // upload and process files
 app.post('/newSongUpload', upload.single('file'), (req, res) => {
+    // The id of the user selected theme
+    const theme = req.body.theme;
+
+    // The user selected difficulty level
+    const difficulty = req.body.difficulty;
 
     // location of where levels are stored
     const levelLocation = tempFileUploads;
@@ -309,7 +314,6 @@ io.sockets.on('connection', function (socket) {
         socket.emit("handshake");
         clients[socket.id] = new GameClient(socket);
         console.log(socket.id + " Connected")
-        console.log(clients);
         socket.on('disconnect', function (data) {
             console.log(socket.id + " Disconnected")
             delete clients[socket.id];
