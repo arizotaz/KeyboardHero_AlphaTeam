@@ -137,6 +137,14 @@ html, body {
         background-color:transparent;
     }
 
+    .errorMessage {
+            color: #ff0000;
+            font-size: 1em;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
 </style>
 <div class="container">
     <div class="backShortcut" onclick="MenuManager.GoTo(MENU_MAIN);">
@@ -144,20 +152,53 @@ html, body {
     </div>
     <h1>Login</h1>
     <p>
+        <script>
+            function login(){
 
-        <form action="/login" method="post">
+                if (document.getElementById('username').value.length != 0 && document.getElementById('password').value.length != 0){
+                    document.getElementById("errorLogin").textContent="";
+                    var formData = {
+                                username: document.getElementById('username').value,
+                                password: document.getElementById('password').value,
+                            };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/login",
+                        data: formData,
+                        sentType: "json",
+                        encode: true,
+                        success: function (text) {
+                            //document.getElementById("errorPassword").textContent="Success";
+                            MenuManager.GoTo(MENU_STATISTICS);
+                        },
+                        error: function (errorThrown) {
+                            document.getElementById("errorLogin").textContent="Incorrect username or password.";
+                        }    
+                    }); 
+                        
+                } else{
+                    document.getElementById("errorLogin").textContent="Please fill in both fields.";
+                }
+                } 
+        </script>
+            <p>
+                <label id = "errorLogin" class = "errorMessage"></label>
+            </p>
+        <!-- <form action="/login" method="post"> -->
                 <span class="highlight"><label>Username</label>
-                <input type="username" name="username">
+                <input id = "username" type="username" name="username">
             <p></p>
                 <span class="highlight"><label>Password</label></span>
                 <input id = "password" type="password" name="password">
-        </form>
+        <!-- </form> -->
         
 
 
         <p>
-            <button id = "login" type="submit" class = "buttonLogin">Login</button>
-            
+           <!-- <button id = "login" type="submit" class = "buttonLogin">Login</button> -->
+            <button type="button" onclick = "login();" class = "buttonLogin" >Login</button>
+
             <button class="buttonRegister" type="button" onclick="MenuManager.GoTo(MENU_REGISTER);">Register</button>
             
         </p>
