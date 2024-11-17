@@ -88,6 +88,10 @@ app.get('/assets/socket.io/socket.io.js', function (req, res) {
     let socketioclient = __dirname + "/node_modules/socket.io/client-dist/socket.io.js";
     res.sendFile(socketioclient);
 });
+app.get('/levelselect/songs/', function (req, res) {
+    let socketioclient = __dirname + "/songlist.json";
+    res.sendFile(socketioclient);
+});
 
 
 //api to get scores using for testing
@@ -104,6 +108,11 @@ app.get('/scores', async (req, res) => {
 
 // upload and process files
 app.post('/newSongUpload', upload.single('file'), (req, res) => {
+    // The id of the user selected theme
+    const theme = req.body.theme;
+
+    // The user selected difficulty level
+    const difficulty = req.body.difficulty;
 
     // location of where levels are stored
     const levelLocation = tempFileUploads;
@@ -252,7 +261,6 @@ io.sockets.on('connection', function (socket) {
         socket.emit("handshake");
         clients[socket.id] = new GameClient(socket);
         console.log(socket.id + " Connected")
-        console.log(clients);
         socket.on('disconnect', function (data) {
             console.log(socket.id + " Disconnected")
             delete clients[socket.id];

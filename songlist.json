@@ -1,0 +1,47 @@
+[
+    {
+        "title":"The Delozier Song",
+        "album":"",
+        "coverURL":"/assets/game/keyboardhero/levels/delozier_song.png",
+        "author":"Creed",
+        "releaseDate":"4-18-2000",
+        "difficulty":2,
+        "levelFile":"/assets/game/keyboardhero/levels/delozier_song.json"
+    },
+    {
+        "title":"Hot To Go",
+        "album":"",
+        "coverURL":"/assets/game/keyboardhero/levels/chappell_roan_HOT_TO_GO.png",
+        "author":"Chappell Roan",
+        "releaseDate":"8-11-2023",
+        "difficulty":2,
+        "levelFile":"/assets/game/keyboardhero/levels/chappell_roan_HOT_TO_GO.json"
+    },
+    {
+        "title":"Cotten Eye Joe",
+        "album":"",
+        "coverURL":"/assets/game/keyboardhero/levels/Rednex_Cotton_Eye_Joe.png",
+        "author":"Rednex",
+        "releaseDate":"8-1-1994",
+        "difficulty":3,
+        "levelFile":"/assets/game/keyboardhero/levels/Rednex_Cotton_Eye_Joe.json"
+    },
+    {
+        "title":"Radioactive",
+        "album":"",
+        "coverURL":"/assets/game/keyboardhero/levels/Imagine_Dragons_Radioactive.png",
+        "author":"Imagine Dragons",
+        "releaseDate":"10-29-2012",
+        "difficulty":1,
+        "levelFile":"/assets/game/keyboardhero/levels/Imagine_Dragons_Radioactive.json"
+    },
+    {
+        "title":"Solo Piano 2",
+        "album":"",
+        "coverURL":"/assets/game/keyboardhero/textures/song_na.png",
+        "author":"Dr. Nefartio",
+        "releaseDate":"09-16-2024",
+        "difficulty":1,
+        "levelFile":"/assets/game/keyboardhero/levels/solopiano2.json"
+    }
+]
