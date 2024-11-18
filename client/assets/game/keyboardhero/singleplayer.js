@@ -1,8 +1,8 @@
 // Settings for the game
 const pointsPerNote = 1; // points given when a note is collected, multiplied by combo
 const maxComboAdd = 3; // max amount to increases the combo
-const gameSpeedMultiplier = 4;  // Speed and spacing of tiles
-let collectMSThresh = 200; // MS Threshold to collect a note
+const gameSpeedMultiplier = 4.10;  // Speed and spacing of tiles
+let collectMSThresh = 175; // MS Threshold to collect a note
 
 // The URL to get the song data, this will be assigned else where later
 let gameFileURI = "assets/game/keyboardhero/levels/solopiano2.json";
@@ -24,11 +24,19 @@ function LoadSinglePlayerData(data) {
         // Create audio object from base64
         gameAudio = new Audio(gameFileData.data);
 
+        // Set the game theme based on the file
+        if (gameFileData.theme != null && Number.isInteger(gameFileData.theme)) {
+            ChangeGameTheme(gameFileData.theme);
+        } else {
+            if (gameTheme != 0) ChangeGameTheme(0);
+        }
+
         // Get Game Input Keys
         game_input_keys = JSON.parse(Settings.GetKey(Setting_KeyArray));
 
         // Load data to board
         boards[0].LoadFileData(gameFileData,game_input_keys);
+
 
         // Run Finish Loop
         FinishGFLOnTexDone(boards[0]);

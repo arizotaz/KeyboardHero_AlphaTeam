@@ -153,3 +153,19 @@
 .bubbleButtons button:hover {
     background-color: rgba(255, 255, 255, 1);
 }
+
+.bubbleButtons select {
+    cursor: pointer;
+    font-size: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 5px solid rgba(80, 80, 80, 1);
+    padding: 5px 20px;
+    margin: 5px auto;
+    min-width: 100px;
+    transition: all ease .2s;
+}
+.bubbleButtons select::-ms-expand {
+    display: none;
+}

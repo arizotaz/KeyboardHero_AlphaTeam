@@ -68,7 +68,7 @@ function ApplicationStart() {
     SetDefaultOptions();
 
     // Setup Menus
-    MenuManager.GoTo(MENU_MAIN);//MENU_GAME);
+    MenuManager.GoTo(MENU_MAIN);
     // Create the menus
     MenuManager.AddMenu(MENU_MAIN,                  new MainMenu            ());
     MenuManager.AddMenu(MENU_SETTINGS,              new SettingsMenu        ());

@@ -88,6 +88,10 @@ app.get('/assets/socket.io/socket.io.js', function (req, res) {
     let socketioclient = __dirname + "/node_modules/socket.io/client-dist/socket.io.js";
     res.sendFile(socketioclient);
 });
+app.get('/levelselect/songs/', function (req, res) {
+    let socketioclient = __dirname + "/songlist.json";
+    res.sendFile(socketioclient);
+});
 
 
 //api to get scores using for testing
@@ -104,6 +108,11 @@ app.get('/scores', async (req, res) => {
 
 // upload and process files
 app.post('/newSongUpload', upload.single('file'), (req, res) => {
+    // The id of the user selected theme
+    const theme = req.body.theme;
+
+    // The user selected difficulty level
+    const difficulty = req.body.difficulty;
 
     // location of where levels are stored
     const levelLocation = tempFileUploads;
@@ -181,11 +190,13 @@ app.post('/createAccount', async function(req, res){
 
     var time = Date.now();
     var userID = await createAccount(req.body.username,req.body.email,hash, time, sessionID);
-    //console.log(available);
+    console.log(userID);
 
     if (userID){
         res.cookie('userID', userID);
         res.cookie('sessionID', sessionID);
+    }else{
+        console.error('Username already in use.', err);
     }
     res.redirect('/');
     } catch (err) {
@@ -207,7 +218,8 @@ app.post('/login', async function(req, res){
         userID = data[0];
         hash = data[1];
 
-
+        //console.log(data[0]);
+        //console.log(data[1]);
 
         if(bcrypt.compareSync(req.body.password, hash)){
             var newSessionId = Math.floor(Math.random() * 999999999);
@@ -217,6 +229,8 @@ app.post('/login', async function(req, res){
 
             res.cookie('userID', userID);
             res.cookie('sessionID', sessionID);
+        }else{
+            console.error('Incorrect username or password.', err);
         }
 
         res.redirect('/');
@@ -228,17 +242,10 @@ app.post('/login', async function(req, res){
 
 // Clear current login info
 app.post('/logout', function(req, res){
-    // deprecated, just in case
-    res.clearCookie('username');
-    res.clearCookie('email');
-
-    // current system
     res.clearCookie('userID');
     res.clearCookie('sessionID');
     res.redirect('/');
 });
-
-
 
 // Below will be the code for multiplayer and score system. 
 
@@ -254,7 +261,6 @@ io.sockets.on('connection', function (socket) {
         socket.emit("handshake");
         clients[socket.id] = new GameClient(socket);
         console.log(socket.id + " Connected")
-        console.log(clients);
         socket.on('disconnect', function (data) {
             console.log(socket.id + " Disconnected")
             delete clients[socket.id];
