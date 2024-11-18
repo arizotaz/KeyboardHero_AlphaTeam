@@ -14,8 +14,26 @@ units = 0 # seconds
 # get info from audio file ========================================================================
 
 # get song location, title, difficulty level, and theme
+# get song location, title, difficulty level, and theme
 songLocation = sys.argv[1]
 songName = sys.argv[2]
+difficulty = int(sys.argv[3]) 
+theme = int(sys.argv[4]) 
+
+# set difficulty presets ==========================================================================
+
+match difficulty:
+    case 1: # easy mode
+        silenceThreshold = 3.0
+        bufferTime = 0.30
+    case 2: # medium/normal mode
+        silenceThreshold = 1.5 # sensitivity
+        bufferTime = 0.10 # minimum time (seconds) between notes
+    case 3: # hard
+        silenceThreshold = 0.5
+        bufferTime = 0.10
+
+# process the song ================================================================================
 difficulty = int(sys.argv[3]) 
 theme = int(sys.argv[4]) 
 
@@ -49,17 +67,16 @@ tempo, beats = librosa.beat.beat_track(y=y,sr=sr,onset_envelope=onsetStrengths,t
 beatStrengths = onsetStrengths[beats]
 beats = librosa.frames_to_time(beats, sr=sr) # convert frames to seconds
 
+
 timestamps = [] # to hold timestamp information
 # iterate through beats and their strengths
 for i, (beats,beatStrengths) in enumerate(zip(beats,beatStrengths)): 
-    silenceThreshold = 1.5
     if (beatStrengths > silenceThreshold):
         # beat timestamp, beat strength, include marker, and time till next beat
         timestamps.append([beats.item()-0.05,beatStrengths.item(),1,0])
 
 n = 1 # index of next beat
 c = 0 # index of current beat
-bufferTime = 0.10 # minimum time (seconds) between notes
 while (n < len(timestamps)):
     if (timestamps[n][0] - timestamps[c][0] < bufferTime):
         timestamps[n][2] = 0 # get rid of beat at index n
@@ -71,18 +88,23 @@ while (n < len(timestamps)):
 n = 1 # index of next beat
 c = 0 # index of current beat
 while (n < len(timestamps)):
-    if (timestamps[n][1] < (timestamps[c][1] - 0.5) and timestamps[c][3] < 0.25 and timestamps[c][2] == 1):
+    if (timestamps[n][1] < (timestamps[c][1] - 0.25) and timestamps[c][3] < 0.25 and timestamps[c][2] == 1):
         timestamps[n][2] = 0
     n = n + 1
     c = c + 1
 
+
 # get identifier ======================================================================
 
+identifier = "" + str(difficulty)
 identifier = "" + str(difficulty)
 first = timestamps[0][0]
 for t in timestamps:
     if (t[0] != first):
         toAdd = str(int(t[0] - first))
+        identifier = identifier + "-" + toAdd
+        
+
         identifier = identifier + "-" + toAdd
         
 
@@ -98,9 +120,15 @@ tracks = [track0, track1, track2, track3]
 # assign timestamps to lanes based on amplitude
 pattern = 0
 currentGap = timestamps[0][3]
-median = statistics.median([t[1] for t in timestamps]) # get median of strength of beats
-median = np.percentile([t[1] for t in timestamps],75)
 topBeats = np.percentile([t[1] for t in timestamps],98)
+
+if (difficulty == 1):
+    swapThreshold = np.percentile([t[1] for t in timestamps],75)
+elif (difficulty == 2):
+    swapThreshold = np.percentile([t[1] for t in timestamps],60)
+else:
+    swapThreshold = np.percentile([t[1] for t in timestamps],25)
+
 
 if (difficulty == 1):
     swapThreshold = np.percentile([t[1] for t in timestamps],75)
@@ -114,8 +142,7 @@ for t in timestamps:
     if (t[2] == 1): # only consider included beats
 
         # change patterns if not similar gap between notes or there's a significant strength to the beat
-        if ((not (t[3] >= currentGap-0.10 and t[3] <= currentGap+0.10)) or t[1] > median or pattern == 7):
-        if ((not (t[3] >= currentGap-0.10 and t[3] <= currentGap+0.10)) or t[1] > median or pattern == 7):
+        if ((not (t[3] >= currentGap-0.10 and t[3] <= currentGap+0.10)) or t[1] > swapThreshold or pattern == 7):
 
             # make sure pattern changes
             prevPattern = pattern 
@@ -171,6 +198,7 @@ dictionary = {
     "song_title": songName,
     "song_identifier": identifier,
     "units": units,
+    "theme": theme,
     "theme": theme,
     "beatmap_arrays": [
         {
