@@ -174,7 +174,7 @@ app.post('/newSongUpload', upload.single('file'), (req, res) => {
     const JSONFilePath = levelLocation + songName + ".json";
 
     // launch python process with song file path and original mp3 name
-    const pythonProcess = spawn(pythonBinary, [__dirname + "/beatmapGenerator.py", songFilePath, songName]);
+    const pythonProcess = spawn(pythonBinary, [__dirname + "/beatmapGenerator.py", songFilePath, songName, difficulty, theme]);
 
     // delete original mp3 when python process closes
     pythonProcess.on('close', (code) => {
