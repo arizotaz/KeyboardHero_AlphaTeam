@@ -213,68 +213,7 @@ app.get('*', function (req, res) {
 serv.listen(port);
 console.log(`Server started on: http://localhost:${port}`);
 
-// Login system 
 
-// Needed to parse inputs for account creation
-var bodyParser = require('body-parser'); 
-app.use(bodyParser.urlencoded({ extended: false }));
-
-// Cookies for accounts
-var cookieParser = require('cookie-parser');
-app.use(cookieParser());
-
-// Process account creation
-
-const { createAccount } = require('./database.js');
-
-const { usernameAvailable } = require('./database.js');
-
-const { usernameAvailable } = require('./database.js');
-
-app.post('/createAccount', async function(req, res){
-
-    try {
-    var bcrypt = require('bcryptjs');
-    var hash = bcrypt.hashSync(req.body.password, 10);
-
-    //console.log("Username : " + req.body.username);
-    //console.log("Email : " + req.body.email);
-    //console.log("Hashed & salted password : " + hash);
-
-    var username = await usernameAvailable(req.body.username);
-
-    if (username){
-        // Make users account
-        var newSessionId = Math.floor(Math.random() * 999999999);
-        var sessionID = bcrypt.hashSync(newSessionId.toString(), 5);
-    var username = await usernameAvailable(req.body.username);
-
-    if (username){
-        // Make users account
-        var newSessionId = Math.floor(Math.random() * 999999999);
-        var sessionID = bcrypt.hashSync(newSessionId.toString(), 5);
-
-        var time = Date.now();
-        var userID = await createAccount(req.body.username,req.body.email,hash, time, sessionID);
-        if (userID){
-            res.cookie('userID', userID);
-            res.cookie('sessionID', sessionID);
-        }else{
-            // failed for unknown reason
-            console.error('Failed to create account.', err);
-        }
-        
-    }else{
-        console.error('Username already in use.', err);
-    }
-    res.redirect('/');
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error making account' });
-    }
-
-    
-});
 
 // login system
 const { login } = require('./database.js');
@@ -347,11 +286,32 @@ const { setStatistics } = require('./database.js');
 // Update user's statistics
 app.post('/setuserstatistics', async function(req, res){
     try {
-        // if session is invalid then don't add score to database
-        if (await validSession(req.cookies.userID, req.cookies.sessionID)){
-            setStatistics(req.cookies.userID, parseInt(req.body.score), parseInt(req.body.missedNotes), parseInt(req.body.totalNotes), parseInt(req.body.maxCombo));
+
+        // if session is invalid or logged out then instead use -1 for id as a 'guest' statistics so they are included in global
+        if (req.cookies.userID !== undefined && req.cookies.sessionID !== undefined){
+            if (await validSession(req.cookies.userID, req.cookies.sessionID)){
+                // 
+                setStatistics(req.cookies.userID, parseInt(req.body.score), parseInt(req.body.missedNotes), parseInt(req.body.totalNotes), parseInt(req.body.maxCombo));
+            }else{
+                // Guest
+                setStatistics(-1, parseInt(req.body.score), parseInt(req.body.missedNotes), parseInt(req.body.totalNotes), parseInt(req.body.maxCombo));
+            }
+        }else{
+            // Guest
+            setStatistics(-1, parseInt(req.body.score), parseInt(req.body.missedNotes), parseInt(req.body.totalNotes), parseInt(req.body.maxCombo));
         }
 
+
+    } catch (err) {
+
+    }
+});
+
+const { getStatistics } = require('./database.js');
+// Update user's statistics
+app.post('/getuserstatistics', async function(req, res){
+    try{
+        res.json(await getStatistics(req.cookies.userID));
     } catch (err) {
 
     }
