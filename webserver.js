@@ -325,12 +325,7 @@ const { getUserData } = require('./database.js');
 // Get user data for statistics
 app.post('/verifyuser', async function(req, res){
     try {
-        console.log(req.cookies.userID);
-        console.log(req.cookies.sessionID);
         var userData = await getUserData(req.cookies.userID, req.cookies.sessionID);
-
-        console.log(userData.user_name);
-        console.log(userData.session_id);
 
         if (req.cookies.sessionID == userData.session_id){
             res.json(userData); 
