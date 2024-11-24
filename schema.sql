@@ -40,6 +40,14 @@ CREATE TABLE `users` (
   PRIMARY KEY (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE `statistics` (
+  user_id int NOT NULL,
+  points int NOT NULL,
+  highest_combo int NOT NULL,
+  misses int NOT NULL,
+  hits int NOT NULL,
+  PRIMARY KEY (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 --
 -- Dumping data for table `scores`
 --
