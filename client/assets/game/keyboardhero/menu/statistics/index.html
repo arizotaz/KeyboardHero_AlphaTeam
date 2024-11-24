@@ -125,19 +125,31 @@ html, body {
     </div>
     <script>
         if (document.cookie != "") {
-            // Why are cookies stored this way
-            var cookie = document.cookie.split(" ");
-            var username = cookie[0].substring(9,cookie[0].length-1);
-            var email = cookie[1].substring(6,cookie[1].length-1);
 
-            document.getElementById("title").textContent = "User ID : " + username;
+            // Verify token & username match
+
+            // I give up with trying GET requests, the second I changed it to POST it magically worked. I'm not bothering.
+            $.ajax({
+                type: "POST",
+                url: "/verifyuser",
+                dataType: 'json',
+                success: function(res) {
+                    document.getElementById("title").textContent = res.user_name + "'s statistics :";
+
+                    // Get user's data
+                },
+                error: function () {
+                    // Kick them back to login menu if data doesn't match
+                    MenuManager.GoTo(MENU_LOGIN);
+                }
+            });
         }else{
             MenuManager.GoTo(MENU_LOGIN);
         }
     </script>
     <h1 id = "title">Statitics</h1>
     <form action="/logout" method="post">
-        <button id = "buttonUsername" class="buttonLogin">Delete Account</button>
+        <button id = "buttonUsername" class="buttonLogin">Log out</button>
     </form>
 
     <div class="verticalLine"></div>
