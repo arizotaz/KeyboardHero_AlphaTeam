@@ -251,6 +251,73 @@ async function setStatistics(userID, score, missedNotes, totalNotes, maxCombo) {
     }
 }
 
+//pull statistics
+async function getStatistics(userID) {
+    try {
+        const query = "select * from statistics where user_id = \"" + userID + "\";";
+        var userStatisticsJSON = await promisePool.execute(query);
+
+        var convert = JSON.stringify(userStatisticsJSON[0]);
+        var converted = JSON.parse(convert); 
+
+
+        // SUM/MAX functions return these as sum(points) which is seen as a function in js. Needs some processing first to properly access.
+
+        // Get total points
+        const queryPoints       = "select sum(points) from statistics;";
+        var globalPointsJSON    = await promisePool.execute(queryPoints);
+        var convertPoints       = JSON.stringify(globalPointsJSON[0]);
+        convertPoints           = convertPoints.replace('(','');
+        convertPoints           = convertPoints.replace(')','');
+        var convertedPoints     = JSON.parse(convertPoints); 
+
+
+        // Get highest combo
+        const queryCombo        = "select max(highest_combo) from statistics;";
+        var globalComboJSON     = await promisePool.execute(queryCombo);
+        var convertCombo        = JSON.stringify(globalComboJSON[0]);
+        convertCombo            = convertCombo.replace('(','');
+        convertCombo            = convertCombo.replace(')','');
+        var convertedCombo      = JSON.parse(convertCombo);
+
+
+        // Get total misses
+        const queryMisses       = "select sum(misses) from statistics;";
+        var globalMissesJSON    = await promisePool.execute(queryMisses);
+        var convertMisses       = JSON.stringify(globalMissesJSON[0]);
+        convertMisses           = convertMisses.replace('(','');
+        convertMisses           = convertMisses.replace(')','');
+        var convertedMisses     = JSON.parse(convertMisses);
+        
+        // Get total hits
+        const queryHits         = "select sum(hits) from statistics;";
+        var globalHitsJSON      = await promisePool.execute(queryHits);
+        var convertHits         = JSON.stringify(globalHitsJSON[0]);
+        convertHits             = convertHits.replace('(','');
+        convertHits             = convertHits.replace(')','');
+        var convertedHits       = JSON.parse(convertHits);
+
+        // Bundle all the data into a JSON to pass back to client
+        var statistics = new Object();
+        statistics.userPoints = converted[0].points;
+        statistics.userCombo = converted[0].highest_combo;
+        statistics.userMisses = converted[0].misses;
+        statistics.userHits = converted[0].hits;
+
+        statistics.globalPoints = convertedPoints[0].sumpoints;
+        statistics.globalCombo = convertedCombo[0].maxhighest_combo;
+        statistics.globalMisses = convertedMisses[0].summisses;
+        statistics.globalHits = convertedHits[0].sumhits;
+
+
+        return statistics;
+
+    } catch (err) {
+        console.error(err);
+        throw err; 
+    }
+}
+
 module.exports = {
-    getScores, getSongScores, sortHighToLow, createAccount, login, createSession, usernameAvailable, getUserData, validSession, setStatistics
+    getScores, getSongScores, sortHighToLow, createAccount, login, createSession, usernameAvailable, getUserData, validSession, setStatistics, getStatistics
 };
