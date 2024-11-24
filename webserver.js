@@ -257,21 +257,38 @@ app.post('/logout', function(req, res){
 
 const { getUserData } = require('./database.js');
 
+const { validSession } = require('./database.js');
+
+
 // Get user data for statistics
 app.post('/verifyuser', async function(req, res){
     try {
-        var userData = await getUserData(req.cookies.userID, req.cookies.sessionID);
-
-        if (req.cookies.sessionID == userData.session_id){
-            res.json(userData); 
+        // check if session is valid, if not then delete user's token and send to login screen.
+        if (await validSession(req.cookies.userID, req.cookies.sessionID)){
+            res.json(await getUserData(req.cookies.userID, req.cookies.sessionID)); 
         }else{
             res.clearCookie('userID');
             res.clearCookie('sessionID');
-            console.error('Tokens do not match.', err);
+            console.error('Invalid session.', err);
         }
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Error fetching user data' });
+    }
+});
+
+const { setStatistics } = require('./database.js');
+
+// Update user's statistics
+app.post('/setuserstatistics', async function(req, res){
+    try {
+        // if session is invalid then don't add score to database
+        if (await validSession(req.cookies.userID, req.cookies.sessionID)){
+            setStatistics(req.cookies.userID, parseInt(req.body.score), parseInt(req.body.missedNotes), parseInt(req.body.totalNotes), parseInt(req.body.maxCombo));
+        }
+
+    } catch (err) {
+
     }
 });
 
