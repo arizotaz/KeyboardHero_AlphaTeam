@@ -138,7 +138,6 @@ async function usernameAvailable(username) {
         const checkAvailability = "select * from users where user_name = \"" + username + "\";";
         var availableJSON = await promisePool.query(checkAvailability);
         var userid;
-        console.log(Object.keys(availableJSON[0]).length === 0);
         if (Object.keys(availableJSON[0]).length === 0){
             return true;
         }else{
@@ -182,7 +181,7 @@ async function createSession(userID, sessionID, time) {
 
 async function getUserData(userID, userToken) {
     try {
-        const query = "select user_name,session_id from users where user_id = \"" + userID + "\";";
+        const query = "select user_name,last_login,session_id from users where user_id = \"" + userID + "\";";
         var userdataJSON = await promisePool.execute(query);
 
         var convert = JSON.stringify(userdataJSON[0]);
@@ -197,6 +196,61 @@ async function getUserData(userID, userToken) {
     }
 }
 
+//check if session is valid
+async function validSession(userID, userToken) {
+    try {
+        var data = await getUserData(userID, userToken);
+
+        // session is valid if token matches id and is not over a week old
+        if (((Date.now() - data.last_login) <= 604800000) && (data.session_id == userToken)){
+            return true;
+        }else{
+            return false;
+        }
+       // console.log(data.session_id);
+       // console.log(data.last_login);
+       // console.log(data.user_name);
+
+    } catch (err) {
+        console.error(err);
+        throw err; 
+    }
+}
+
+//set user statistics
+async function setStatistics(userID, score, missedNotes, totalNotes, maxCombo) {
+    try {
+        // check if the user already has an entry, if not then create one
+        const query = "select * from statistics where user_id = \"" + userID + "\";";
+        var userStatisticsJSON = await promisePool.execute(query);
+
+
+        if (Object.keys(userStatisticsJSON[0]).length !== 0){
+            var convert = JSON.stringify(userStatisticsJSON[0]);
+            var converted = JSON.parse(convert); 
+
+            var newScore = score + converted[0].points;
+            var newMissedNotes = missedNotes + converted[0].misses;
+            var newTotalNotes = converted[0].hits + (totalNotes - missedNotes); 
+            if (maxCombo <= converted[0].highest_combo){
+                const setData = "update statistics set points = \"" + newScore + "\", misses = \"" + newMissedNotes + "\", hits = \"" + newTotalNotes + "\" where user_id = \"" + userID + "\";";
+                await promisePool.execute(setData);
+            }else{
+                const setData = "update statistics set points = \"" + newScore + "\", highest_combo = \"" + maxCombo + "\", misses = \"" + newMissedNotes + "\", hits = \"" + newTotalNotes + "\" where user_id = \"" + userID + "\";";
+                await promisePool.execute(setData);
+            }
+        }else{
+            var newTotalNotes = (totalNotes - missedNotes); 
+
+            const setData = "insert into statistics (user_id, points, highest_combo, misses, hits) values (\"" + userID + "\", \"" + score + "\", \"" + maxCombo + "\", \"" + missedNotes + "\", \"" + newTotalNotes + "\");";
+            await promisePool.execute(setData);
+        }
+    } catch (err) {
+        console.error(err);
+        throw err; 
+    }
+}
+
 module.exports = {
-    getScores, getSongScores, sortHighToLow, createAccount, login, createSession, usernameAvailable, getUserData
+    getScores, getSongScores, sortHighToLow, createAccount, login, createSession, usernameAvailable, getUserData, validSession, setStatistics
 };
