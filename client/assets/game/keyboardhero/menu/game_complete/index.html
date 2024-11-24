@@ -123,7 +123,7 @@
             maxCombo      : boards[0].MaxReachedCombo()
         };
         
-        if (document.cookie != "") {
+        
             $.ajax({
                     type: "POST",
                     url: "/setuserstatistics",
@@ -136,6 +136,6 @@
                         console.log("An error occured while saving data and was not saved.");
                     }
                 });
-        }
+        
     }
 </script>
