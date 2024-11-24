@@ -204,6 +204,13 @@ async function getStatistics(userID) {
         const query = "select * from statistics where user_id = \"" + userID + "\";";
         var userStatisticsJSON = await promisePool.execute(query);
 
+        // Make a slot for them in empty
+        if (Object.keys(userStatisticsJSON[0]).length === 0){
+            const setData = "insert into statistics (user_id, points, highest_combo, misses, hits) values (\"" + userID + "\", 0,0,0,0);";
+            await promisePool.execute(setData);
+            var userStatisticsJSON = await promisePool.execute(query);
+        }
+
         var convert = JSON.stringify(userStatisticsJSON[0]);
         var converted = JSON.parse(convert); 
 
