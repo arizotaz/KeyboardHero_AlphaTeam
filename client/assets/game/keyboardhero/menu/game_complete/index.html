@@ -133,5 +133,25 @@
         submitScore(userId, songId, score);
 
         fetchAndDisplayScores(songId);
+        
+        var scoreData = {
+            score         : boards[0].Score(), 
+            missedNotes   : boards[0].MissedNotes(), 
+            totalNotes    : boards[0].TotalNotes(), 
+            maxCombo      : boards[0].MaxReachedCombo()
+        };
+
+        $.ajax({
+                type: "POST",
+                url: "/setuserstatistics",
+                data: scoreData,
+                sentType: "json",
+                //success: function(res) {  
+                //},
+                error: function () {
+                    // Mainly for debugging
+                    console.log("An error occured while saving data and was not saved.");
+                }
+            });
     }
 </script>
