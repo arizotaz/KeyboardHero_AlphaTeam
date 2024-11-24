@@ -126,13 +126,6 @@
         document.getElementById('totalnotes').innerHTML = boards[0].TotalNotes();
         document.getElementById('maxCombo').innerHTML = boards[0].MaxReachedCombo();
 
-        const score = boards[0].Score();
-        const songId = boards[0].SongId(); // Assume boards[0] contains the song ID
-        const userId = boards[0].UserId();
-
-        submitScore(userId, songId, score);
-
-        fetchAndDisplayScores(songId);
         
         var scoreData = {
             score         : boards[0].Score(), 
@@ -140,20 +133,19 @@
             totalNotes    : boards[0].TotalNotes(), 
             maxCombo      : boards[0].MaxReachedCombo()
         };
-        
-        
-            $.ajax({
-                    type: "POST",
-                    url: "/setuserstatistics",
-                    data: scoreData,
-                    sentType: "json",
-                    //success: function(res) {  
-                    //},
-                    error: function () {
-                        // Mainly for debugging
-                        console.log("An error occured while saving data and was not saved.");
-                    }
-                });
-        
+
+        $.ajax({
+                type: "POST",
+                url: "/setuserstatistics",
+                data: scoreData,
+                sentType: "json",
+                //success: function(res) {  
+                //},
+                error: function () {
+                    // Mainly for debugging
+                    console.log("An error occured while saving data and was not saved.");
+                }
+            });
     }
 </script>
+
