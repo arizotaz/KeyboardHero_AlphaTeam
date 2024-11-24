@@ -137,6 +137,23 @@ html, body {
                     document.getElementById("title").textContent = res.user_name + "'s statistics :";
 
                     // Get user's data
+                    $.ajax({
+                        type: "POST",
+                        url: "/getuserstatistics",
+                        dataType: 'json',
+                        success: function(res) {
+                            console.log(res);
+                            document.getElementById("userPoints").textContent += res.userPoints;
+                            document.getElementById("userCombo").textContent += res.userCombo;
+                            document.getElementById("userHits").textContent += res.userHits;
+                            document.getElementById("userMisses").textContent += res.userMisses;
+
+                            document.getElementById("globalPoints").textContent += res.globalPoints;
+                            document.getElementById("gloalCombo").textContent += res.globalCombo;
+                            document.getElementById("globalHits").textContent += res.globalHits;
+                            document.getElementById("globalMisses").textContent += res.globalMisses;
+                        }
+                    });
                 },
                 error: function () {
                     // Kick them back to login menu if data doesn't match
