@@ -213,7 +213,60 @@ app.get('*', function (req, res) {
 serv.listen(port);
 console.log(`Server started on: http://localhost:${port}`);
 
+// Login system 
 
+// Needed to parse inputs for account creation
+var bodyParser = require('body-parser'); 
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Cookies for accounts
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+// Process account creation
+
+const { createAccount } = require('./database.js');
+
+const { usernameAvailable } = require('./database.js');
+
+app.post('/createAccount', async function(req, res){
+
+    try {
+    var bcrypt = require('bcryptjs');
+    var hash = bcrypt.hashSync(req.body.password, 10);
+
+    //console.log("Username : " + req.body.username);
+    //console.log("Email : " + req.body.email);
+    //console.log("Hashed & salted password : " + hash);
+
+    var username = await usernameAvailable(req.body.username);
+
+    if (username){
+        // Make users account
+        var newSessionId = Math.floor(Math.random() * 999999999);
+        var sessionID = bcrypt.hashSync(newSessionId.toString(), 5);
+
+        var time = Date.now();
+        var userID = await createAccount(req.body.username,req.body.email,hash, time, sessionID);
+        if (userID){
+            res.cookie('userID', userID);
+            res.cookie('sessionID', sessionID);
+        }else{
+            // failed for unknown reason
+            console.error('Failed to create account.', err);
+        }
+        
+    }else{
+        console.error('Username already in use.', err);
+    }
+    res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error making account' });
+    }
+
+    
+});
 
 // login system
 const { login } = require('./database.js');
