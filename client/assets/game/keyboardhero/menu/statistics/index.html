@@ -125,12 +125,41 @@ html, body {
     </div>
     <script>
         if (document.cookie != "") {
-            // Why are cookies stored this way
-            var cookie = document.cookie.split(" ");
-            var username = cookie[0].substring(9,cookie[0].length-1);
-            var email = cookie[1].substring(6,cookie[1].length-1);
 
-            document.getElementById("title").textContent = "User ID : " + username;
+            // Verify token & username match
+
+            // I give up with trying GET requests, the second I changed it to POST it magically worked. I'm not bothering.
+            $.ajax({
+                type: "POST",
+                url: "/verifyuser",
+                dataType: 'json',
+                success: function(res) {
+                    document.getElementById("title").textContent = res.user_name + "'s statistics :";
+
+                    // Get user's data
+                    $.ajax({
+                        type: "POST",
+                        url: "/getuserstatistics",
+                        dataType: 'json',
+                        success: function(res) {
+                            console.log(res);
+                            document.getElementById("userPoints").textContent += res.userPoints;
+                            document.getElementById("userCombo").textContent += res.userCombo;
+                            document.getElementById("userHits").textContent += res.userHits;
+                            document.getElementById("userMisses").textContent += res.userMisses;
+
+                            document.getElementById("globalPoints").textContent += res.globalPoints;
+                            document.getElementById("gloalCombo").textContent += res.globalCombo;
+                            document.getElementById("globalHits").textContent += res.globalHits;
+                            document.getElementById("globalMisses").textContent += res.globalMisses;
+                        }
+                    });
+                },
+                error: function () {
+                    // Kick them back to login menu if data doesn't match
+                    MenuManager.GoTo(MENU_LOGIN);
+                }
+            });
         }else{
             MenuManager.GoTo(MENU_LOGIN);
         }
@@ -148,16 +177,20 @@ html, body {
         <br></br>
         <hr class = "horizontalLine">
         <br>
-            <h1 class = "leftStatistic">Accuracy : </h1>
-            <h1 class = "rightStatistic">Accuracy : </h1>
+            <h1 id = "userPoints" class = "leftStatistic">Total Points : </h1>
+            <h1 id = "globalPoints" class = "rightStatistic">Total Points : </h1>
         </br>
         <br>
-            <h1 class = "leftStatistic">Missed : </h1>
-            <h1 class = "rightStatistic">Missed : </h1>
+            <h1 id = "userCombo" class = "leftStatistic">Highest Combo : </h1>
+            <h1 id = "gloalCombo" class = "rightStatistic">Highest Combo : </h1>
         </br>
         <br>
-            <h1 class = "leftStatistic">Excellents : </h1>
-            <h1 class = "rightStatistic">Excellents : </h1>
+        <h1 id = "userHits" class = "leftStatistic">Total Notes Hit : </h1>
+        <h1 id = "globalHits" class = "rightStatistic">Total Notes Hit : </h1>
+    </br>
+        <br>
+            <h1 id = "userMisses" class = "leftStatistic">Misses : </h1>
+            <h1 id = "globalMisses" class = "rightStatistic">Misses : </h1>
         </br>
     </div>
 

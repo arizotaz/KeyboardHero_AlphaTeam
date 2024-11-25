@@ -158,8 +158,6 @@ app.get('*', function (req, res) {
 serv.listen(port);
 console.log(`Server started on: http://localhost:${port}`);
 
-
-
 // Login system 
 
 // Needed to parse inputs for account creation
@@ -174,6 +172,8 @@ app.use(cookieParser());
 
 const { createAccount } = require('./database.js');
 
+const { usernameAvailable } = require('./database.js');
+
 app.post('/createAccount', async function(req, res){
 
     try {
@@ -184,17 +184,23 @@ app.post('/createAccount', async function(req, res){
     //console.log("Email : " + req.body.email);
     //console.log("Hashed & salted password : " + hash);
 
-    // Make users account
-    var newSessionId = Math.floor(Math.random() * 999999999);
-    var sessionID = bcrypt.hashSync(newSessionId.toString(), 5);
+    var username = await usernameAvailable(req.body.username);
 
-    var time = Date.now();
-    var userID = await createAccount(req.body.username,req.body.email,hash, time, sessionID);
-    console.log(userID);
+    if (username){
+        // Make users account
+        var newSessionId = Math.floor(Math.random() * 999999999);
+        var sessionID = bcrypt.hashSync(newSessionId.toString(), 5);
 
-    if (userID){
-        res.cookie('userID', userID);
-        res.cookie('sessionID', sessionID);
+        var time = Date.now();
+        var userID = await createAccount(req.body.username,req.body.email,hash, time, sessionID);
+        if (userID){
+            res.cookie('userID', userID);
+            res.cookie('sessionID', sessionID);
+        }else{
+            // failed for unknown reason
+            console.error('Failed to create account.', err);
+        }
+        
     }else{
         console.error('Username already in use.', err);
     }
@@ -245,6 +251,64 @@ app.post('/logout', function(req, res){
     res.clearCookie('userID');
     res.clearCookie('sessionID');
     res.redirect('/');
+});
+
+const { getUserData } = require('./database.js');
+
+const { validSession } = require('./database.js');
+
+
+// Get user data for statistics
+app.post('/verifyuser', async function(req, res){
+    try {
+        // check if session is valid, if not then delete user's token and send to login screen.
+        if (await validSession(req.cookies.userID, req.cookies.sessionID)){
+            res.json(await getUserData(req.cookies.userID, req.cookies.sessionID)); 
+        }else{
+            res.clearCookie('userID');
+            res.clearCookie('sessionID');
+            console.error('Invalid session.', err);
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching user data' });
+    }
+});
+
+const { setStatistics } = require('./database.js');
+
+// Update user's statistics
+app.post('/setuserstatistics', async function(req, res){
+    try {
+
+        // if session is invalid or logged out then instead use -1 for id as a 'guest' statistics so they are included in global
+        if (req.cookies.userID !== undefined && req.cookies.sessionID !== undefined){
+            if (await validSession(req.cookies.userID, req.cookies.sessionID)){
+                // 
+                setStatistics(req.cookies.userID, parseInt(req.body.score), parseInt(req.body.missedNotes), parseInt(req.body.totalNotes), parseInt(req.body.maxCombo));
+            }else{
+                // Guest
+                setStatistics(-1, parseInt(req.body.score), parseInt(req.body.missedNotes), parseInt(req.body.totalNotes), parseInt(req.body.maxCombo));
+            }
+        }else{
+            // Guest
+            setStatistics(-1, parseInt(req.body.score), parseInt(req.body.missedNotes), parseInt(req.body.totalNotes), parseInt(req.body.maxCombo));
+        }
+
+
+    } catch (err) {
+
+    }
+});
+
+const { getStatistics } = require('./database.js');
+// Update user's statistics
+app.post('/getuserstatistics', async function(req, res){
+    try{
+        res.json(await getStatistics(req.cookies.userID));
+    } catch (err) {
+
+    }
 });
 
 // Below will be the code for multiplayer and score system. 
