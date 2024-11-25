@@ -24,22 +24,18 @@ theme = int(sys.argv[4])
 match difficulty:
     case 1: # easy mode
         silenceThreshold = 3.0
-        bufferTime = 0.30
+        bufferTime = 0.40
     case 2: # medium/normal mode
         silenceThreshold = 1.5 # sensitivity
-        bufferTime = 0.10 # minimum time (seconds) between notes
+        bufferTime = 0.20 # minimum time (seconds) between notes
     case 3: # hard
-        silenceThreshold = 0.5
+        silenceThreshold = 0.9
         bufferTime = 0.10
 
 # process the song ================================================================================
 
 # load in the audio file
 y, sr = librosa.load(songLocation)
-
-# focus on percussive part of song (better for beat detection)
-#D_harmonic, D_percussive = librosa.decompose.hpss(librosa.stft(y))
-#y = librosa.istft(D_percussive, length=len(y))
 
 # get onset/peak strengths throughout whole mp3
 onsetStrengths = librosa.onset.onset_strength(y=y,sr=sr)
@@ -100,53 +96,103 @@ currentGap = timestamps[0][3]
 topBeats = np.percentile([t[1] for t in timestamps],98)
 
 if (difficulty == 1):
-    swapThreshold = np.percentile([t[1] for t in timestamps],75)
-elif (difficulty == 2):
-    swapThreshold = np.percentile([t[1] for t in timestamps],60)
-else:
-    swapThreshold = np.percentile([t[1] for t in timestamps],25)
+    swapThreshold = np.percentile([t[1] for t in timestamps],85)
+elif (difficulty == 2 or difficulty == 3):
+    swapThreshold = np.percentile([t[1] for t in timestamps],70)
 
 for t in timestamps:
 
     if (t[2] == 1): # only consider included beats
 
         # change patterns if not similar gap between notes or there's a significant strength to the beat
-        if ((not (t[3] >= currentGap-0.10 and t[3] <= currentGap+0.10)) or t[1] > swapThreshold or pattern == 7):
+        if ((not (t[3] >= currentGap-0.10 and t[3] <= currentGap+0.10)) or t[1] > swapThreshold or pattern == 20):
 
             # make sure pattern changes
             prevPattern = pattern 
             while (pattern == prevPattern): 
-                if (t[1] >= topBeats and pattern != 7):
-                    pattern = 7
-                else:
+                if (t[1] >= topBeats and pattern != 20 and difficulty != 1):
+                    pattern = 20
+                elif (difficulty == 1 or difficulty == 2):
                     pattern = random.randint(0,6) 
+                elif (difficulty == 3):
+                    pattern = random.randint(0,7) 
+
             
             # update the currentGap
             currentGap = t[3]
 
-        match pattern: # assign to lanes based on pattern
-            case 0:
-                track0.append(t[0])
-                track1.append(t[0])
-            case 1:
-                track2.append(t[0])
-                track3.append(t[0])
-            case 2:
-                track1.append(t[0])
-                track2.append(t[0])
-            case 3:
-                track0.append(t[0])
-            case 4:
-                track1.append(t[0])
-            case 5:
-                track2.append(t[0])
-            case 6:
-                track3.append(t[0])
-            case 7:
-                track0.append(t[0])
-                track1.append(t[0])
-                track2.append(t[0])
-                track3.append(t[0])
+        if (difficulty == 1): # easy
+            match pattern: # assign to lanes based on pattern
+                case 0:
+                    track0.append(t[0])
+                    track1.append(t[0])
+                case 1:
+                    track2.append(t[0])
+                    track3.append(t[0])
+                case 2:
+                    track1.append(t[0])
+                    track2.append(t[0])
+                case 3:
+                    track0.append(t[0])
+                case 4:
+                    track1.append(t[0])
+                case 5:
+                    track2.append(t[0])
+                case 6:
+                    track3.append(t[0])
+
+        elif (difficulty == 2): # medium
+            match pattern: # assign to lanes based on pattern
+                case 0:
+                    track0.append(t[0])
+                    track1.append(t[0])
+                case 1:
+                    track2.append(t[0])
+                    track3.append(t[0])
+                case 2:
+                    track1.append(t[0])
+                    track2.append(t[0])
+                case 3:
+                    track0.append(t[0])
+                case 4:
+                    track1.append(t[0])
+                case 5:
+                    track2.append(t[0])
+                case 6:
+                    track3.append(t[0])
+                case 20:
+                    track0.append(t[0])
+                    track1.append(t[0])
+                    track2.append(t[0])
+                    track3.append(t[0])
+
+        elif (difficulty == 3): # hard
+            match pattern: # assign to lanes based on pattern
+                case 0:
+                    track0.append(t[0])
+                    track1.append(t[0])
+                case 1:
+                    track2.append(t[0])
+                    track3.append(t[0])
+                case 2:
+                    track1.append(t[0])
+                    track2.append(t[0])
+                case 3:
+                    track0.append(t[0])
+                case 4:
+                    track1.append(t[0])
+                case 5:
+                    track2.append(t[0])
+                case 6:
+                    track3.append(t[0])
+                case 7:
+                    track0.append(t[0])
+                    track3.append(t[0])
+                case 20:
+                    track0.append(t[0])
+                    track1.append(t[0])
+                    track2.append(t[0])
+                    track3.append(t[0])
 
 
 # get base64 data  ===============================================================================
