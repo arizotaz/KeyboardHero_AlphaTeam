@@ -93,7 +93,18 @@
     </div>
     <div class="mainPageContent">
         <div class="scores">
-            scores will load here
+            <table id="scoreboard">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Scores will be dynamically inserted here -->
+                </tbody>
+            </table>
         </div>
         <div class="gameStats">
             <div class="scorePlacement">You placed <a id="scoreRank">NA</a> in the ranking for this song</div>
@@ -115,5 +126,12 @@
         document.getElementById('totalnotes').innerHTML = boards[0].TotalNotes();
         document.getElementById('maxCombo').innerHTML = boards[0].MaxReachedCombo();
 
+        const score = boards[0].Score();
+        const songId = boards[0].SongId(); // Assume boards[0] contains the song ID
+        const userId = boards[0].UserId();
+
+        submitScore(userId, songId, score);
+
+        fetchAndDisplayScores(songId);
     }
 </script>

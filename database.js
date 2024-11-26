@@ -71,6 +71,31 @@ async function submitScore(user_id, song_id, score) {
     }
 };
 
+async function fetchAndDisplayScores(song_id) {
+    try {
+        const response = await fetch(`/api/scores/${song_id}`);
+        if (!response.ok) throw new Error("Failed to fetch scores");
+
+        let scores = await response.json();
+        scores = scores.sort((a, b) => b.score - a.score);
+
+        const tableBody = document.querySelector("#scoreboard tbody");
+        tableBody.innerHTML = "";
+
+        scores.forEach((score) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${score.player_name || "Anonymous"}</td>
+                <td>${score.score}</td>
+                <td>${new Date(score.date).toLocaleString()}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Error displaying scores:", error);
+    }
+}
+
 // login stuff
 async function createAccount(username, email, password, time, sessionID) {
     try {   
@@ -137,5 +162,5 @@ async function createSession(userID, sessionID, time) {
 }
 
 module.exports = {
-    getScores, getSongScores, sortHighToLow, submitScore, createAccount, login, createSession
+    getScores, getSongScores, sortHighToLow, submitScore, createAccount, login, createSession, fetchAndDisplayScores
 };

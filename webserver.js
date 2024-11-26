@@ -19,7 +19,7 @@ console.log("Loading FS");
 const fs = require('fs');
 // database functions
 console.log("Loading database.js");
-const { getScores } = require('./database.js');
+const { getSongScores } = require('./database.js');
 // Socket IO
 console.log("Loading Socket.IO");
 let io = require('socket.io')(serv, {});
@@ -91,13 +91,13 @@ app.get('/assets/socket.io/socket.io.js', function (req, res) {
 
 
 //api to get scores using for testing
-app.get('/scores', async (req, res) => {
+app.get("/api/scores/:song_id", async (req, res) => {
     try {
-        const scores = await getScores(); // Call the async function to get scores
-        res.json(scores); // Send the scores as JSON to the client
+        const song_id = req.params.song_id;
+        const scores = await getSongScores(song_id);
+        res.json(scores);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error fetching scores' });
+        res.status(500).send("Error fetching scores");
     }
 });
 
@@ -152,7 +152,6 @@ app.post('/submitScore', (rep, res) => {
         }
     });
 });
-
 
 // upload and process files
 app.post('/newSongUpload', upload.single('file'), (req, res) => {
