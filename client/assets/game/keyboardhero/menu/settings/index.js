@@ -27,7 +27,7 @@ class SettingsMenu extends Menu {
         });
     }
     Leave() {
-        SaveSettingsMenuChanges();
+        menuAudio.volume = Settings.GetKey(Setting_MenuVolume);
 
         $( "#settingsMenuContainer" ).remove();
         $( "#settingsMenu" ).append("<div id=\"settingsMenuContainer\"></div>");

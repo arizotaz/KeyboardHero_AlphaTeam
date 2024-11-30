@@ -33,7 +33,6 @@ class UIManager {
     Update() {
         if (this.changeToMenu != this.currentMenu) {
             this.currentMenu = this.changeToMenu;
-            socket.emit("currentMenu",{id:this.currentMenu});
         }
 
         if (this.currentMenu !== this.lastMenu) {

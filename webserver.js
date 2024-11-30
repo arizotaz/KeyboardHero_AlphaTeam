@@ -20,9 +20,6 @@ const fs = require('fs');
 // database functions
 console.log("Loading database.js");
 const { getScores } = require('./database.js');
-// Socket IO
-console.log("Loading Socket.IO");
-let io = require('socket.io')(serv, {});
 
 
 // The cmd to start python
@@ -84,10 +81,6 @@ app.get('/', function (req, res) {
 // All files in the "/client/assets" folder will be vieable to the client
 app.use('/assets', express.static(__dirname + '/client/assets'));
 
-app.get('/assets/socket.io/socket.io.js', function (req, res) {
-    let socketioclient = __dirname + "/node_modules/socket.io/client-dist/socket.io.js";
-    res.sendFile(socketioclient);
-});
 app.get('/levelselect/songs/', function (req, res) {
     let socketioclient = __dirname + "/songlist.json";
     res.sendFile(socketioclient);
@@ -318,44 +311,4 @@ function NumOfClients() {
     let n = 0;
     for (let i in clients) ++n;
     return n;
-}
-
-io.sockets.on('connection', function (socket) {
-    try {
-        socket.emit("handshake");
-        clients[socket.id] = new GameClient(socket);
-        console.log(socket.id + " Connected")
-        socket.on('disconnect', function (data) {
-            console.log(socket.id + " Disconnected")
-            delete clients[socket.id];
-        });
-        io.emit("clients", { clients: NumOfClients() });
-        socket.on("requestClients", function () { try { socket.emit("clients", { clients: NumOfClients() }); } catch (e) { console.error(e) } });
-        socket.on("currentMenu", function (data) { try { clients[socket.id].SetCurrentMenu(data.id) } catch (e) { console.error(e) } });
-
-        socket.on("requestMultiplayer",(data) => { clients[socket.id].RegisterMultiplayer(); });
-
-
-        socket.on("ping", function() { socket.emit("pong", { msg:"Ping return"}); console.log(socket.id + " pinged the server"); })
-    } catch (e) { console.error(e); }
-
-});
-
-
-
-
-
-
-class GameClient {
-    constructor(socket) {
-        this.socket = socket;
-        this.id = socket.id;
-        this.username = "User" + Math.round(Math.random() * 10000);
-        this.currentMenu = 0;
-        this.roomID = "";
-    }
-    SetCurrentMenu(id) {
-        if (id == null) throw new Error("id is null");
-        this.currentMenu = id;
-    }
 }

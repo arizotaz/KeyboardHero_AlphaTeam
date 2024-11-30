@@ -85,7 +85,7 @@ class SinglePlayerGame extends Menu {
             gamePASSData = "";
         }
         
-
+        menuAudio.pause();
 
         // Run Start
         //boards[0].Start();
@@ -157,6 +157,11 @@ class SinglePlayerGame extends Menu {
         document.getElementsByTagName("canvas")[0].style.position = "";
         // Pause audio if it's playing
         gameAudio.pause();
+
+        // Start Menu Audio
+        menuAudio.currentTime = 0;
+        menuAudio.play();
+        
         // Clear the screen
         clear();
     }

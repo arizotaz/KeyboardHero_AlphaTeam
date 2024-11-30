@@ -78,7 +78,7 @@
 
         <h3>Menu Volume</h3>
         <div class="shadow" style="width:100vw; max-width: 800px;">
-            <input type="range" id="menuVolume" class="bubbleSlider" min="0" max="100">
+            <input type="range" id="menuVolume" class="bubbleSlider" min="0" max="100" onchange="SettingsChangeMenuVolume()">
         </div>
 
         <div class="controlChanger">
@@ -96,7 +96,7 @@
         </div>
 
         <div class="shadow">
-            <button onclick="SaveSettingsMenuChanges()">Save</button>
+            <button onclick="SaveSettingsMenuChanges();MenuManager.GoBack();">Save</button>
         </div>
     </div>
 </div>
@@ -148,4 +148,7 @@
             }
         });
     });
+    SettingsChangeMenuVolume = () => {
+        menuAudio.volume = document.getElementById('menuVolume').value / 100;
+    }
 </script>
