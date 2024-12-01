@@ -191,7 +191,7 @@ class GameBoard {
             // Firefox does not update the audio.currentTime handle as requently as edge or chome
             // instead we keep updating the currentTime as a seperate value, and correct it when
             // the browser updates
-            this.gameAudioCurrentTime += deltaTime/1000;
+            if (this.gameAudioCurrentTime < this.gameAudio.currentTime + .15) this.gameAudioCurrentTime += deltaTime/1000;
             if (this.gameAudio.currentTime != this.gameAudioLastPoll) {
                 this.gameAudioLastPoll = this.gameAudio.currentTime;
                 this.gameAudioCurrentTime = this.gameAudioLastPoll;

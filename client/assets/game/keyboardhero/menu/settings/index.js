@@ -16,21 +16,26 @@
 
 class SettingsMenu extends Menu {
     Open() {
-        $.get("/assets/game/keyboardhero/menu/settings/index.html", function( data ) {
-            $( "#settingsMenuContainer" ).append( data );
+        $.get("/assets/game/keyboardhero/menu/settings/index.html", function (data) {
+            $("#settingsMenuContainer").append(data);
             document.getElementById('settingsMenu').style.display = 'block';
 
-            document.getElementById('gameVolume').value = Settings.GetKey(Setting_GameVolume)*100;
-            document.getElementById('menuVolume').value = Settings.GetKey(Setting_MenuVolume)*100;
+            document.getElementById('gameVolume').value = Settings.GetKey(Setting_GameVolume) * 100;
+            document.getElementById('menuVolume').value = Settings.GetKey(Setting_MenuVolume) * 100;
             document.getElementById('columnWidth').value = 4;
             LoadKeysToControlChanger(4);
+
+            document.getElementById("settings_BackMenu").onclick = () => { MenuManager.GoBack(); }
+            document.getElementById("settings_ToAC").onclick = () => { MenuManager.GoTo(MENU_AUDIOCALI); }
+            document.getElementById("settings_save").onclick = () => { SaveSettingsMenuChanges(); MenuManager.GoBack(); }
+
         });
     }
     Leave() {
         menuAudio.volume = Settings.GetKey(Setting_MenuVolume);
 
-        $( "#settingsMenuContainer" ).remove();
-        $( "#settingsMenu" ).append("<div id=\"settingsMenuContainer\"></div>");
+        $("#settingsMenuContainer").remove();
+        $("#settingsMenu").append("<div id=\"settingsMenuContainer\"></div>");
         document.getElementById('settingsMenu').style.display = 'none';
     }
 }

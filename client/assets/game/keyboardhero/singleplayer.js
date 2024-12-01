@@ -35,7 +35,7 @@ function LoadSinglePlayerData(data) {
         game_input_keys = JSON.parse(Settings.GetKey(Setting_KeyArray));
 
         // Load data to board
-        boards[0].LoadFileData(gameFileData,game_input_keys);
+        boards[0].LoadFileData(gameFileData, game_input_keys);
 
 
         // Run Finish Loop
@@ -62,7 +62,7 @@ class SinglePlayerGame extends Menu {
         singlePlayerStarted = false;
 
         // Clear the board object and create a new one at index 0
-        
+
         gameAudio = null;
 
         boards = [];
@@ -84,8 +84,19 @@ class SinglePlayerGame extends Menu {
             LoadSinglePlayerData(gamePASSData);
             gamePASSData = "";
         }
-        
+
+
+        this.optionsKeysLastState = false;
         menuAudio.pause();
+
+        this.gameMenuManager = new UIManager();
+        this.gameMenuManager.GoTo(4);
+        this.gameMenuManager.AddMenu(4, new GameTempMenu());
+        this.gameMenuManager.AddMenu(0, new GameViewMenu());
+        this.gameMenuManager.AddMenu(1, new GamePauseMenu());
+        this.gameMenuManager.AddMenu(2, new GameSettingsMenu());
+        this.gameMenuManager.AddMenu(3, new GameAudioCalibration());
+
 
         // Run Start
         //boards[0].Start();
@@ -107,23 +118,40 @@ class SinglePlayerGame extends Menu {
         let gameWidth = windowWidth;
         if (gameWidth > 500) gameWidth = 500;
 
-        // Process Input and pass keyboard array
-        if (boards[0] != null && boards[0].ColumnWidth() != null &&  game_input_keys != null && game_input_keys[boards[0].ColumnWidth()-1] != null)
-        boards[0].ProcessInput(game_input_keys[boards[0].ColumnWidth()-1]);
-        
+        if (this.gameMenuManager.GetMenuID() == 0 || this.gameMenuManager.GetMenuID() == 4) {
+            // Process Input and pass keyboard array
+            if (boards[0] != null && boards[0].ColumnWidth() != null && game_input_keys != null && game_input_keys[boards[0].ColumnWidth() - 1] != null)
+                boards[0].ProcessInput(game_input_keys[boards[0].ColumnWidth() - 1]);
+
+            if (boards[0].StartCountdown() < 0) {
+                if (!keyIsDown(192) && this.optionsKeysLastState) {
+                    if (this.gameMenuManager.GetMenuID() != 0) {
+                        this.gameMenuManager.GoTo(0);
+                        gameAudio.play();
+                    } else {
+                        this.gameMenuManager.GoTo(1);
+                        gameAudio.pause();
+                    }
+                }
+                this.optionsKeysLastState = keyIsDown(192);
+            }
+
+        }
 
         // Run game update loop
-        boards[0].Update(spOFFX, spOFFY, gameWidth, windowHeight,gameAudio);
+        boards[0].Update(spOFFX, spOFFY, gameWidth, windowHeight, gameAudio);
 
         // Process Particles
         for (let i = 0; i < particles.length; ++i)
             particles[i].Tick();
-        
+
         // End game when all boards are completed and go to MENU_COMPLETE_SINGLEPLAYER
         let gameDone = true;
         for (let i = 0; i < boards.length; ++i)
             if (!boards[i].Completed()) gameDone = false;
         if (gameDone) MenuManager.GoTo(MENU_COMPLETE_SINGLEPLAYER);
+
+        this.gameMenuManager.Update();
     }
     Render() {
         // Draw BG
@@ -141,14 +169,16 @@ class SinglePlayerGame extends Menu {
             particles[i].Render();
 
         if (boards[0].StartCountdown() > 1) {
-            fill(0,0,0,100);
-            rect(0,0,windowWidth,windowHeight);
+            fill(0, 0, 0, 100);
+            rect(0, 0, windowWidth, windowHeight);
             fill(255);
             textSize(50);
-            textAlign(CENTER,CENTER);
-            text("Starting in",0,-25);
-            text(Math.ceil(boards[0].StartCountdown()) - 1,0,25);
+            textAlign(CENTER, CENTER);
+            text("Starting in", 0, -25);
+            text(Math.ceil(boards[0].StartCountdown()) - 1, 0, 25);
         }
+
+        this.gameMenuManager.Render();
     }
     Leave() {
         // Run Exit function
@@ -158,10 +188,14 @@ class SinglePlayerGame extends Menu {
         // Pause audio if it's playing
         gameAudio.pause();
 
+        this.gameMenuManager.GoTo(0);
+        this.gameMenuManager.Update();
+        this.gameMenuManager.GetMenu().Leave();
+
         // Start Menu Audio
         menuAudio.currentTime = 0;
         menuAudio.play();
-        
+
         // Clear the screen
         clear();
     }
@@ -190,6 +224,6 @@ function FinishGFLOnTexDone(board) {
         board.MarkReady();
     } else {
         // Textures not loaded, wait 500ms and try again
-        setTimeout(function() { FinishGFLOnTexDone(board); }, 500);
+        setTimeout(function () { FinishGFLOnTexDone(board); }, 500);
     }
 }
