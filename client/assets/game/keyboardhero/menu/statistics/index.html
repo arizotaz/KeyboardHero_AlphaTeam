@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/assets/css/ui_elements.css">
 <style>
 html, body {
     height: 100%;
@@ -17,14 +18,14 @@ html, body {
 }
 
     h1 {
-        color: #ffea00;
+        color: #ffffff;
         font-size: 2.5em;
         margin-bottom: 20px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
     }
 
     h2 {
-        color: #ffea00;
+        color: #ffffff;
         font-size: 2em;
         margin-top: 30px;
         margin-bottom: 10px;
@@ -38,12 +39,12 @@ html, body {
     }
 
     .highlight {
-        color: #ff4081;
+        color: #ffffff;
         font-weight: bold;
     }
 
     .loginhighlight {
-        color: #ffea00;
+        color: #ffffff;
         font-weight: bold;
     }
 
@@ -51,9 +52,9 @@ html, body {
         width: 90%;
         height: 90%;
         margin: auto;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(49, 49, 49, 0.5);
         border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 2px 10px rgba(49, 49, 49, .3);
         padding: 20px;
         position: relative;
     }
@@ -117,6 +118,19 @@ html, body {
         left: 51%;
         position: absolute;
     }
+    .select {
+    cursor: pointer;
+    font-size: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 5px solid rgba(80, 80, 80, 1);
+    padding: 5px 20px;
+    margin: 5px auto;
+    min-width: 100px;
+    }
+   
+
 
 </style>
 <div class="container">
@@ -152,6 +166,13 @@ html, body {
                             document.getElementById("gloalCombo").textContent += res.globalCombo;
                             document.getElementById("globalHits").textContent += res.globalHits;
                             document.getElementById("globalMisses").textContent += res.globalMisses;
+
+                            if (parseInt(res.userHits) != 0){
+                                document.getElementById("userAccuracy").textContent += Math.trunc(((parseInt(res.userHits) / (parseInt(res.userHits) + parseInt(res.userMisses))) * 100)) + "%";
+                            }else{
+                                document.getElementById("userAccuracy").textContent += "0%";
+                            }
+                            document.getElementById("globalAccuracy").textContent += Math.trunc(((parseInt(res.globalHits) / (parseInt(res.globalHits) + parseInt(res.globalMisses))) * 100)) + "%";
                         }
                     });
                 },
@@ -166,7 +187,7 @@ html, body {
     </script>
     <h1 id = "title">Statitics</h1>
     <form action="/logout" method="post">
-        <button id = "buttonUsername" class="buttonLogin">Log out</button>
+        <button id = "buttonUsername" class="select">Log out</button>
     </form>
 
     <div class="verticalLine"></div>
@@ -185,12 +206,16 @@ html, body {
             <h1 id = "gloalCombo" class = "rightStatistic">Highest Combo : </h1>
         </br>
         <br>
-        <h1 id = "userHits" class = "leftStatistic">Total Notes Hit : </h1>
-        <h1 id = "globalHits" class = "rightStatistic">Total Notes Hit : </h1>
-    </br>
+            <h1 id = "userHits" class = "leftStatistic">Total Notes Hit : </h1>
+            <h1 id = "globalHits" class = "rightStatistic">Total Notes Hit : </h1>
+        </br>
         <br>
             <h1 id = "userMisses" class = "leftStatistic">Misses : </h1>
             <h1 id = "globalMisses" class = "rightStatistic">Misses : </h1>
+        </br>
+        <br>
+            <h1 id = "userAccuracy" class = "leftStatistic">Accuracy : </h1>
+            <h1 id = "globalAccuracy" class = "rightStatistic">Accuracy : </h1>
         </br>
     </div>
 
