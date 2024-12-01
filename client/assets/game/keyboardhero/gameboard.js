@@ -341,7 +341,7 @@ class GameBoard {
             fill(255);
             textAlign(CENTER, CENTER);
             textSize(24);  // You can adjust the size as needed
-            text(String.fromCharCode(this.input_keys[i]), ox - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
+            if (this.input_keys != null && this.input_keys[i] != null) text(String.fromCharCode(this.input_keys[i]), ox - this.gameWidth / 2 + noteRowSize / 2 + noteRowSize * i,
             oy,
             );
         }
