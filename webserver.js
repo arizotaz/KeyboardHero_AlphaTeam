@@ -86,6 +86,10 @@ app.get('/levelselect/songs/', function (req, res) {
     res.sendFile(socketioclient);
 });
 
+app.get('/source', function (req, res) {
+    res.location('https://github.com/arizotaz/KeyboardHero_AlphaTeam');
+    res.send("<a href='"+res.get('location')+"'><button>View Code</button></a><script>window.location.href='"+res.get('location')+"'</script>")
+});
 
 //api to get scores using for testing
 app.get('/scores', async (req, res) => {
