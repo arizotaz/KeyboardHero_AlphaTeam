@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/assets/jquery/jquery-3.5.0.min.js"></script>
     <script src="/assets/p5/p5.js"></script>
-    <script src="/assets/socket.io/socket.io.js"></script>
     <script src="/assets/game/boot/boot.js"></script>
 
     <script src="/assets/game/keyboardhero/test_worker.js"></script>
@@ -17,13 +16,10 @@
     <script src="/assets/game/keyboardhero/settings.js"></script>
     <script src="/assets/game/keyboardhero/singleplayer.js"></script>
     <script src="/assets/game/keyboardhero/particles.js"></script>
-    
+
     <script src="/assets/game/keyboardhero/menu/login/index.js"></script>
     <script src="/assets/game/keyboardhero/menu/register/index.js"></script>
     <script src="/assets/game/keyboardhero/menu/statistics/index.js"></script>
-
-    <script src="/assets/game/keyboardhero/online/sockets.js"></script>
-    <script src="/assets/game/keyboardhero/menu/multiplayer/menus.js"></script>
 
     <script src="/assets/game/keyboardhero/menu/home/index.js"></script>
     <script src="/assets/game/keyboardhero/menu/settings/index.js"></script>
@@ -32,6 +28,11 @@
     <script src="/assets/game/keyboardhero/menu/game_complete/index.js"></script>
     <script src="/assets/game/keyboardhero/menu/about/index.js"></script>
     <script src="/assets/game/keyboardhero/menu/uploads/index.js"></script>
+
+    <script src="/assets/game/keyboardhero/menu/game/empty.js"></script>
+    <script src="/assets/game/keyboardhero/menu/game/settings.js"></script>
+    <script src="/assets/game/keyboardhero/menu/game/pause.js"></script>
+    <script src="/assets/game/keyboardhero/menu/game/ac.js"></script>
 
     <script src="/assets/game/keyboardhero/main.js"></script>
 
@@ -91,6 +92,29 @@
             padding: 10px 0px;
             z-index: 10000;
         }
+
+        .menu {
+            position: fixed;
+            z-index: 10;
+        }
+
+        #gamePauseButton {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            filter: invert();
+            backdrop-filter: blur(10px) invert();
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            width: 50px;
+            padding:10px;
+            transition: all ease 0.2s;
+        }
+        #gamePauseButton:hover {
+            filter: none;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255, 0.5);
+        }
     </style>
 </head>
 
@@ -125,6 +149,9 @@
     </div>
     <div class="menu" id="uploadSongsMenu">
         <div id="uploadSongsMenuContainer"></div>
+    </div>
+    <div class="menu" id="gameMenu">
+        <div id="gameMenuContainer"></div>
     </div>
 
 </body>

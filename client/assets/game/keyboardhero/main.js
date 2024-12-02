@@ -29,7 +29,7 @@ let MenuManager;
 // Settings File Structure
 let Settings;
 // Game Audio Object
-let gameAudio;
+let gameAudio, menuAudio;
 
 // Is Mobile
 let mobile = false;
@@ -82,13 +82,6 @@ function ApplicationStart() {
     MenuManager.AddMenu(MENU_LOGIN,                 new LoginMenu           ());
     MenuManager.AddMenu(MENU_REGISTER,              new RegisterMenu        ());
     MenuManager.AddMenu(MENU_STATISTICS,            new StatisticsMenu      ());
-
-    MenuManager.AddMenu(MENU_MULTIPLAYER,           new Multiplayer    ());
-    MenuManager.AddMenu(MENU_MULTIPLAYER_SETUP,     new MultiplayerSetup    ());
-    MenuManager.AddMenu(MENU_MULTIPLAYER_HOST,      new MultiplayerHost     ());
-    MenuManager.AddMenu(MENU_MULTIPLAYER_JOIN,      new MultiplayerJoin     ());
-    MenuManager.AddMenu(MENU_MULTIPLAYER_GAME,      new MultiplayerGame     ());
-
 //
     // Add more menus here
     

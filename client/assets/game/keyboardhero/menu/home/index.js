@@ -20,15 +20,20 @@ class MainMenu extends Menu {
             MenuManager.GoTo(MENU_AUDIOCALI);
             return;
         }
-        $.get("/assets/game/keyboardhero/menu/home/index.html", function( data ) {
-            $( "#homeMenuContainer" ).append( data );
+        $.get("/assets/game/keyboardhero/menu/home/index.html", function (data) {
+            $("#homeMenuContainer").append(data);
             document.getElementById('homeMenu').style.display = 'block';
-            socket.emit("requestClients")
         });
+        if (menuAudio == null) {
+            menuAudio = new Audio("/assets/game/keyboardhero/sounds/mainmenu.mp3");
+            menuAudio.volume = Settings.GetKey(Setting_MenuVolume);
+            menuAudio.loop = true;
+            menuAudio.play();
+        }
     }
     Leave() {
-        $( "#homeMenuContainer" ).remove();
-        $( "#homeMenu" ).append("<div id=\"homeMenuContainer\"></div>");
+        $("#homeMenuContainer").remove();
+        $("#homeMenu").append("<div id=\"homeMenuContainer\"></div>");
         document.getElementById('homeMenu').style.display = 'none';
     }
 }

@@ -1,53 +1,33 @@
 <link rel="stylesheet" href="/assets/css/header.css">
 <link rel="stylesheet" href="/assets/css/ui_elements.css">
 <style>
+    .pauseMenuMainContent {
+        position: fixed;
+        width: 100%;
+        height:100%;
+        z-index: 100;
+        backdrop-filter: blur(5px);
+        background-color: rgba(0, 0, 0, 0.1);
+    }
     .menuContainer {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
         height: 100%;
-        background-image: url('/assets/game/keyboardhero/textures/game_background.png');
         background-position: center;
         background-size: cover;
     }
-
-    .mainPageContent {
-        width: 100%;
-        flex: 1;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        background-color: rgba(0, 0, 0, 0.1);
-        padding: 10px;
-        text-align: center;
-    }
-
-    .slidecontainer {
-        width: 100%;
-    }
-
-    .backShortcut {
+    
+    .centerContent {
         position: absolute;
-        top: 5px;
-        left: 5px;
+        top:50%;
+        left:50%;
+        transform: translate(-50%,-50%);
     }
 
-    .backShortcut img {
-        height: 40px;
-        filter: invert();
-        cursor: pointer;
-    }
-
-    .mainSettingsPageContent h3 {
-        color: #fff;
-        margin-bottom: 0px;
-        margin-top: 50px;
-    }
-
-    #controlKeys {
-        display: flex;
-        flex-direction: row;
+    .centerContent img {
+        width: 100%;
     }
 
     @media screen and (max-width: 1100px) {}
@@ -62,42 +42,16 @@
 
 
 <div class="menuContainer">
-    <div class="topBar">
-        <div class="backShortcut">
-            <img id="settings_BackMenu" 
-                 src="/assets/game/keyboardhero/textures/button_back.png" alt="">
-        </div>
-    </div>
 
-    <div class="mainSettingsPageContent bubbleButtons">
+    <div class="pauseMenuMainContent">
 
-        <h3>Game Volume</h3>
-        <div class="shadow" style="width:100vw; max-width: 800px;">
-            <input type="range" id="gameVolume" class="bubbleSlider" min="0" max="100">
+        <div class="centerContent bubbleButtons">
+            <img src="/assets/game/keyboardhero/textures/game_logo.png" alt="">
+            <div class="shadow"><button onclick="MenuManager.GetMenu(MENU_SINGLEPLAYER).gameMenuManager.GoTo(0);gameAudio.play();">Resume</button></div>
+            <div class="shadow"><button onclick="MenuManager.GetMenu(MENU_SINGLEPLAYER).gameMenuManager.GoTo(2)">Settings</button></div>
+            <div class="shadow"><button onclick="MenuManager.GetMenu(MENU_SINGLEPLAYER).gameMenuManager.GoTo(0);MenuManager.GetMenu(MENU_SINGLEPLAYER).gameMenuManager.Update();MenuManager.GoBack()">Quit</button></div>
         </div>
-
-        <h3>Menu Volume</h3>
-        <div class="shadow" style="width:100vw; max-width: 800px;">
-            <input type="range" id="menuVolume" class="bubbleSlider" min="0" max="100" onchange="SettingsChangeMenuVolume()">
-        </div>
-
-        <div class="controlChanger">
-            <select id="columnWidth" onchange="LoadKeysToControlChanger(this.value)">
-                <option value="1">1 - Lane</option>
-                <option value="2">2 - Lane</option>
-                <option value="4">4 - Lane</option>
-                <option value="5">5 - Lane</option>
-            </select>
-            <div id="controlKeys"></div>
-        </div>
-
-        <div class="shadow">
-            <button id="settings_ToAC">Audio Calibration</button>
-        </div>
-
-        <div class="shadow">
-            <button id="settings_save">Save</button>
-        </div>
+        
     </div>
 </div>
 
