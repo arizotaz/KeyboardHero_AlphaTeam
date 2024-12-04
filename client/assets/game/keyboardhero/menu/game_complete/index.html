@@ -41,7 +41,7 @@
     $.ajax({
         url: `/getAndDisplayScores`, // Endpoint with song_id as query parameter
         method: 'GET',
-        data: { song_id: boards[0].songID }, // Use the songID stored in localStorage
+        data: { song_id: boards[0].songID() }, // Use the songID stored in localStorage
         dataType: 'json', // Expect JSON response
         success: function(scores) {
             console.log(scores); // Debugging: Log the scores to check their format
