@@ -113,7 +113,7 @@ app.post('/submitScore', async (req, res) => {
         const { score, user_id, song_id } = req.body;
         console.log("Received score submission:", { score, user_id, song_id });
 
-        if (user_id === undefined) {
+        if (user_id === undefined || user_id === '') {
             return res.status(200).json({ message: 'No user score was not added.' });
         }
 
