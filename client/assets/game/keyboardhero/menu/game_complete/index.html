@@ -62,7 +62,10 @@
                     var cookie = document.cookie.split(" ");
                     console.log(cookie[0]);
                     userid = cookie[0].substring(7,cookie[0].length-1); 
+                } else {
+                    userid = '';
                 }
+                
                 userid = parseInt(userid);
                 currentScore = boards[0].Score();
                 currentRank = 1;
