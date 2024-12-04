@@ -1,5 +1,40 @@
 <script>
-    function fetchAndDisplayScores() {
+    async function submitAndDisplayScores(callback) {
+        console.log('submitAndDisplayScores function triggered');
+        if (document.cookie != "") {
+            var cookie = document.cookie.split(" ");
+            console.log(cookie[0]);
+            var userid = cookie[0].substring(7,cookie[0].length-1); 
+        }
+
+        const songid = localStorage.getItem("songID");
+
+        var songScoreData = {
+            score         : boards[0].Score(), 
+            user_id : userid,
+            song_id : boards[0].SongID()
+        };
+        console.log(songScoreData.score);
+        console.log(songScoreData.user_id);
+        console.log(songScoreData.song_id);
+
+        console.log("Submitting score:", songScoreData);
+    $.ajax({
+        type: "POST",
+        url: "/submitScore",
+        data: JSON.stringify(songScoreData),
+        contentType: "application/json", 
+        success: function(res) {
+            console.log("Score submission response:", res);
+            callback();
+        },
+        error: function() {
+            console.log("Error occurred while submitting score.");
+        }
+    });
+    };
+
+    async function fetchAndDisplayScores() {
     var songid = localStorage.getItem("songID");
     
     // Fetch scores from server
@@ -116,16 +151,26 @@
     #scoreboard {
         color:#fff;
     }
-
+    table {
+        width: 100%; /* Make the table full width */
+        border-collapse: collapse; /* To collapse table borders */
+    }
     th {
-    color: #f2f2f2; /* Lighter background for headers */
-    font-weight: bold;
-    border-bottom: #fff;
-}
-
+        color: #f2f2f2; /* Lighter background for headers */
+        text-align: left;
+        font-weight: bold;
+        border-bottom: #fff;
+    }
     td {
         color: #fff; /* White background for table rows */
-    }   
+    }  
+    tr {
+            border-bottom: 2px solid #ddd; /* Add border below each row */
+    }
+        /* Optional: Remove border from the last row */
+        tr:last-child {
+            border-bottom: none;
+        } 
 
     .gameStats {
         color: #fff;
@@ -210,45 +255,5 @@
                 });
         
     }
-
-    function submitAndDisplayScores() {
-        console.log('submitAndDisplayScores function triggered');
-        if (document.cookie != "") {
-            var cookie = document.cookie.split(" ");
-            console.log(cookie[0]);
-            var userid = cookie[0].substring(7,cookie[0].length-1); 
-        }
-
-        const songid = localStorage.getItem("songID");
-
-        var songScoreData = {
-            score         : boards[0].Score(), 
-            user_id : userid,
-            song_id : boards[0].SongID()
-        };
-        console.log(songScoreData.score);
-        console.log(songScoreData.user_id);
-        console.log(songScoreData.song_id);
-
-        console.log("Submitting score:", songScoreData);
-    $.ajax({
-        type: "POST",
-        url: "/submitScore",
-        data: JSON.stringify(songScoreData),
-        contentType: "application/json", 
-        success: function(res) {
-            console.log("Score submission response:", res);
-        },
-        error: function() {
-            console.log("Error occurred while submitting score.");
-        }
-    });
-    };
-    
-    function sortHighToLow(items) {
-    return items.sort((a, b) => b.score - a.score);
-    }
-
-    
 </script>
 
