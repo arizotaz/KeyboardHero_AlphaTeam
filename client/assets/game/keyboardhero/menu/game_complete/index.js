@@ -21,8 +21,10 @@ class GameCompletedMenu extends Menu {
             $( "#gameCompletedMenuContainer" ).append( data );
             document.getElementById('gameCompletedMenu').style.display = 'block';
             GatherDataForGameCompletedMenu();
-            submitAndDisplayScores();
-            fetchAndDisplayScores();
+            submitAndDisplayScores( function () {
+                fetchAndDisplayScores()
+            });
+            ;
         });
     }
     Leave() {
