@@ -1,3 +1,60 @@
+<script>
+    function fetchAndDisplayScores() {
+    var songid = localStorage.getItem("songID");
+    
+    // Fetch scores from server
+    $.ajax({
+        url: `/getAndDisplayScores`, // Endpoint with song_id as query parameter
+        method: 'GET',
+        data: { song_id: boards[0].songID }, // Use the songID stored in localStorage
+        dataType: 'json', // Expect JSON response
+        success: function(scores) {
+            console.log(scores); // Debugging: Log the scores to check their format
+            
+            if (Array.isArray(scores) && scores.length > 0) {
+                // Create HTML table
+                let tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Username</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                // Populate table rows with scores
+                scores.forEach(score => {
+                    tableHTML += `
+                        <tr>
+                            <td>${score.rank}</td>
+                            <td>${score.user_name}</td>
+                            <td>${score.score}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+
+                // Insert the table into the #scoreboard div
+                $('#scoreboard').html(tableHTML);
+            } else {
+                $('#scoreboard').html('<p>No scores available.</p>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching scores:', error);
+            $('#scoreboard').html('<p>Error loading scores.</p>');
+        }
+    });
+}
+</script>
+
 <link rel="stylesheet" href="/assets/css/header.css">
 <link rel="stylesheet" href="/assets/css/ui_elements.css">
 <style>
@@ -55,6 +112,20 @@
         border-radius: 20px;
         color: #fff;
     }
+    
+    #scoreboard {
+        color:#fff;
+    }
+
+    th {
+    color: #f2f2f2; /* Lighter background for headers */
+    font-weight: bold;
+    border-bottom: #fff;
+}
+
+    td {
+        color: #fff; /* White background for table rows */
+    }   
 
     .gameStats {
         color: #fff;
@@ -178,25 +249,6 @@
     return items.sort((a, b) => b.score - a.score);
     }
 
-    async function updateAndDisplayScores(song_id) {
-    try {
-        const response = await fetch(`http://localhost:32787/api/scores/${song_id}`);
-        const rawResponse = await response.text(); // Log raw response first
-        console.log('Raw API Response:', rawResponse);
-
-        const scores = JSON.parse(rawResponse); // Ensure the response is valid JSON
-        const sortedScores = await sortHighToLow(scores);
-
-        const scoreboardElement = document.getElementById("scoreboard");
-        scoreboardElement.innerHTML = ''; // Clear previous scores
-        sortedScores.forEach((score, index) => {
-            const scoreElement = document.createElement("div");
-            scoreElement.innerHTML = `Rank: ${index + 1} - User ID: ${score.user_id} - Score: ${score.score}`;
-            scoreboardElement.appendChild(scoreElement);
-        });
-    } catch (err) {
-        console.error('Error fetching scores:', err);
-    }
-}
+    
 </script>
 

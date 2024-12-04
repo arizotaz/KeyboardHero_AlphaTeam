@@ -16,11 +16,13 @@
 
 class GameCompletedMenu extends Menu {
     Open() {
+            
         $.get("/assets/game/keyboardhero/menu/game_complete/index.html", function( data ) {
             $( "#gameCompletedMenuContainer" ).append( data );
             document.getElementById('gameCompletedMenu').style.display = 'block';
             GatherDataForGameCompletedMenu();
             submitAndDisplayScores();
+            fetchAndDisplayScores();
         });
     }
     Leave() {

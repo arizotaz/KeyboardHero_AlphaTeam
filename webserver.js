@@ -24,6 +24,7 @@ const { submitScore } = require('./database.js');
 const { displayScores} = require('./database.js');
 const { sortHighToLow} = require('./database.js');
 const { removeScore } = require('./database.js');
+const { getSortedScoresWithRank } = require('./database.js');
 const db = require('./database');
 
 
@@ -142,22 +143,21 @@ app.post('/submitScore', async (req, res) => {
     }
 });
 
-// Define the endpoint for fetching song scores
-app.get('/api/scores/:song_id', async (req, res) => {
-    try {
-        const song_id = req.params.song_id;
-        
-        if (!song_id) {
-            return res.status(400).json({ error: 'Song ID is required' });
-        }
-        
-        const scores = await db.getSongScores(song_id);
-        if (!scores) {
-            return res.status(404).json({ error: 'No scores found for this song' });
-        }
 
-        // Return scores as JSON
-        res.json(scores);
+
+app.get('/getAndDisplayScores', async (req, res) => {
+    const song_id = req.query.song_id; // Get song_id from query parameters
+    console.log("song id to search:", song_id)
+    if (!song_id) {
+        return res.status(400).json({ error: 'song_id query parameter is required' });
+    }
+
+    try {
+        // Fetch scores from the database
+        const results = await db.getSortedScoresWithRank(song_id);
+        console.log("Existing scores for the song to display:", results);  // Log the existing scores
+        // Respond with JSON data
+        res.json(results);
     } catch (err) {
         console.error('Error fetching scores:', err);
         res.status(500).json({ error: 'Internal server error' });

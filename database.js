@@ -92,6 +92,28 @@ async function getSongScores(song_id) {
     }
 }
 
+async function getSortedScoresWithRank(song_id) {
+    try {
+        // Query the scores, joining with the users table to get the user_name
+        const [rows] = await promisePool.query(`
+            SELECT 
+                RANK() OVER (ORDER BY s.score DESC) AS \`rank\`,
+                u.user_name,
+                s.score,
+                s.song_id
+            FROM scores s
+            JOIN users u ON s.user_id = u.user_id
+            WHERE s.song_id = ?
+            ORDER BY s.score DESC;
+        `, [song_id]);
+
+        return rows;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
+
 async function sortHighToLow(items){
     try {
         
@@ -332,5 +354,5 @@ async function getStatistics(userID) {
 }
 
 module.exports = {
-    getScores, getSongScores, submitScore, removeScore, displayScores, sortHighToLow, createAccount, login, createSession, usernameAvailable, getUserData, validSession, setStatistics, getStatistics
+    getScores, getSongScores, getSortedScoresWithRank, submitScore, removeScore, displayScores, sortHighToLow, createAccount, login, createSession, usernameAvailable, getUserData, validSession, setStatistics, getStatistics
 };
