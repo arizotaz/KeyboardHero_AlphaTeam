@@ -1,10 +1,17 @@
 <script>
     async function submitAndDisplayScores(callback) {
         console.log('submitAndDisplayScores function triggered');
+        var userid = "";
         if (document.cookie != "") {
             var cookie = document.cookie.split(" ");
             console.log(cookie[0]);
-            var userid = cookie[0].substring(7,cookie[0].length-1); 
+            userid = cookie[0].substring(7,cookie[0].length-1); 
+        }
+
+        if (userid == null || userid == "") {
+            return;
+        } else {
+            document.getElementById("scoreNeedLogin").remove();
         }
 
         const songid = localStorage.getItem("songID");
@@ -14,9 +21,6 @@
             user_id : userid,
             song_id : boards[0].SongID()
         };
-        console.log(songScoreData.score);
-        console.log(songScoreData.user_id);
-        console.log(songScoreData.song_id);
 
         console.log("Submitting score:", songScoreData);
     $.ajax({
@@ -213,6 +217,7 @@
             <div id="scoreboard"></div>
         </div>
         <div class="gameStats">
+            <div id="scoreNeedLogin">You must login to save scores</div>
             <div class="scorePlacement">You placed <a id="scoreRank">NA</a> in the ranking for this song</div>
             <div class="gamescore">You got a total of <a id="score"></a> points</div>
             <div class="missednotes">You missed <a id="missednotes"></a> out of <a id="totalnotes"></a> notes</div>
