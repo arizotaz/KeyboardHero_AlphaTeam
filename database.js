@@ -10,7 +10,7 @@ const pool = mysql.createPool({
 });
 
 // Use the `promise()` function of the pool for promise-based queries
-const promisePool = pool.promise();
+const promisePool = pool.promise();     
 
 // Async function to get scores
 async function getScores() {
@@ -20,6 +20,41 @@ async function getScores() {
     } catch (err) {
         console.error(err);
         throw err;
+    }
+}
+
+async function submitScore(user_id, song_id, score) {
+    try {
+        if (!user_id || !song_id || typeof score !== 'number') {
+            throw new Error('Invalid input: All fields are required.');
+        }
+        const query = `
+            INSERT INTO scores (user_id, song_id, score)
+            VALUES (?, ?, ?);
+        `;
+
+        // Execute the query with the provided parameters
+        const [result] = await connection.execute(query, [user_id, song_id, score]);
+
+        console.log('Score inserted successfully:', result);
+        return result;
+        
+}catch (err) {
+    console.error('Error inserting score:', err);
+    throw err;
+}
+};
+
+// Fetch and display scores
+async function displayScores(song_id) {
+    try {
+        const response = await fetch(`http://localhost:32787/api/scores/${song_id}`);
+        const scores = await response.json();
+        const sortedScores = await sortHighToLow(scores);  // Sort from high to low
+
+        
+    } catch (err) {
+        console.error('Error fetching scores:', err);
     }
 }
 
@@ -273,5 +308,5 @@ async function getStatistics(userID) {
 }
 
 module.exports = {
-    getScores, getSongScores, sortHighToLow, createAccount, login, createSession, usernameAvailable, getUserData, validSession, setStatistics, getStatistics
+    getScores, getSongScores, submitScore, displayScores, sortHighToLow, createAccount, login, createSession, usernameAvailable, getUserData, validSession, setStatistics, getStatistics
 };

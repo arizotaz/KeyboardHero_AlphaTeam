@@ -19,7 +19,13 @@ console.log("Loading FS");
 const fs = require('fs');
 // database functions
 console.log("Loading database.js");
-const { getScores } = require('./database.js');
+const { getSongScores } = require('./database.js');
+const { submitScore } = require('./database.js');
+const { displayScores} = require('./database.js');
+const { sortHighToLow} = require('./database.js');
+const db = require('./database');
+
+
 
 
 // The cmd to start python
@@ -102,6 +108,63 @@ app.get('/scores', async (req, res) => {
     }
 });
 
+app.use(express.json());
+
+app.post('/submitScore', async (req, res) => {
+    try {
+        const { score, user_id, song_id } = req.body;
+        console.log("Received score submission:", { score, user_id, song_id });
+
+        if (!user_id || !song_id || typeof score !== 'number') {
+            return res.status(400).json({ error: 'Invalid input' });
+        }
+
+        const results = await db.getSongScores(song_id);
+        console.log("Existing scores for the song:", results);  // Log the existing scores
+
+        const existingScoreEntry = results.find(entry => entry.user_id === user_id);
+        console.log("Existing scores for the song:", results);
+        if (existingScoreEntry) {
+            const existingScore = existingScoreEntry.score;
+            console.log("Existing score for user:", existingScore);
+
+            if (score > existingScore) {
+                await db.submitScore(user_id, song_id, score);
+                return res.status(200).json({ message: 'High score updated!' });
+            } else {
+                return res.status(200).json({ message: 'Score not high enough, will not be updated.' });
+            }
+        } else {
+            await db.submitScore(user_id, song_id, score);
+            return res.status(200).json({ message: 'High score added!' });
+        }
+    } catch (err) {
+        console.error('Error handling /submitScore:', err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Define the endpoint for fetching song scores
+app.get('/api/scores/:song_id', async (req, res) => {
+    try {
+        const song_id = req.params.song_id;
+        
+        if (!song_id) {
+            return res.status(400).json({ error: 'Song ID is required' });
+        }
+        
+        const scores = await db.getSongScores(song_id);
+        if (!scores) {
+            return res.status(404).json({ error: 'No scores found for this song' });
+        }
+
+        // Return scores as JSON
+        res.json(scores);
+    } catch (err) {
+        console.error('Error fetching scores:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 // upload and process files
 app.post('/newSongUpload', upload.single('file'), (req, res) => {

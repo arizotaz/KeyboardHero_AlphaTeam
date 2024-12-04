@@ -94,6 +94,7 @@
     <div class="mainPageContent">
         <div class="scores">
             scores will load here
+            <div id="scoreboard"></div>
         </div>
         <div class="gameStats">
             <div class="scorePlacement">You placed <a id="scoreRank">NA</a> in the ranking for this song</div>
@@ -114,7 +115,7 @@
         document.getElementById('missednotes').innerHTML = boards[0].MissedNotes();
         document.getElementById('totalnotes').innerHTML = boards[0].TotalNotes();
         document.getElementById('maxCombo').innerHTML = boards[0].MaxReachedCombo();
-
+        console.log("this function is run")
         
         var scoreData = {
             score         : boards[0].Score(), 
@@ -138,4 +139,64 @@
                 });
         
     }
+
+    function submitAndDisplayScores() {
+        console.log('submitAndDisplayScores function triggered');
+
+        if (document.cookie != "") {
+            var cookie = document.cookie.split(" ");
+            var userid = cookie[0].substring(9,cookie[0].length-1); 
+        }
+
+        const songid = localStorage.getItem("songID");
+
+        var songScoreData = {
+            score         : boards[0].Score(), 
+            user_id : userid,
+            song_id : songid
+        };
+        console.log(songScoreData.score);
+        console.log(songScoreData.user_id);
+        console.log(songScoreData.song_id);
+
+        console.log("Submitting score:", songScoreData);
+    $.ajax({
+        type: "POST",
+        url: "/submitScore",
+        data: JSON.stringify(songScoreData),
+        contentType: "application/json", 
+        success: function(res) {
+            console.log("Score submission response:", res);
+        },
+        error: function() {
+            console.log("Error occurred while submitting score.");
+        }
+    });
+    };
+    
+    function sortHighToLow(items) {
+    return items.sort((a, b) => b.score - a.score);
+    }
+
+    async function updateAndDisplayScores(song_id) {
+    try {
+        const response = await fetch(`http://localhost:32787/api/scores/${song_id}`);
+        const rawResponse = await response.text(); // Log raw response first
+        console.log('Raw API Response:', rawResponse);
+
+        const scores = JSON.parse(rawResponse); // Ensure the response is valid JSON
+        const sortedScores = await sortHighToLow(scores);
+
+        const scoreboardElement = document.getElementById("scoreboard");
+        scoreboardElement.innerHTML = ''; // Clear previous scores
+        sortedScores.forEach((score, index) => {
+            const scoreElement = document.createElement("div");
+            scoreElement.innerHTML = `Rank: ${index + 1} - User ID: ${score.user_id} - Score: ${score.score}`;
+            scoreboardElement.appendChild(scoreElement);
+        });
+    } catch (err) {
+        console.error('Error fetching scores:', err);
+    }
+}
 </script>
+
