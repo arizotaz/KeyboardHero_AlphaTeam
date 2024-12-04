@@ -481,6 +481,10 @@ class GameBoard {
     LoadFileData(dataJSON) {
         this.gameFileData = dataJSON;
         this.songName = this.gameFileData.song_title;
+        if (this.gameFileData.song_identifier != null && this.gameFileData.song_identifier != "") 
+            this.songID = this.gameFileData.song_identifier;
+        else
+            this.songID = "0";
         // number of lanes
         this.numberOfNotes = this.gameFileData.beatmap_arrays.length;
         this.gameTotalTiles = 0;
@@ -524,6 +528,10 @@ class GameBoard {
     // Width of column
     ColumnWidth() {
         return this.numberOfNotes;
+    }
+
+    SongID() {
+        return this.songID;
     }
 
     // Call when destroyed

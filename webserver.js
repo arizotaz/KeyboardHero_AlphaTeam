@@ -19,7 +19,15 @@ console.log("Loading FS");
 const fs = require('fs');
 // database functions
 console.log("Loading database.js");
-const { getScores } = require('./database.js');
+const { getSongScores } = require('./database.js');
+const { submitScore } = require('./database.js');
+const { displayScores } = require('./database.js');
+const { sortHighToLow } = require('./database.js');
+const { removeScore } = require('./database.js');
+const { getSortedScoresWithRank } = require('./database.js');
+const db = require('./database');
+
+
 
 
 // The cmd to start python
@@ -86,10 +94,6 @@ app.get('/levelselect/songs/', function (req, res) {
     res.sendFile(socketioclient);
 });
 
-app.get('/source', function (req, res) {
-    res.location('https://github.com/arizotaz/KeyboardHero_AlphaTeam');
-    res.send("<a href='"+res.get('location')+"'><button>View Code</button></a><script>window.location.href='"+res.get('location')+"'</script>")
-});
 
 //api to get scores using for testing
 app.get('/scores', async (req, res) => {
@@ -102,6 +106,69 @@ app.get('/scores', async (req, res) => {
     }
 });
 
+app.use(express.json());
+
+app.post('/submitScore', async (req, res) => {
+    try {
+        const { score, user_id, song_id } = req.body;
+        console.log("Received score submission:", { score, user_id, song_id });
+
+        if (user_id === undefined || user_id === '') {
+            return res.status(200).json({ message: 'No user score was not added.' });
+        }
+
+        if (!user_id || !song_id || typeof score !== 'number') {
+            return res.status(400).json({ error: 'Invalid input' });
+        }
+
+
+
+        const results = await db.getSongScores(song_id);
+        console.log("Existing scores for the song:", results);  // Log the existing scores
+
+        const existingScoreEntry = results.find(entry => entry.user_id === Number(user_id));
+        console.log(existingScoreEntry);
+        if (existingScoreEntry) {
+            const existingScore = existingScoreEntry.score;
+            console.log("Existing score for user:", existingScore);
+
+            if (score > existingScore) {
+                await db.removeScore(user_id, song_id);
+                await db.submitScore(user_id, song_id, score);
+                return res.status(200).json({ message: 'High score updated!' });
+            } else {
+                return res.status(200).json({ message: 'Score not high enough, will not be updated.' });
+            }
+        } else {
+            await db.submitScore(user_id, song_id, score);
+            return res.status(200).json({ message: 'High score added!' });
+        }
+    } catch (err) {
+        console.error('Error handling /submitScore:', err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
+app.get('/getAndDisplayScores', async (req, res) => {
+    const song_id = req.query.song_id; // Get song_id from query parameters
+    console.log("song id to search:", song_id)
+    if (!song_id) {
+        return res.status(400).json({ error: 'song_id query parameter is required' });
+    }
+
+    try {
+        // Fetch scores from the database
+        const results = await db.getSortedScoresWithRank(song_id);
+        console.log("Existing scores for the song to display:", results);  // Log the existing scores
+        // Respond with JSON data
+        res.json(results);
+    } catch (err) {
+        console.error('Error fetching scores:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 // upload and process files
 app.post('/newSongUpload', upload.single('file'), (req, res) => {
@@ -158,7 +225,7 @@ console.log(`Server started on: http://localhost:${port}`);
 // Login system 
 
 // Needed to parse inputs for account creation
-var bodyParser = require('body-parser'); 
+var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Cookies for accounts
@@ -171,50 +238,50 @@ const { createAccount } = require('./database.js');
 
 const { usernameAvailable } = require('./database.js');
 
-app.post('/createAccount', async function(req, res){
+app.post('/createAccount', async function (req, res) {
 
     try {
-    var bcrypt = require('bcryptjs');
-    var hash = bcrypt.hashSync(req.body.password, 10);
+        var bcrypt = require('bcryptjs');
+        var hash = bcrypt.hashSync(req.body.password, 10);
 
-    //console.log("Username : " + req.body.username);
-    //console.log("Email : " + req.body.email);
-    //console.log("Hashed & salted password : " + hash);
+        //console.log("Username : " + req.body.username);
+        //console.log("Email : " + req.body.email);
+        //console.log("Hashed & salted password : " + hash);
 
-    var username = await usernameAvailable(req.body.username);
+        var username = await usernameAvailable(req.body.username);
 
-    if (username){
-        // Make users account
-        var newSessionId = Math.floor(Math.random() * 999999999);
-        var sessionID = bcrypt.hashSync(newSessionId.toString(), 5);
+        if (username) {
+            // Make users account
+            var newSessionId = Math.floor(Math.random() * 999999999);
+            var sessionID = bcrypt.hashSync(newSessionId.toString(), 5);
 
-        var time = Date.now();
-        var userID = await createAccount(req.body.username,req.body.email,hash, time, sessionID);
-        if (userID){
-            res.cookie('userID', userID);
-            res.cookie('sessionID', sessionID);
-        }else{
-            // failed for unknown reason
-            console.error('Failed to create account.', err);
+            var time = Date.now();
+            var userID = await createAccount(req.body.username, req.body.email, hash, time, sessionID);
+            if (userID) {
+                res.cookie('userID', userID);
+                res.cookie('sessionID', sessionID);
+            } else {
+                // failed for unknown reason
+                console.error('Failed to create account.', err);
+            }
+
+        } else {
+            console.error('Username already in use.', err);
         }
-        
-    }else{
-        console.error('Username already in use.', err);
-    }
-    res.redirect('/');
+        res.redirect('/');
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Error making account' });
     }
 
-    
+
 });
 
 // login system
 const { login } = require('./database.js');
 const { createSession } = require('./database.js');
 
-app.post('/login', async function(req, res){
+app.post('/login', async function (req, res) {
     try {
         var data = await login(req.body.username);
         var bcrypt = require('bcryptjs');
@@ -224,7 +291,7 @@ app.post('/login', async function(req, res){
         //console.log(data[0]);
         //console.log(data[1]);
 
-        if(bcrypt.compareSync(req.body.password, hash)){
+        if (bcrypt.compareSync(req.body.password, hash)) {
             var newSessionId = Math.floor(Math.random() * 999999999);
             var sessionID = bcrypt.hashSync(newSessionId.toString(), 5);
             var time = Date.now();
@@ -232,19 +299,19 @@ app.post('/login', async function(req, res){
 
             res.cookie('userID', userID);
             res.cookie('sessionID', sessionID);
-        }else{
+        } else {
             console.error('Incorrect username or password.', err);
         }
 
         res.redirect('/');
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({ message: 'Failed to log in' });
-        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Failed to log in' });
+    }
 });
 
 // Clear current login info
-app.post('/logout', function(req, res){
+app.post('/logout', function (req, res) {
     res.clearCookie('userID');
     res.clearCookie('sessionID');
     res.redirect('/');
@@ -256,12 +323,12 @@ const { validSession } = require('./database.js');
 
 
 // Get user data for statistics
-app.post('/verifyuser', async function(req, res){
+app.post('/verifyuser', async function (req, res) {
     try {
         // check if session is valid, if not then delete user's token and send to login screen.
-        if (await validSession(req.cookies.userID, req.cookies.sessionID)){
-            res.json(await getUserData(req.cookies.userID, req.cookies.sessionID)); 
-        }else{
+        if (await validSession(req.cookies.userID, req.cookies.sessionID)) {
+            res.json(await getUserData(req.cookies.userID, req.cookies.sessionID));
+        } else {
             res.clearCookie('userID');
             res.clearCookie('sessionID');
             console.error('Invalid session.', err);
@@ -275,19 +342,19 @@ app.post('/verifyuser', async function(req, res){
 const { setStatistics } = require('./database.js');
 
 // Update user's statistics
-app.post('/setuserstatistics', async function(req, res){
+app.post('/setuserstatistics', async function (req, res) {
     try {
 
         // if session is invalid or logged out then instead use -1 for id as a 'guest' statistics so they are included in global
-        if (req.cookies.userID !== undefined && req.cookies.sessionID !== undefined){
-            if (await validSession(req.cookies.userID, req.cookies.sessionID)){
+        if (req.cookies.userID !== undefined && req.cookies.sessionID !== undefined) {
+            if (await validSession(req.cookies.userID, req.cookies.sessionID)) {
                 // 
                 setStatistics(req.cookies.userID, parseInt(req.body.score), parseInt(req.body.missedNotes), parseInt(req.body.totalNotes), parseInt(req.body.maxCombo));
-            }else{
+            } else {
                 // Guest
                 setStatistics(-1, parseInt(req.body.score), parseInt(req.body.missedNotes), parseInt(req.body.totalNotes), parseInt(req.body.maxCombo));
             }
-        }else{
+        } else {
             // Guest
             setStatistics(-1, parseInt(req.body.score), parseInt(req.body.missedNotes), parseInt(req.body.totalNotes), parseInt(req.body.maxCombo));
         }
@@ -300,8 +367,8 @@ app.post('/setuserstatistics', async function(req, res){
 
 const { getStatistics } = require('./database.js');
 // Update user's statistics
-app.post('/getuserstatistics', async function(req, res){
-    try{
+app.post('/getuserstatistics', async function (req, res) {
+    try {
         res.json(await getStatistics(req.cookies.userID));
     } catch (err) {
 

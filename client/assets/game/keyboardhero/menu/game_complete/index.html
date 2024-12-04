@@ -1,3 +1,126 @@
+<script>
+    async function submitAndDisplayScores(callback) {
+        console.log('submitAndDisplayScores function triggered');
+        var userid = "";
+        if (document.cookie != "") {
+            var cookie = document.cookie.split(" ");
+            console.log(cookie[0]);
+            userid = cookie[0].substring(7,cookie[0].length-1); 
+        }
+
+        if (userid != null && userid != "") {
+            document.getElementById("scoreNeedLogin").remove();
+        }
+
+        const songid = localStorage.getItem("songID");
+
+        var songScoreData = {
+            score         : boards[0].Score(), 
+            user_id : userid,
+            song_id : boards[0].SongID()
+        };
+
+        console.log("Submitting score:", songScoreData);
+    $.ajax({
+        type: "POST",
+        url: "/submitScore",
+        data: JSON.stringify(songScoreData),
+        contentType: "application/json", 
+        success: function(res) {
+            console.log("Score submission response:", res);
+            callback();
+        },
+        error: function() {
+            console.log("Error occurred while submitting score.");
+        }
+    });
+    };
+
+    async function fetchAndDisplayScores() {
+    var songid = localStorage.getItem("songID");
+    
+    // Fetch scores from server
+    $.ajax({
+        url: `/getAndDisplayScores`, // Endpoint with song_id as query parameter
+        method: 'GET',
+        data: { song_id: boards[0].SongID() }, // Use the songID stored in localStorage
+        dataType: 'json', // Expect JSON response
+        success: function(scores) {
+            console.log(scores); // Debugging: Log the scores to check their format
+            
+            if (Array.isArray(scores) && scores.length > 0) {
+                // Create HTML table
+                let tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Username</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                if (document.cookie != "") {
+                    var cookie = document.cookie.split(" ");
+                    console.log(cookie[0]);
+                    userid = cookie[0].substring(7,cookie[0].length-1); 
+                } else {
+                    userid = '';
+                }
+                
+                userid = parseInt(userid);
+                currentScore = boards[0].Score();
+                currentRank = 1;
+                // Populate table rows with scores
+                scores.forEach(score => {
+                    if(currentScore < score.score){
+                        currentRank += 1;
+                    }
+                    if(userid === score.user_id){
+                        console.log("UserID was found")
+                        tableHTML += `
+                        <tr class='user'>
+                            <td>${score.rank}</td>
+                            <td>${score.user_name}</td>
+                            <td>${score.score}</td>
+                        </tr>
+                        `;
+                    } else if(score.rank < 11){
+                    tableHTML += `
+                        <tr>
+                            <td>${score.rank}</td>
+                            <td>${score.user_name}</td>
+                            <td>${score.score}</td>
+                        </tr>
+                    `;
+                    } 
+                });
+                tableHTML += `
+                        <tr class = 'current'>
+                            <td>${currentRank}</td>
+                            <td>This Run</td>
+                            <td>${currentScore}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                `;
+                document.getElementById('scoreRank').innerHTML = currentRank;
+                // Insert the table into the #scoreboard div
+                $('#scoreboard').html(tableHTML);
+            } else {
+                $('#scoreboard').html('<p>No scores available.</p>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching scores:', error);
+            $('#scoreboard').html('<p>Error loading scores.</p>');
+        }
+    });
+}
+</script>
+
 <link rel="stylesheet" href="/assets/css/header.css">
 <link rel="stylesheet" href="/assets/css/ui_elements.css">
 <style>
@@ -55,6 +178,37 @@
         border-radius: 20px;
         color: #fff;
     }
+    
+    #scoreboard {
+        color:#fff;
+    }
+    table {
+        width: 100%; /* Make the table full width */
+        border-collapse: collapse; /* To collapse table borders */
+    }
+    th {
+        color: #f2f2f2; /* Lighter background for headers */
+        text-align: left;
+        font-weight: bold;
+        border-bottom: #fff;
+    }
+    td {
+        color: #fff; /* White background for table rows */
+    }  
+    tr {
+            border-bottom: 2px solid #ddd; /* Add border below each row */
+    }
+        /* Optional: Remove border from the last row */
+        tr:last-child {
+            border-bottom: none;
+        } 
+    .user td{
+        color: #40ea32;
+    }
+
+    .current td{
+        color: #5bdaff;
+    }
 
     .gameStats {
         color: #fff;
@@ -93,16 +247,18 @@
     </div>
     <div class="mainPageContent">
         <div class="scores">
-            scores will load here
+            <div id="scoreboard">            Scoreboard
+            </div>
         </div>
         <div class="gameStats">
+            <div id="scoreNeedLogin">You must login to save scores</div>
             <div class="scorePlacement">You placed <a id="scoreRank">NA</a> in the ranking for this song</div>
             <div class="gamescore">You got a total of <a id="score"></a> points</div>
             <div class="missednotes">You missed <a id="missednotes"></a> out of <a id="totalnotes"></a> notes</div>
             <div class="maxCombo">You achieved a max combo of X<a id="maxCombo"></a></div>
             
         </div>
-        <div class="neonButtons">
+        <div class="bubbleButtons">
             <div class="shadow"><button onclick="MenuManager.GoTo(MENU_MAIN);">Go Home</button></div>
         </div>
     </div>
@@ -114,7 +270,7 @@
         document.getElementById('missednotes').innerHTML = boards[0].MissedNotes();
         document.getElementById('totalnotes').innerHTML = boards[0].TotalNotes();
         document.getElementById('maxCombo').innerHTML = boards[0].MaxReachedCombo();
-
+        console.log("this function is run")
         
         var scoreData = {
             score         : boards[0].Score(), 
@@ -139,3 +295,4 @@
         
     }
 </script>
+

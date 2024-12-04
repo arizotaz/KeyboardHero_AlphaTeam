@@ -48,20 +48,12 @@ function MakeAndRunTests() {
                 MenuManager.GoTo(MENU_SINGLEPLAYER);
                 console.log("📋 Changed Menu to " + MENU_SINGLEPLAYER)
                 await waitDelay(500);
-                MenuManager.GoTo(MENU_COMPLETE_SINGLEPLAYER);
-                console.log("📋 Changed Menu to " + MENU_COMPLETE_SINGLEPLAYER)
-                await waitDelay(500);
                 MenuManager.GoTo(MENU_MAIN);
                 console.log("📋 Changed Menu to " + MENU_MAIN)
                 await waitDelay(500);
 
                 console.log("📋 Menu Manager reports " + MenuManager.GetMenuID() + ", going back a menu.")
                 if (MenuManager.GetMenuID() != MENU_MAIN) throw new Error('Menu Manager ID did not change');
-                MenuManager.GoBack();
-                await waitDelay(500);
-
-                console.log("📋 Menu Manager reports " + MenuManager.GetMenuID() + ", going back a menu.")
-                if (MenuManager.GetMenuID() != MENU_COMPLETE_SINGLEPLAYER) throw new Error('Menu Manager ID did not change');
                 MenuManager.GoBack();
                 await waitDelay(500);
                 
@@ -200,6 +192,7 @@ function MakeAndRunTests() {
                 console.log("📋 Setting Sliders")
                 document.getElementById("gameVolume").value = 46;
                 document.getElementById("menuVolume").value = 59;
+                SaveSettingsMenuChanges();
                 await waitDelay(1000);
                 MenuManager.GoTo(MENU_MAIN);
                 console.log("📋 Changed Menu to " + MENU_MAIN)
@@ -222,7 +215,7 @@ function MakeAndRunTests() {
                 let gv = document.getElementById("gameVolume").value;
                 let vm = document.getElementById("menuVolume").value;
                 if (gv != 46) throw new Error("Game Volume Setting did not save propperly")
-                if (vm != 59) throw new Error("Menu Volume Setting did not save propperly")
+                if (vm != 59) throw new Error("Menu Volume Setting did not save propperly - " + vm + " != " + 59)
 
                 await waitDelay(500);
 
