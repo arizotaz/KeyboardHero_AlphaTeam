@@ -8,12 +8,6 @@
             userid = cookie[0].substring(7,cookie[0].length-1); 
         }
 
-        if (userid == null || userid == "") {
-            return;
-        } else {
-            document.getElementById("scoreNeedLogin").remove();
-        }
-
         const songid = localStorage.getItem("songID");
 
         var songScoreData = {
