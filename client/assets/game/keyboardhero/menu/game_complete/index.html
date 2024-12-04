@@ -61,9 +61,33 @@
                         </thead>
                         <tbody>
                 `;
+
+                if (document.cookie != "") {
+                    var cookie = document.cookie.split(" ");
+                    console.log(cookie[0]);
+                    userid = cookie[0].substring(7,cookie[0].length-1); 
+                } else {
+                    userid = '';
+                }
                 
+                userid = parseInt(userid);
+                currentScore = boards[0].Score();
+                currentRank = 1;
                 // Populate table rows with scores
                 scores.forEach(score => {
+                    if(currentScore < score.score){
+                        currentRank += 1;
+                    }
+                    if(userid === score.user_id){
+                        console.log("UserID was found")
+                        tableHTML += `
+                        <tr class='user'>
+                            <td>${score.rank}</td>
+                            <td>${score.user_name}</td>
+                            <td>${score.score}</td>
+                        </tr>
+                        `;
+                    } else if(score.rank < 11){
                     tableHTML += `
                         <tr>
                             <td>${score.rank}</td>
@@ -71,13 +95,18 @@
                             <td>${score.score}</td>
                         </tr>
                     `;
+                    } 
                 });
-
                 tableHTML += `
+                        <tr class = 'current'>
+                            <td>${currentRank}</td>
+                            <td>This Run</td>
+                            <td>${currentScore}</td>
+                        </tr>
                         </tbody>
                     </table>
                 `;
-
+                document.getElementById('scoreRank').innerHTML = currentRank;
                 // Insert the table into the #scoreboard div
                 $('#scoreboard').html(tableHTML);
             } else {
@@ -173,6 +202,13 @@
         tr:last-child {
             border-bottom: none;
         } 
+    .user td{
+        color: #40ea32;
+    }
+
+    .current td{
+        color: #5bdaff;
+    }
 
     .gameStats {
         color: #fff;
@@ -211,7 +247,7 @@
     </div>
     <div class="mainPageContent">
         <div class="scores">
-            <div id="scoreboard">            scores will load here
+            <div id="scoreboard">            Scoreboard
             </div>
         </div>
         <div class="gameStats">
