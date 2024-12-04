@@ -28,13 +28,37 @@ async function submitScore(user_id, song_id, score) {
         if (!user_id || !song_id || typeof score !== 'number') {
             throw new Error('Invalid input: All fields are required.');
         }
+
         const query = `
             INSERT INTO scores (user_id, song_id, score)
             VALUES (?, ?, ?);
         `;
 
         // Execute the query with the provided parameters
-        const [result] = await connection.execute(query, [user_id, song_id, score]);
+        const [result] = await promisePool.execute(query, [user_id, song_id, score]);
+
+        console.log('Score inserted successfully:', result);
+        return result;
+        
+}catch (err) {
+    console.error('Error inserting score:', err);
+    throw err;
+}
+};
+
+async function removeScore(user_id, song_id) {
+    try {
+        if (!user_id || !song_id ) {
+            throw new Error('Invalid input: All fields are required.');
+        }
+
+        const query = `
+            DELETE FROM scores
+            WHERE user_id = ? AND song_id = ?;
+            `;
+
+        // Execute the query with the provided parameters
+        const [result] = await promisePool.execute(query, [user_id, song_id]);
 
         console.log('Score inserted successfully:', result);
         return result;
@@ -308,5 +332,5 @@ async function getStatistics(userID) {
 }
 
 module.exports = {
-    getScores, getSongScores, submitScore, displayScores, sortHighToLow, createAccount, login, createSession, usernameAvailable, getUserData, validSession, setStatistics, getStatistics
+    getScores, getSongScores, submitScore, removeScore, displayScores, sortHighToLow, createAccount, login, createSession, usernameAvailable, getUserData, validSession, setStatistics, getStatistics
 };
