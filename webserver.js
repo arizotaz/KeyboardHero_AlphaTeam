@@ -23,6 +23,7 @@ const { getSongScores } = require('./database.js');
 const { submitScore } = require('./database.js');
 const { displayScores} = require('./database.js');
 const { sortHighToLow} = require('./database.js');
+const { removeScore } = require('./database.js');
 const db = require('./database');
 
 
@@ -92,10 +93,6 @@ app.get('/levelselect/songs/', function (req, res) {
     res.sendFile(socketioclient);
 });
 
-app.get('/source', function (req, res) {
-    res.location('https://github.com/arizotaz/KeyboardHero_AlphaTeam');
-    res.send("<a href='"+res.get('location')+"'><button>View Code</button></a><script>window.location.href='"+res.get('location')+"'</script>")
-});
 
 //api to get scores using for testing
 app.get('/scores', async (req, res) => {
@@ -122,13 +119,14 @@ app.post('/submitScore', async (req, res) => {
         const results = await db.getSongScores(song_id);
         console.log("Existing scores for the song:", results);  // Log the existing scores
 
-        const existingScoreEntry = results.find(entry => entry.user_id === user_id);
-        console.log("Existing scores for the song:", results);
+        const existingScoreEntry = results.find(entry => entry.user_id === Number(user_id));
+        console.log(existingScoreEntry);
         if (existingScoreEntry) {
             const existingScore = existingScoreEntry.score;
             console.log("Existing score for user:", existingScore);
 
             if (score > existingScore) {
+                await db.removeScore(user_id, song_id);
                 await db.submitScore(user_id, song_id, score);
                 return res.status(200).json({ message: 'High score updated!' });
             } else {
