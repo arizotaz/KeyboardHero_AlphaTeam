@@ -1,4 +1,9 @@
 # Keyboard Hero
+
+## Play Now
+[https://keyboardhero.arizotaz.com](https://keyboardhero.arizotaz.com)
+
+## About
 Keyboard hero is the project that we have decided to develop for the 10 week final project of software engineering.  There is a lot to do and it is good to get started as soon as possible.
 For our web-server, it is ideal to have everyone working in the same enviorment.  We will be using NodeJS to manage the webserver and allow other features such as multiplayer down the line.  The game will use P5JS for the interactive part of the game, a collection of HTML pages, and JQuery to manage html screens.
 
